@@ -1,2 +1,4 @@
 *.root
 *~
+*.png
+*/a.out
