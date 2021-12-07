@@ -22,7 +22,6 @@ class data_robustanalyzer {
   void fillhistinevent(TString, vector<int>);
   void fillhistineventunseeded(TString, vector<int>);
   void fillhistcomparegenrecounseeded(TString, vector<int>);
-  bool isL1EgSeeded(int);
   void sort(int*, double*, int);
   
  private:
@@ -43,7 +42,7 @@ class data_robustanalyzer {
   double egRecoPt[100], egRecoEta[100], egRecoPhi[100];
   double egusRecoPt[100], egusRecoEta[100], egusRecoPhi[100];
   double eghltEgammaClusterShape[100], eghltEgammaClusterShape_sigmaIEtaIEta5x5[100], eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[100], eghltEgammaEcalPFClusterIso[100], eghltEgammaHcalPFClusterIso[100], eghltEgammaHoverE[100], eghltEgammaSuperClusterEnergy[100], eghltEcalSeedClusterTime[100];
-  double egushltEgammaClusterShape[100], egushltEgammaClusterShape_sigmaIEtaIEta5x5[100], egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[100], egushltEgammaEcalPFClusterIso[100], egushltEgammaHcalPFClusterIso[100], egushltEgammaHoverE[100], egushltEgammaSuperClusterEnergy[100], egushltEcalSeedClusterTime[100], egushltEgammaSuperClusterEnergyarr[100];
+  double egushltEgammaClusterShape[100], egushltEgammaClusterShape_sigmaIEtaIEta5x5[100], egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[100], egushltEgammaEcalPFClusterIso[100], egushltEgammaHcalPFClusterIso[100], egushltEgammaHoverE[100], egushltEgammaSuperClusterEnergy[100], egushltEcalSeedClusterTime[100];
   double eghltEgammaPixelMatchVars_s2[100], eghltEgammaEleGsfTrackIso[100], eghltEgammaGsfTrackVars_Chi2[100], eghltEgammaGsfTrackVars_Deta[100], eghltEgammaGsfTrackVars_DetaSeed[100], eghltEgammaGsfTrackVars_Dphi[100], eghltEgammaGsfTrackVars_MissingHits[100], eghltEgammaGsfTrackVars_NLayerIT[100], eghltEgammaGsfTrackVars_OneOESeedMinusOneOP[100], eghltEgammaGsfTrackVars_OneOESuperMinusOneOP[100], eghltEgammaGsfTrackVars_ValidHits[100];
   double egushltEgammaPixelMatchVars_s2[100], egushltEgammaEleGsfTrackIso[100], egushltEgammaGsfTrackVars_Chi2[100], egushltEgammaGsfTrackVars_Deta[100], egushltEgammaGsfTrackVars_DetaSeed[100], egushltEgammaGsfTrackVars_Dphi[100], egushltEgammaGsfTrackVars_MissingHits[100], egushltEgammaGsfTrackVars_NLayerIT[100], egushltEgammaGsfTrackVars_OneOESeedMinusOneOP[100], egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[100], egushltEgammaGsfTrackVars_ValidHits[100];
 
