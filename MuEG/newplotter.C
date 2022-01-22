@@ -325,26 +325,29 @@ int newplotter() {
   seltext[1] = "Unseeded: Ne/#gamma#geq1, CaloIdL";
   //makeratehist("sel80usrecoegus", "egpt", 50, 150, 1, false, false, (float []){0.55,0.775,0.75,0.975}, (float []){45,5}, (float []){0,250}, 0.875);
 
-  std::vector<int> coloroptschemegenmch{kBlack, kRed-4, kGreen+2};
+  std::vector<int> coloroptschemegenmch{kGreen+2, kGreen-6};
   coloropt = coloroptschemegenmch;
   std::vector<TFile*> filesel;
   std::vector<TString> namesel;
   std::vector<TString> legsel;
-  filesel.push_back(datafile);
-  namesel.push_back("sel10usrecoebus");
-  legsel.push_back("data");
+  //filesel.push_back(datafile);
+  //namesel.push_back("sel10usrecoebus");
+  //legsel.push_back("data");
   //filesel.push_back(dyfile);
   //namesel.push_back("sel10recoeb");
   //legsel.push_back("DY");
-  filesel.push_back(sig3cmfile);
-  namesel.push_back("sel10usrecoebus");
-  legsel.push_back("signal 3 cm");
+  //filesel.push_back(sig3cmfile);
+  //namesel.push_back("sel10usrecoebus");
+  //legsel.push_back("signal 3 cm");
   //filesel.push_back(sig30cmfile);
   //namesel.push_back("sel20recoeb");
   //legsel.push_back("signal 30 cm");
   filesel.push_back(sig3cmfile);
   namesel.push_back("sel10usrecoebusgenmch");
-  legsel.push_back("MC gen matched");
+  legsel.push_back("3cm gen matched");
+  filesel.push_back(sig1mfile);
+  namesel.push_back("sel10usrecoebusgenmch");
+  legsel.push_back("1m gen matched");
   //filesel.push_back(sig3mfile);
   //namesel.push_back("sel20recoeb");
   //legsel.push_back("signal 3 m");
@@ -356,6 +359,7 @@ int newplotter() {
   //comparesamevariable(filesel, namesel, "hovereoverpt", -1, 40, 1, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "e/#gamma H/p_{T}");
   //comparesamevariable(filesel, namesel, "hovereoversupcluse", -1, 40, 1, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "e/#gamma H/E");
   //comparesamevariable(filesel, namesel, "seedclustime", 8000, 13000, 200, true, true, true, (float []){1e-5,10}, (float []){0.11,0.7,0.36,0.99}, true, "barrel ecal seed time / ns");
+  //comparesamevariable(filesel, namesel, "pixelmchvar_s2", 40, 200, 2, true, true, true, (float []){1e-5,10}, (float []){0.6,0.7,0.85,0.99}, true, "pixel match");
 
   filesel.clear();
   namesel.clear();
@@ -492,8 +496,8 @@ int newplotter() {
   //comparesamevariable(filesel, namesel, "hovere", 1, 1000, 10, true, true, true, (float []){1e-3,10}, (float []){0.64,0.7,0.89,0.99}, true, "e/#gamma H / GeV");
   //comparesamevariable(filesel, namesel, "hovereoverpt", -1, 40, 1, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "e/#gamma H/p_{T}");
   //comparesamevariable(filesel, namesel, "hovereoversupcluse", -1, 40, 1, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "e/#gamma H/E");
-  comparesamevariable(filesel, namesel, "ecalpfclustiso", 50, 800, 10, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "ecal iso. / GeV");
-  comparesamevariable(filesel, namesel, "ecalpfclustisoovere", 50, 550, 1, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "ecal iso./E");
+  //comparesamevariable(filesel, namesel, "ecalpfclustiso", 50, 800, 10, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "ecal iso. / GeV");
+  //comparesamevariable(filesel, namesel, "ecalpfclustisoovere", 50, 550, 1, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "ecal iso./E");
   //comparesamevariable(filesel, namesel, "seedclustime", 8000, 13000, 200, true, true, true, (float []){1e-5,10}, (float []){0.11,0.7,0.36,0.99}, true, "barrel ecal seed time / ns");
 
   filesel.clear();
@@ -515,8 +519,8 @@ int newplotter() {
   //comparesamevariable(filesel, namesel, "hovere", 1, 1000, 10, true, true, true, (float []){1e-3,10}, (float []){0.64,0.7,0.89,0.99}, true, "e/#gamma H / GeV");
   //comparesamevariable(filesel, namesel, "hovereoverpt", -1, 100, 4, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "e/#gamma H/p_{T}");
   //comparesamevariable(filesel, namesel, "hovereoversupcluse", -1, 40, 1, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "e/#gamma H/E");
-  comparesamevariable(filesel, namesel, "ecalpfclustiso", 50, 800, 10, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "ecal iso. / GeV");
-  comparesamevariable(filesel, namesel, "ecalpfclustisoovere", 50, 550, 1, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "ecal iso./E");
+  //comparesamevariable(filesel, namesel, "ecalpfclustiso", 50, 800, 10, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "ecal iso. / GeV");
+  //comparesamevariable(filesel, namesel, "ecalpfclustisoovere", 50, 550, 1, true, true, true, (float []){1e-3,1}, (float []){0.64,0.7,0.89,0.99}, true, "ecal iso./E");
   //comparesamevariable(filesel, namesel, "seedclustime", 8000, 13000, 200, true, true, true, (float []){1e-5,10}, (float []){0.11,0.7,0.36,0.99}, true, "barrel ecal seed time / ns");
 
   seltext[0] = " |#eta|<2.5, #mu: p_{T}#geq16 GeV,";
@@ -528,8 +532,66 @@ int newplotter() {
   //makeratehist("sel13recoeg", "egpt", 56, 150, 1, false, false, (float []){0.55,0.775,0.75,0.975}, (float []){45,5}, (float []){0,100}, 0.875);
 
   seltext[0] = " |#eta|<2.5, #mu: p_{T}#geq16 GeV,";
-  seltext[1] = "Unseeded e/#gamma: p_{T}#geq15 GeV, i#eta<0.012(0.03), H/E<0.1, ecal iso./E<0.15(0.1)";
-  makeratehist("sel14usrecoegus", "egpt", 56, 150, 1, false, false, (float []){0.55,0.775,0.75,0.975}, (float []){45,5}, (float []){0,50}, 0.875);
+  seltext[1] = "L1Seeded e/#gamma: #splitline{p_{T}#geq15 GeV, i#eta<0.012(0.03),}{H/E<0.1, ecal iso./E<0.15(0.1)}";
+  //makeratehist("sel14recoeg", "egpt", 56, 150, 1, false, false, (float []){0.55,0.775,0.75,0.975}, (float []){30,15}, (float []){0,30}, 0.875);
+
+  seltext[0] = " |#eta|<2.5, #mu: p_{T}#geq16 GeV,";
+  seltext[1] = "Unseeded e/#gamma: #splitline{p_{T}#geq15 GeV, i#eta<0.012(0.03),}{H/E<0.1, ecal iso./E<0.15(0.1)}";
+  //makeratehist("sel14usrecoegus", "egpt", 56, 150, 1, false, false, (float []){0.55,0.775,0.75,0.975}, (float []){30,15}, (float []){0,30}, 0.875);
+
+  seltext[0] = " |#eta|<2.5, #mu: p_{T}#geq19 GeV,";
+  seltext[1] = "L1Seeded e/#gamma: #splitline{p_{T}#geq19 GeV, i#eta<0.012(0.03),}{H/E<0.1, ecal iso./E<0.15(0.1)}";
+  //makeratehist("sel15recoeg", "egpt", 56, 150, 1, false, false, (float []){0.55,0.775,0.75,0.975}, (float []){30,15}, (float []){0,30}, 0.875);
+
+  seltext[0] = " |#eta|<2.5, #mu: p_{T}#geq19 GeV,";
+  seltext[1] = "Unseeded e/#gamma: #splitline{p_{T}#geq19 GeV, i#eta<0.012(0.03),}{H/E<0.1, ecal iso./E<0.15(0.1)}";
+  //makeratehist("sel15usrecoegus", "egpt", 56, 150, 1, false, false, (float []){0.55,0.775,0.75,0.975}, (float []){30,15}, (float []){0,30}, 0.875);
+
+  // Unseeded sel 14
+  filesel.clear();
+  namesel.clear();
+  legsel.clear();
+  filesel.push_back(datafile);
+  namesel.push_back("sel14usrecoebus");
+  legsel.push_back("data");
+  filesel.push_back(sig3cmfile);
+  namesel.push_back("sel14usrecoebus");
+  legsel.push_back("signal 3 cm");
+  filesel.push_back(sig3cmfile);
+  namesel.push_back("sel14usrecoebusgenmch");
+  legsel.push_back("MC gen matched");
+  legendEntries = legsel;  
+  //comparesamevariable(filesel, namesel, "mhits", -1, -1, 1, true, true, true, (float []){1e-3,10}, (float []){0.64,0.7,0.89,0.99}, true, "missing hits");
+  //comparesamevariable(filesel, namesel, "hcalpfclustiso", -1, -1, 1, true, true, true, (float []){1e-3,10}, (float []){0.64,0.7,0.89,0.99}, true, "hcal iso. / GeV");
+
+  filesel.clear();
+  namesel.clear();
+  legsel.clear();
+  filesel.push_back(datafile);
+  namesel.push_back("sel14usrecoeeus");
+  legsel.push_back("data");
+  filesel.push_back(sig3cmfile);
+  namesel.push_back("sel14usrecoeeus");
+  legsel.push_back("signal 3 cm");
+  filesel.push_back(sig3cmfile);
+  namesel.push_back("sel14usrecoeeusgenmch");
+  legsel.push_back("MC gen matched");
+  legendEntries = legsel;  
+  //comparesamevariable(filesel, namesel, "mhits", -1, -1, 10, true, true, true, (float []){1e-3,10}, (float []){0.64,0.7,0.89,0.99}, true, "missing hits");
+  //comparesamevariable(filesel, namesel, "hcalpfclustiso", -1, -1, 10, true, true, true, (float []){1e-3,10}, (float []){0.64,0.7,0.89,0.99}, true, "hcal iso. / GeV");
+
+  filesel.clear();
+  namesel.clear();
+  legsel.clear();
+  filesel.push_back(sig3cmfile);
+  namesel.push_back("sel15gen");
+  legsel.push_back("MC gen");
+  filesel.push_back(sig3cmfile);
+  namesel.push_back("gen");
+  legsel.push_back("trigger selected");
+  legendEntries = legsel;  
+  comparesamevariable(filesel, namesel, "recomchelpt", 50, 120, 2, true, true, true, (float []){1,4e2}, (float []){0.64,0.7,0.89,0.99}, false, "e p_{T} / GeV");
+  comparesamevariable(filesel, namesel, "recomchellog10d0", 250, 750, 10, true, true, true, (float []){1,9e2}, (float []){0.64,0.7,0.89,0.99}, false, "e log_{10}d_{0} / log_{10}cm");
 
   //std::vector<int> coloroptschemetim{kBlack, /*kBlue, */kRed+2, kRed-3, /*kRed-7, kRed-9*/};
   return -1;

@@ -15,6 +15,9 @@ TFile* sig3cmfile = TFile::Open("hists_M200dM20ctau3cm.root","READ");
 TFile* sig30cmfile = TFile::Open("hists_M200dM20ctau30cm.root","READ");
 TFile* sig1mfile = TFile::Open("hists_M200dM20ctau1m.root","READ");
 TFile* sig3mfile = TFile::Open("hists_M200dM20ctau3m.root","READ");
+TFile* h24mu12file = TFile::Open("hists_H2L4MuMff12.root","READ");
+TFile* h24mu25file = TFile::Open("hists_H2L4MuMff25.root","READ");
+TFile* h24mu50file = TFile::Open("hists_H2L4MuMff50.root","READ");
 
 TString seltext[2] = {"line1", "line2"};
 
@@ -238,7 +241,7 @@ int makeratehist(TString cutname, TString var, int xbinlow, int xbinhigh, int re
   return -1;
 }
 
-int comparesamevariable(std::vector<TFile*> file, std::vector<TString> cutname, TString var, int xbinlow, int xbinhigh, int rebin=-1, bool logY=false, bool underflow=false, bool overflow=false, float yrange[]=(float []){0.1,100}, float legPos[]=(float []){0.7,0.75,0.95,1}, bool normalize=true, TString xaxistitle="xaxis") {
+int comparesamevariable(std::vector<TFile*> file, std::vector<TString> cutname, TString var, int xbinlow, int xbinhigh, int rebin=-1, bool logY=false, bool underflow=false, bool overflow=false, float yrange[]=(float []){0.1,100}, float legPos[]=(float []){0.7,0.75,0.95,1}, bool normalize=true, TString xaxistitle="xaxis", TString outputpathprefix="") {
 
   // Check if the size of file vector is same as the cutnames
   if(file.size()!=cutname.size()) {
@@ -296,7 +299,7 @@ int comparesamevariable(std::vector<TFile*> file, std::vector<TString> cutname, 
   TCanvas* c1;
   c1 = new TCanvas();
   c1 = enhance_plotter(allhists, legendEntries, allhists[0]->GetXaxis()->GetTitle(),allhists[0]->GetYaxis()->GetTitle(),legPos,logY,yrange,normalize);
-  c1->SaveAs("./dirplots/"+foldername+"/"+var+".png");
+  c1->SaveAs("./dirplots/"+outputpathprefix+foldername+"/"+var+".png");
 
   return -1;
 }
@@ -319,7 +322,7 @@ int newplotter() {
 
   seltext[0] = "N#mu#geq2, p_{T}#geq15 GeV, |#eta|<2.5";
   seltext[1] = "#mu d_{0} sig.>3.98";
-  makeratehist("sel40recomu", "subleadpt", 60, 150, 1, false, false, (float []){0.55,0.65,0.75,0.975}, (float []){60,1.5}, (float []){0,5}, 0.875);
+  //makeratehist("sel40recomu", "subleadpt", 60, 150, 1, false, false, (float []){0.55,0.65,0.75,0.975}, (float []){60,1.5}, (float []){0,5}, 0.875);
 
   std::vector<int> coloroptschemerecoxcheckfilt16{kBlue, kRed};
   coloropt = coloroptschemerecoxcheckfilt16;
@@ -379,7 +382,7 @@ int newplotter() {
   //comparesamevariable(filesel2, namesel2, "allphi", -1, -1, 3, true, true, true, (float []){1e-2,2e-1}, (float []){-1,0.7,0.85,0.99}, true, "#mu #phi");
   //comparesamevariable(filesel2, namesel2, "alldxy", 11000, 13000, 100, true, true, true, (float []){9e-4,1}, (float []){-1,0.7,0.85,0.99}, true, "#mu d_{0} / cm");
   //comparesamevariable(filesel2, namesel2, "alllog10dxy", -1, 700, 20, true, true, true, (float []){1e-3,1}, (float []){0.11,0.7,0.36,0.99}, true, "#mu log_{10}d_{0} / log_{10}cm");
-  comparesamevariable(filesel2, namesel2, "alldxysig", -1, 40000, 1, true, true, true, (float []){1e-5,1}, (float []){-1,0.7,0.85,0.99}, true, "#mu sigificance d_{0}");
+  //comparesamevariable(filesel2, namesel2, "alldxysig", -1, 40000, 1, true, true, true, (float []){1e-5,1}, (float []){-1,0.7,0.85,0.99}, true, "#mu sigificance d_{0}");
   //comparesamevariable(filesel2, namesel2, "alllog10dxysig", 180, 900, 20, true, true, true, (float []){1e-2,3e-1}, (float []){0.7,0.7,0.85,0.99}, true, "#mu log_{10}(significance d_{0})");
   //comparesamevariable(filesel2, namesel2, "leadpt", 60, 130, 2, true, true, true, (float []){1e-3,1}, (float []){-1,0.7,0.85,0.99}, true, "#mu p_{T} / GeV");
   //comparesamevariable(filesel2, namesel2, "leadeta", -1, -1, -1, true, true, true, (float []){1e-3,1e-1}, (float []){-1,0.7,0.85,0.99}, true, "#mu #eta");
@@ -393,7 +396,7 @@ int newplotter() {
   //comparesamevariable(filesel2, namesel2, "subleadphi", -1, -1, 3, true, true, true, (float []){1e-2,2e-1}, (float []){-1,0.7,0.85,0.99}, true, "#mu #phi");
   //comparesamevariable(filesel2, namesel2, "subleaddxy", 11000, 13000, 100, true, true, true, (float []){9e-4,1}, (float []){-1,0.7,0.85,0.99}, true, "#mu d_{0} / cm");
   //comparesamevariable(filesel2, namesel2, "subleadlog10dxy", -1, 700, 20, true, true, true, (float []){1e-5,1}, (float []){-1,0.7,0.85,0.99}, true, "#mu log_{10}d_{0} / log_{10}cm");
-  comparesamevariable(filesel2, namesel2, "subleaddxysig", -1, -1, 2000, true, true, true, (float []){1e-5,1}, (float []){-1,0.7,0.85,0.99}, true, "#mu sigificance d_{0}");
+  //comparesamevariable(filesel2, namesel2, "subleaddxysig", -1, -1, 2000, true, true, true, (float []){1e-5,1}, (float []){-1,0.7,0.85,0.99}, true, "#mu sigificance d_{0}");
   //comparesamevariable(filesel2, namesel2, "subleadlog10dxysig", 180, 800, 20, true, true, true, (float []){1e-2,3e-1}, (float []){-1,0.7,0.85,0.99}, true, "#mu log_{10}(significance d_{0})");
   filesel2.clear();
   namesel2.clear();
@@ -496,6 +499,230 @@ int newplotter() {
   //makeratehist("sel30recomu", "subleadlog10dxysig", 180, 800, 1, false, false, (float []){0.55,0.65,0.75,0.975}, (float []){60,15}, (float []){0,3}, 0.875);
   //makeratehist("sel30recomumu", "leadsubleaddR", 100, 550, 1, false, false, (float []){0.55,0.65,0.75,0.975}, (float []){60,15}, (float []){0,3}, 0.875);
   //makeratehist("sel30recomumu", "leadsubleadM", 100, 350, 1, false, false, (float []){0.55,0.65,0.75,0.975}, (float []){60,15}, (float []){0,3}, 0.875);
+
+  std::vector<int> coloroptschemegentrig{46, 48, 31, 30, 8};
+  coloropt = coloroptschemegentrig;
+  std::vector<TFile*> fileanglegentrig;
+  std::vector<TString> nameanglegentrig;
+  std::vector<TString> leganglegentrig;
+  fileanglegentrig.push_back(sig1mfile);
+  nameanglegentrig.push_back("noselgenmul3ddm10");
+  leganglegentrig.push_back("L3Mu10");
+  fileanglegentrig.push_back(sig1mfile);
+  nameanglegentrig.push_back("noselgenmul2dim23cs");
+  leganglegentrig.push_back("L2Mu23 Cosmic");
+  fileanglegentrig.push_back(sig1mfile);
+  nameanglegentrig.push_back("noselgenmul2dim23");
+  leganglegentrig.push_back("L2Mu23");
+  fileanglegentrig.push_back(sig1mfile);
+  nameanglegentrig.push_back("noselgenmul2ddm10");
+  leganglegentrig.push_back("L2Mu10");
+  legendEntries = leganglegentrig;  
+  //comparesamevariable(fileanglegentrig, nameanglegentrig, "deta", 4700, 5300, 10, true, true, true, (float []){1e-3,1}, (float []){0.6,0.7,0.85,0.99}, true, "#Delta#eta(gen, trig.)","DDM/");
+  //comparesamevariable(fileanglegentrig, nameanglegentrig, "dphi", 3000, 7000, 80, true, true, true, (float []){1e-3,1}, (float []){0.6,0.7,0.85,0.99}, true, "#Delta#phi(gen, trig.)","DDM/");
+
+  fileanglegentrig.clear();
+  nameanglegentrig.clear();
+  leganglegentrig.clear();
+  fileanglegentrig.push_back(sig3cmfile);
+  nameanglegentrig.push_back("noselgenmul3ddm10");
+  leganglegentrig.push_back("3 cm");
+  fileanglegentrig.push_back(sig30cmfile);
+  nameanglegentrig.push_back("noselgenmul3ddm10");
+  leganglegentrig.push_back("30 cm");
+  fileanglegentrig.push_back(sig1mfile);
+  nameanglegentrig.push_back("noselgenmul3ddm10");
+  leganglegentrig.push_back("1 m");
+  fileanglegentrig.push_back(sig3mfile);
+  nameanglegentrig.push_back("noselgenmul3ddm10");
+  leganglegentrig.push_back("3 m");
+  legendEntries = leganglegentrig;  
+  //comparesamevariable(fileanglegentrig, nameanglegentrig, "deta", 4700, 5300, 10, true, true, true, (float []){1e-3,1}, (float []){0.6,0.7,0.85,0.99}, true, "#Delta#eta(gen, trig.)","DDM/genmul3ddm10_");
+  //comparesamevariable(fileanglegentrig, nameanglegentrig, "dphi", 3000, 7000, 80, true, true, true, (float []){1e-3,1}, (float []){0.6,0.7,0.85,0.99}, true, "#Delta#phi(gen, trig.)","DDM/genmul3ddm10_");
+
+  fileanglegentrig.clear();
+  nameanglegentrig.clear();
+  leganglegentrig.clear();
+  fileanglegentrig.push_back(sig3cmfile);
+  nameanglegentrig.push_back("noselgenmul2ddm10");
+  leganglegentrig.push_back("3 cm");
+  fileanglegentrig.push_back(sig30cmfile);
+  nameanglegentrig.push_back("noselgenmul2ddm10");
+  leganglegentrig.push_back("30 cm");
+  fileanglegentrig.push_back(sig1mfile);
+  nameanglegentrig.push_back("noselgenmul2ddm10");
+  leganglegentrig.push_back("1 m");
+  fileanglegentrig.push_back(sig3mfile);
+  nameanglegentrig.push_back("noselgenmul2ddm10");
+  leganglegentrig.push_back("3 m");
+  legendEntries = leganglegentrig;  
+  //comparesamevariable(fileanglegentrig, nameanglegentrig, "deta", 4700, 5300, 10, true, true, true, (float []){1e-3,1}, (float []){0.6,0.7,0.85,0.99}, true, "#Delta#eta(gen, trig.)","DDM/genmul2ddm10_");
+  //comparesamevariable(fileanglegentrig, nameanglegentrig, "dphi", 3000, 7000, 80, true, true, true, (float []){1e-3,1}, (float []){0.6,0.7,0.85,0.99}, true, "#Delta#phi(gen, trig.)","DDM/genmul2ddm10_");
+
+  std::vector<int> coloroptschemegeneff{1, 48, 31, 30, 46, 8};
+  coloropt = coloroptschemegeneff;
+
+  std::vector<TFile*> filegeneff3cm;
+  std::vector<TString> namegeneff3cm;
+  std::vector<TString> leggeneff3cm;
+  filegeneff3cm.push_back(sig3cmfile);
+  namegeneff3cm.push_back("basicselgen");
+  leggeneff3cm.push_back("gen");
+  filegeneff3cm.push_back(sig3cmfile);
+  namegeneff3cm.push_back("basicsell3dim33genmch");
+  leggeneff3cm.push_back("DoubleL3Mu33");
+  filegeneff3cm.push_back(sig3cmfile);
+  namegeneff3cm.push_back("basicsell2dim23genmch");
+  leggeneff3cm.push_back("DoubleL2Mu23");
+  filegeneff3cm.push_back(sig3cmfile);
+  namegeneff3cm.push_back("basicsell2dim23csgenmch");
+  leggeneff3cm.push_back("DoubleL2Mu23CS");
+  filegeneff3cm.push_back(sig3cmfile);
+  namegeneff3cm.push_back("basicsell3ddm10genmch");
+  leggeneff3cm.push_back("DoubleL3Mu10");
+  filegeneff3cm.push_back(sig3cmfile);
+  namegeneff3cm.push_back("basicsell2ddm10genmch");
+  leggeneff3cm.push_back("DoubleL2Mu10");
+  legendEntries = leggeneff3cm;  
+  //comparesamevariable(filegeneff3cm, namegeneff3cm, "mupt", 14, 55, 1, true, true, true, (float []){9e-1,1e3}, (float []){0.6,0.6,0.85,0.99}, false, "#mu p_{T} / GeV","DDM/");
+  //comparesamevariable(filegeneff3cm, namegeneff3cm, "mulog10d0", 100, 700, 10, false, true, true, (float []){0,3.49e2}, (float []){0.11,0.6,0.36,0.99}, false, "#mu log_{10}d_{0} / log_{10}cm","DDM/");
+  //comparesamevariable(filegeneff3cm, namegeneff3cm, "ordptsubleadmupt", 14, 55, 1, true, true, true, (float []){9e-1,1e3}, (float []){0.6,0.6,0.85,0.99}, false, "p_{T} ordered, #mu_{2} p_{T} / GeV","DDM/");
+  //comparesamevariable(filegeneff3cm, namegeneff3cm, "ordd0subleadmulog10d0", 100, 700, 10, false, true, true, (float []){0,3.49e2}, (float []){0.11,0.6,0.36,0.99}, false, "|d_{0}| ordered, #mu_{2} log_{10}d_{0} / log_{10}cm","DDM/");
+
+  std::vector<TFile*> filegeneff30cm;
+  std::vector<TString> namegeneff30cm;
+  std::vector<TString> leggeneff30cm;
+  filegeneff30cm.push_back(sig30cmfile);
+  namegeneff30cm.push_back("basicselgen");
+  leggeneff30cm.push_back("gen");
+  filegeneff30cm.push_back(sig30cmfile);
+  namegeneff30cm.push_back("basicsell3dim33genmch");
+  leggeneff30cm.push_back("DoubleL3Mu33");
+  filegeneff30cm.push_back(sig30cmfile);
+  namegeneff30cm.push_back("basicsell2dim23genmch");
+  leggeneff30cm.push_back("DoubleL2Mu23");
+  filegeneff30cm.push_back(sig30cmfile);
+  namegeneff30cm.push_back("basicsell2dim23csgenmch");
+  leggeneff30cm.push_back("DoubleL2Mu23CS");
+  filegeneff30cm.push_back(sig30cmfile);
+  namegeneff30cm.push_back("basicsell3ddm10genmch");
+  leggeneff30cm.push_back("DoubleL3Mu10");
+  filegeneff30cm.push_back(sig30cmfile);
+  namegeneff30cm.push_back("basicsell2ddm10genmch");
+  leggeneff30cm.push_back("DoubleL2Mu10");
+  legendEntries = leggeneff30cm;  
+  //comparesamevariable(filegeneff30cm, namegeneff30cm, "mupt", 14, 55, 1, true, true, true, (float []){9e-1,1e3}, (float []){0.6,0.6,0.85,0.99}, false, "#mu p_{T} / GeV","DDM/");
+  //comparesamevariable(filegeneff30cm, namegeneff30cm, "mulog10d0", 300, 750, 10, false, true, true, (float []){0,3.49e2}, (float []){0.11,0.6,0.36,0.99}, false, "#mu log_{10}d_{0} / log_{10}cm","DDM/");
+  //comparesamevariable(filegeneff30cm, namegeneff30cm, "ordptsubleadmupt", 14, 55, 1, true, true, true, (float []){9e-1,1e3}, (float []){0.6,0.6,0.85,0.99}, false, "p_{T} ordered, #mu_{2} p_{T} / GeV","DDM/");
+  //comparesamevariable(filegeneff30cm, namegeneff30cm, "ordd0subleadmulog10d0", 300, 750, 10, false, true, true, (float []){0,3.49e2}, (float []){0.11,0.6,0.36,0.99}, false, "|d_{0}| ordered, #mu_{2} log_{10}d_{0} / log_{10}cm","DDM/");
+
+  std::vector<TFile*> filegeneff1m;
+  std::vector<TString> namegeneff1m;
+  std::vector<TString> leggeneff1m;
+  filegeneff1m.push_back(sig1mfile);
+  namegeneff1m.push_back("basicselgen");
+  leggeneff1m.push_back("gen");
+  filegeneff1m.push_back(sig1mfile);
+  namegeneff1m.push_back("basicsell3dim33genmch");
+  leggeneff1m.push_back("DoubleL3Mu33");
+  filegeneff1m.push_back(sig1mfile);
+  namegeneff1m.push_back("basicsell2dim23genmch");
+  leggeneff1m.push_back("DoubleL2Mu23");
+  filegeneff1m.push_back(sig1mfile);
+  namegeneff1m.push_back("basicsell2dim23csgenmch");
+  leggeneff1m.push_back("DoubleL2Mu23CS");
+  filegeneff1m.push_back(sig1mfile);
+  namegeneff1m.push_back("basicsell3ddm10genmch");
+  leggeneff1m.push_back("DoubleL3Mu10");
+  filegeneff1m.push_back(sig1mfile);
+  namegeneff1m.push_back("basicsell2ddm10genmch");
+  leggeneff1m.push_back("DoubleL2Mu10");
+  legendEntries = leggeneff1m;  
+  //comparesamevariable(filegeneff1m, namegeneff1m, "mupt", 14, 55, 1, true, true, true, (float []){9e-1,1e3}, (float []){0.6,0.6,0.85,0.99}, false, "#mu p_{T} / GeV","DDM/");
+  //comparesamevariable(filegeneff1m, namegeneff1m, "mulog10d0", 300, 800, 10, false, true, true, (float []){0,3.49e2}, (float []){0.11,0.6,0.36,0.99}, false, "#mu log_{10}d_{0} / log_{10}cm","DDM/");
+  //comparesamevariable(filegeneff1m, namegeneff1m, "ordptsubleadmupt", 14, 55, 1, true, true, true, (float []){9e-1,1e3}, (float []){0.6,0.6,0.85,0.99}, false, "p_{T} ordered, #mu_{2} p_{T} / GeV","DDM/");
+  //comparesamevariable(filegeneff1m, namegeneff1m, "ordd0subleadmulog10d0", 300, 800, 10, false, true, true, (float []){0,3.49e2}, (float []){0.11,0.6,0.36,0.99}, false, "|d_{0}| ordered, #mu_{2} log_{10}d_{0} / log_{10}cm","DDM/");
+
+  std::vector<TFile*> filegeneffmff12;
+  std::vector<TString> namegeneffmff12;
+  std::vector<TString> leggeneffmff12;
+  filegeneffmff12.push_back(h24mu12file);
+  namegeneffmff12.push_back("basicselgen");
+  leggeneffmff12.push_back("gen");
+  filegeneffmff12.push_back(h24mu12file);
+  namegeneffmff12.push_back("basicsell3dim33genmch");
+  leggeneffmff12.push_back("DoubleL3Mu33");
+  filegeneffmff12.push_back(h24mu12file);
+  namegeneffmff12.push_back("basicsell2dim23genmch");
+  leggeneffmff12.push_back("DoubleL2Mu23");
+  filegeneffmff12.push_back(h24mu12file);
+  namegeneffmff12.push_back("basicsell2dim23csgenmch");
+  leggeneffmff12.push_back("DoubleL2Mu23CS");
+  filegeneffmff12.push_back(h24mu12file);
+  namegeneffmff12.push_back("basicsell3ddm10genmch");
+  leggeneffmff12.push_back("DoubleL3Mu10");
+  filegeneffmff12.push_back(h24mu12file);
+  namegeneffmff12.push_back("basicsell2ddm10genmch");
+  leggeneffmff12.push_back("DoubleL2Mu10");
+  legendEntries = leggeneffmff12;  
+  //comparesamevariable(filegeneffmff12, namegeneffmff12, "mupt", 14, 100, 1, true, true, true, (float []){1,2e5}, (float []){0.6,0.6,0.85,0.99}, false, "#mu p_{T} / GeV","DDM/");
+  //comparesamevariable(filegeneffmff12, namegeneffmff12, "mulog10d0", 300, 800, 10, false, true, true, (float []){0,1.2e4}, (float []){0.11,0.6,0.36,0.99}, false, "#mu log_{10}d_{0} / log_{10}cm","DDM/");
+  //comparesamevariable(filegeneffmff12, namegeneffmff12, "ordptsubleadmupt", 14, 100, 1, true, true, true, (float []){1,2e5}, (float []){0.6,0.6,0.85,0.99}, false, "p_{T} ordered, #mu_{2} p_{T} / GeV","DDM/");
+  //comparesamevariable(filegeneffmff12, namegeneffmff12, "ordd0subleadmulog10d0", 300, 800, 10, false, true, true, (float []){0,4e3}, (float []){0.11,0.6,0.36,0.99}, false, "|d_{0}| ordered, #mu_{2} log_{10}d_{0} / log_{10}cm","DDM/");
+
+  std::vector<TFile*> filegeneffmff25;
+  std::vector<TString> namegeneffmff25;
+  std::vector<TString> leggeneffmff25;
+  filegeneffmff25.push_back(h24mu25file);
+  namegeneffmff25.push_back("basicselgen");
+  leggeneffmff25.push_back("gen");
+  filegeneffmff25.push_back(h24mu25file);
+  namegeneffmff25.push_back("basicsell3dim33genmch");
+  leggeneffmff25.push_back("DoubleL3Mu33");
+  filegeneffmff25.push_back(h24mu25file);
+  namegeneffmff25.push_back("basicsell2dim23genmch");
+  leggeneffmff25.push_back("DoubleL2Mu23");
+  filegeneffmff25.push_back(h24mu25file);
+  namegeneffmff25.push_back("basicsell2dim23csgenmch");
+  leggeneffmff25.push_back("DoubleL2Mu23CS");
+  filegeneffmff25.push_back(h24mu25file);
+  namegeneffmff25.push_back("basicsell3ddm10genmch");
+  leggeneffmff25.push_back("DoubleL3Mu10");
+  filegeneffmff25.push_back(h24mu25file);
+  namegeneffmff25.push_back("basicsell2ddm10genmch");
+  leggeneffmff25.push_back("DoubleL2Mu10");
+  legendEntries = leggeneffmff25;  
+  //comparesamevariable(filegeneffmff25, namegeneffmff25, "mupt", 14, 100, 1, true, true, true, (float []){1,2e5}, (float []){0.6,0.6,0.85,0.99}, false, "#mu p_{T} / GeV","DDM/");
+  //comparesamevariable(filegeneffmff25, namegeneffmff25, "mulog10d0", 300, 800, 10, false, true, true, (float []){0,1.2e4}, (float []){0.11,0.6,0.36,0.99}, false, "#mu log_{10}d_{0} / log_{10}cm","DDM/");
+  //comparesamevariable(filegeneffmff25, namegeneffmff25, "ordptsubleadmupt", 14, 100, 1, true, true, true, (float []){1,2e5}, (float []){0.6,0.6,0.85,0.99}, false, "p_{T} ordered, #mu_{2} p_{T} / GeV","DDM/");
+  //comparesamevariable(filegeneffmff25, namegeneffmff25, "ordd0subleadmulog10d0", 300, 800, 10, false, true, true, (float []){0,4e3}, (float []){0.11,0.6,0.36,0.99}, false, "|d_{0}| ordered, #mu_{2} log_{10}d_{0} / log_{10}cm","DDM/");
+
+  std::vector<TFile*> filegeneffmff50;
+  std::vector<TString> namegeneffmff50;
+  std::vector<TString> leggeneffmff50;
+  filegeneffmff50.push_back(h24mu50file);
+  namegeneffmff50.push_back("basicselgen");
+  leggeneffmff50.push_back("gen");
+  filegeneffmff50.push_back(h24mu50file);
+  namegeneffmff50.push_back("basicsell3dim33genmch");
+  leggeneffmff50.push_back("DoubleL3Mu33");
+  filegeneffmff50.push_back(h24mu50file);
+  namegeneffmff50.push_back("basicsell2dim23genmch");
+  leggeneffmff50.push_back("DoubleL2Mu23");
+  filegeneffmff50.push_back(h24mu50file);
+  namegeneffmff50.push_back("basicsell2dim23csgenmch");
+  leggeneffmff50.push_back("DoubleL2Mu23CS");
+  filegeneffmff50.push_back(h24mu50file);
+  namegeneffmff50.push_back("basicsell3ddm10genmch");
+  leggeneffmff50.push_back("DoubleL3Mu10");
+  filegeneffmff50.push_back(h24mu50file);
+  namegeneffmff50.push_back("basicsell2ddm10genmch");
+  leggeneffmff50.push_back("DoubleL2Mu10");
+  legendEntries = leggeneffmff50;  
+  //comparesamevariable(filegeneffmff50, namegeneffmff50, "mupt", 14, 100, 1, true, true, true, (float []){1,2e5}, (float []){0.6,0.6,0.85,0.99}, false, "#mu p_{T} / GeV","DDM/");
+  //comparesamevariable(filegeneffmff50, namegeneffmff50, "mulog10d0", 300, 800, 10, false, true, true, (float []){0,1.2e4}, (float []){0.11,0.6,0.36,0.99}, false, "#mu log_{10}d_{0} / log_{10}cm","DDM/");
+  comparesamevariable(filegeneffmff50, namegeneffmff50, "ordptsubleadmupt", 14, 100, 1, true, true, true, (float []){1,2e5}, (float []){0.6,0.6,0.85,0.99}, false, "p_{T} ordered, #mu_{2} p_{T} / GeV","DDM/");
+  comparesamevariable(filegeneffmff50, namegeneffmff50, "ordd0subleadmulog10d0", 300, 800, 10, false, true, true, (float []){0,4e3}, (float []){0.11,0.6,0.36,0.99}, false, "|d_{0}| ordered, #mu_{2} log_{10}d_{0} / log_{10}cm","DDM/");
 
   return -1;
 }

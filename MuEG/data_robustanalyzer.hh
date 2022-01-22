@@ -15,10 +15,13 @@ class data_robustanalyzer {
   ~data_robustanalyzer();
   
   void analyzersinglefile();
+  void addgenhist();
+  std::pair<int,int> doGenMatching(vector<int>);
   int doGenMatchingUnseeded(vector<int>);
   void addhist(TString);
   void addhistunseeded(TString);
   void addhistcomparegenrecounseeded(TString);
+  void fillgenhistinevent();
   void fillhistinevent(TString, vector<int>);
   void fillhistineventunseeded(TString, vector<int>);
   void fillhistcomparegenrecounseeded(TString, vector<int>);
