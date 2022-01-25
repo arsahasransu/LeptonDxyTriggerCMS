@@ -59,8 +59,8 @@ data_robustanalyzer::data_robustanalyzer(TString filename, TString outfilename, 
   inputChain->SetBranchAddress("egushltEgammaEcalPFClusterIsoarr", &egushltEgammaEcalPFClusterIso);
   inputChain->SetBranchAddress("egushltEgammaHcalPFClusterIsoarr", &egushltEgammaHcalPFClusterIso);
   inputChain->SetBranchAddress("egushltEgammaHoverEarr", &egushltEgammaHoverE);
-  inputChain->SetBranchAddress("egushltEgammaPixelMatchVars_s2arr", &egushltEgammaPixelMatchVars_s2);
   inputChain->SetBranchAddress("egushltEgammaSuperClusterEnergyarr", &egushltEgammaSuperClusterEnergy);
+  inputChain->SetBranchAddress("egushltEgammaPixelMatchVars_s2arr", &egushltEgammaPixelMatchVars_s2);
   inputChain->SetBranchAddress("egushltEgammaEleGsfTrackIsoarr", &egushltEgammaEleGsfTrackIso);
   inputChain->SetBranchAddress("egushltEgammaGsfTrackVars_Chi2arr", &egushltEgammaGsfTrackVars_Chi2);
   inputChain->SetBranchAddress("egushltEgammaGsfTrackVars_Detaarr", &egushltEgammaGsfTrackVars_Deta);
@@ -70,9 +70,20 @@ data_robustanalyzer::data_robustanalyzer(TString filename, TString outfilename, 
   inputChain->SetBranchAddress("egushltEgammaGsfTrackVars_NLayerITarr", &egushltEgammaGsfTrackVars_NLayerIT);
   inputChain->SetBranchAddress("egushltEgammaGsfTrackVars_OneOESeedMinusOneOParr", &egushltEgammaGsfTrackVars_OneOESeedMinusOneOP);
   inputChain->SetBranchAddress("egushltEgammaGsfTrackVars_OneOESuperMinusOneOParr", &egushltEgammaGsfTrackVars_OneOESuperMinusOneOP);
+  inputChain->SetBranchAddress("egushltEgammaGsfTrackVars_ValidHitsarr", &egushltEgammaGsfTrackVars_ValidHits);
   inputChain->SetBranchAddress("egusEcalSeedClusterTimearr", &egushltEcalSeedClusterTime);
   inputChain->SetBranchAddress("egushltEgammaSuperClusterEnergyarr", &egushltEgammaSuperClusterEnergy);
-  inputChain->SetBranchAddress("egushltEgammaGsfTrackVars_ValidHitsarr", &egushltEgammaGsfTrackVars_ValidHits);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaPixelMatchVars_s2arr", &eguspxlmch22hltEgammaPixelMatchVars_s2);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaEleGsfTrackIsoarr", &eguspxlmch22hltEgammaEleGsfTrackIso);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_Chi2arr", &eguspxlmch22hltEgammaGsfTrackVars_Chi2);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_Detaarr", &eguspxlmch22hltEgammaGsfTrackVars_Deta);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_DetaSeedarr", &eguspxlmch22hltEgammaGsfTrackVars_DetaSeed);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_Dphiarr", &eguspxlmch22hltEgammaGsfTrackVars_Dphi);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_MissingHitsarr", &eguspxlmch22hltEgammaGsfTrackVars_MissingHits);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_NLayerITarr", &eguspxlmch22hltEgammaGsfTrackVars_NLayerIT);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_OneOESeedMinusOneOParr", &eguspxlmch22hltEgammaGsfTrackVars_OneOESeedMinusOneOP);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_OneOESuperMinusOneOParr", &eguspxlmch22hltEgammaGsfTrackVars_OneOESuperMinusOneOP);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_ValidHitsarr", &eguspxlmch22hltEgammaGsfTrackVars_ValidHits);
 
   if(isMC) {
     inputChain->SetBranchAddress("genLepn",&genLepN);
@@ -102,10 +113,15 @@ data_robustanalyzer::~data_robustanalyzer() {
 }
 
 // Analyzer for a single file
-void data_robustanalyzer::analyzersinglefile() {
+void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt to range from 0 to nCores
 
   int totEntries = inputChain->GetEntries();
   cout<<"Total number of entries: "<<totEntries<<endl;
+  int nCores = 6; // Assume parallel processing over 7 cores where
+  // there is a lesser no.of events in the last core
+  int beginevent = splitCnt*(totEntries/nCores);
+  int endevent = (splitCnt+1)*(totEntries/nCores);
+  endevent = endevent<totEntries?endevent:totEntries; // Verfied that this logic to parallelize works
 
   // Count events passing certain selections
   int nosel=0, noselus=0, basicsel=0, basicselus=0, selelevetoid=0, selelevetoidus=0, selelevetozwindidus=0, selelevetozoppoidus=0, seleletightid=0, seleletightidus=0;
@@ -141,10 +157,10 @@ void data_robustanalyzer::analyzersinglefile() {
   vector<int> seleletightidegusidx;
   
   // Loop beginning on events
-  for(unsigned int event=0; event<totEntries; event++) {
+  for(unsigned int event=beginevent; event<endevent; event++) {
 
     inputChain->GetEntry(event);
-    //if(event>10000) break;
+    //if(event>1) break;
     //if(event!=283991 && event!=326114) continue;
     if(event%10000==0) std::cout<<"Processed event: "<<event+1<<std::endl;
 
@@ -341,56 +357,79 @@ void data_robustanalyzer::analyzersinglefile() {
 // Function to do gen matching
 // Currently doing genmatching for lead pT only in mueg type events
 // Modify this to return two indices for egeg type events
-int data_robustanalyzer::doGenMatchingUnseeded(vector<int> egusidx) {
+pair<int,int> data_robustanalyzer::doGenMatchingUnseeded(vector<int> egusidx) {
 
   if(!isMC) {
-    cout<<"Error in doing gen matching. Not MC file."<<endl;
-    return -1;
+    cout<<"Error in doingCannot do gen matching. Not MC file."<<endl;
+    return make_pair(-1,-1);
   }
-  int genmuidx=-1, genegidx=-1, mun=0, egn=0;
+  int el1idx=-1, el2idx=-1, egn=0;
   for(unsigned int gen=0; gen<genLepN; gen++) {
-    if(abs(genLepMomPid[gen])==9000007) {
+    if(abs(genLepMomPid[gen])==9000007 || abs(genLepMomPid[gen])==23) {
       if(abs(genLepPid[gen])==11) {
 	egn++;
-	genegidx = gen;
-      }
-      if(abs(genLepPid[gen])==13) {
-	mun++;
-	genmuidx = gen;
+	if(el1idx==-1) {
+	  el1idx = gen;
+	}
+	else if(el2idx==-1) {
+	  el2idx = gen;
+	}
+	else {
+	  cout<<"Warning!!! More than two hard process gen electron in event."<<endl;
+	}
       }
     }
   }
-
-  // Require gen signature with 1mu and 1e
-  int genmcheguspos = -1;
-  //double mindiffpt = -1;
-  if(mun==1 && egn==1 && egusidx.size()>0) {
+  
+  // Require gen signature with 2e
+  // Unseeded egamma objects are ordered with respect to pT
+  int genmcheg1uspos = -1, genmcheg2uspos = -1;
+  if(egn==2 && egusidx.size()>0) {
     // Find the egusidx with the best angular match
     for(unsigned int eg=0; eg<egusidx.size(); eg++) {
-      // Condition to do gen match and choose the closest in pT
+      if(genmcheg1uspos!=-1 && genmcheg2uspos!=-1) {
+	break;
+      }
+      // Condition to do gen match
       if(abs(egusRecoEta[egusidx[eg]])<1.479) {
-	//if(abs(egusRecoEta[egusidx[eg]]-genLepEta[genegidx])<0.06 && (mindiffpt==-1 || abs(egusRecoPt[egusidx[eg]]-genLepPt[genegidx])<mindiffpt) ) {
-	if(abs(egusRecoEta[egusidx[eg]]-genLepEta[genegidx])<0.06 ) {
-	  genmcheguspos = egusidx[eg];
-	  //mindiffpt = abs(egusRecoPt[egusidx[eg]]-genLepPt[genegidx]);
-	  break;
+	if(abs(egusRecoEta[egusidx[eg]]-genLepEta[el1idx])<0.06 && abs(egusRecoEta[egusidx[eg]]-genLepEta[el2idx])<0.06) {
+	  if(abs(egusRecoEta[egusidx[eg]]-genLepEta[el1idx])<abs(egusRecoEta[egusidx[eg]]-genLepEta[el2idx]) && genmcheg1uspos!=-1) {
+	    genmcheg1uspos = egusidx[eg];
+	  }
+	  else {
+	    genmcheg2uspos = egusidx[eg];
+	  }
+	}
+	if(abs(egusRecoEta[egusidx[eg]]-genLepEta[el1idx])<0.06 && genmcheg1uspos!=-1) {
+	  genmcheg1uspos = egusidx[eg];
+	}
+	if(abs(egusRecoEta[egusidx[eg]]-genLepEta[el2idx])<0.06 && genmcheg2uspos!=-1) {
+	  genmcheg2uspos = egusidx[eg];
 	}
       }
       else {
-	//if(abs(egusRecoEta[egusidx[eg]]-genLepEta[genegidx])<0.04 && (mindiffpt==-1 || abs(egusRecoPt[egusidx[eg]]-genLepPt[genegidx])<mindiffpt) ) {
-	if(abs(egusRecoEta[egusidx[eg]]-genLepEta[genegidx])<0.04) {
-	  genmcheguspos = egusidx[eg];
-	  break;
-	  //mindiffpt = abs(egusRecoPt[egusidx[eg]]-genLepPt[genegidx]);
+	if(abs(egusRecoEta[egusidx[eg]]-genLepEta[el1idx])<0.04 && abs(egusRecoEta[egusidx[eg]]-genLepEta[el2idx])<0.04) {
+	  if(abs(egusRecoEta[egusidx[eg]]-genLepEta[el1idx])<abs(egusRecoEta[egusidx[eg]]-genLepEta[el2idx]) && genmcheg1uspos!=-1) {
+	    genmcheg1uspos = egusidx[eg];
+	  }
+	  else {
+	    genmcheg2uspos = egusidx[eg];
+	  }
+	}
+	if(abs(egusRecoEta[egusidx[eg]]-genLepEta[el1idx])<0.04 && genmcheg1uspos!=-1) {
+	  genmcheg1uspos = egusidx[eg];
+	}
+	if(abs(egusRecoEta[egusidx[eg]]-genLepEta[el2idx])<0.04 && genmcheg2uspos!=-1) {
+	  genmcheg2uspos = egusidx[eg];
 	}
       }
     }
   }
   else {
-    return -1;
+    return make_pair(-1,-1);
   }
   
-  return genmcheguspos;
+  return make_pair(genmcheg1uspos,genmcheg2uspos);
 }
 
 // Function to fill a set of histograms for gen particles
@@ -1105,54 +1144,6 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
       }*/
 }
 
-// Function to fill a set of histograms for a selection - angle between gen and reco. - unseeded egamma objects
-void data_robustanalyzer::fillhistcomparegenrecounseeded(TString selection, vector<int> egusidx) {
-
-  TH1F* recoeg_genmult = (TH1F*) outfile->Get(selection+"recoegus_genmult");
-  TH1F* recoeg_recomult = (TH1F*) outfile->Get(selection+"recoegus_recomult");
-  TH1F* recoeb_gendEta = (TH1F*) outfile->Get(selection+"recoebus_gendEta");
-  TH1F* recoeb_gendPhi = (TH1F*) outfile->Get(selection+"recoebus_gendPhi");
-  TH1F* recoee_gendEta = (TH1F*) outfile->Get(selection+"recoeeus_gendEta");
-  TH1F* recoee_gendPhi = (TH1F*) outfile->Get(selection+"recoeeus_gendPhi");
-
-  if(isMC) {
-    int genmuidx=-1, genegidx=-1, mun=0, egn=0;
-    for(unsigned int gen=0; gen<genLepN; gen++) {
-      if(abs(genLepMomPid[gen])==9000007) {
-	if(abs(genLepPid[gen])==11) {
-	  egn++;
-	  genegidx = gen;
-	}
-	if(abs(genLepPid[gen])==13) {
-	  mun++;
-	  genmuidx = gen;
-	}
-      }
-    }
-    
-    recoeg_genmult->Fill(egn);
-    if(mun==1 && egn==1 && egusidx.size()>0) {
-      recoeg_recomult->Fill(egusidx.size());
-      for(unsigned int egctr=0; egctr<egusidx.size(); egctr++) {
-	TVector3 recoeg, gene;
-	recoeg.SetPtEtaPhi(egusRecoPt[egusidx[egctr]], egusRecoEta[egusidx[egctr]], egusRecoPhi[egusidx[egctr]]);
-	gene.SetPtEtaPhi(genLepPt[genegidx], genLepEta[genegidx], genLepPhi[genegidx]);
-	if(TMath::Abs(egusRecoEta[egusidx[egctr]])<1.479) {
-	  recoeb_gendEta->Fill(recoeg.Eta()-gene.Eta());
-	  recoeb_gendPhi->Fill(recoeg.DeltaPhi(gene));
-	}
-	else {
-	  recoee_gendEta->Fill(recoeg.Eta()-gene.Eta());
-	  recoee_gendPhi->Fill(recoeg.DeltaPhi(gene));
-	}
-      }
-    }
-  }
-  else {
-    cout<<"Error in filling angle with gen. Not MC file."<<endl;
-  }
-}
-
 // Function to add a set of histograms for a gen particles
 void data_robustanalyzer::addgenhist(TString selection) {
   
@@ -1409,18 +1400,6 @@ void data_robustanalyzer::addhistunseeded(TString selection) {
 
   // end-cap variables - invariant mass unseeded
   all1dhists.push_back(new TH1F(selection+"recoeeus_leadsubleadM","end-cap M(e/#gamma_{1},e/#gamma_{2}) / GeV",500,0,500));
-
-}
-
-// Function to add a set of histograms for a selection - angle between gen and reco. - unseeded egamma objects
-void data_robustanalyzer::addhistcomparegenrecounseeded(TString selection) {
-
-  all1dhists.push_back(new TH1F(selection+"recoegus_genmult","gen e/#gamma multiplicity",10,-1,9));
-  all1dhists.push_back(new TH1F(selection+"recoegus_recomult","reco. e/#gamma multiplicity",20,-1,19));
-  all1dhists.push_back(new TH1F(selection+"recoebus_gendEta","#Delta#eta(reco. e/#gamma, gen e.)",20000,-1,1));
-  all1dhists.push_back(new TH1F(selection+"recoebus_gendPhi","#Delta#phi(reco. e/#gamma, gen e.)",20000,-1,1));
-  all1dhists.push_back(new TH1F(selection+"recoeeus_gendEta","#Delta#eta(reco. e/#gamma, gen e.)",20000,-1,1));
-  all1dhists.push_back(new TH1F(selection+"recoeeus_gendPhi","#Delta#phi(reco. e/#gamma, gen e.)",20000,-1,1));
 
 }
 

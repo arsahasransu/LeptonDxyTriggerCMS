@@ -14,16 +14,14 @@ class data_robustanalyzer {
   data_robustanalyzer(TString, TString, bool);
   ~data_robustanalyzer();
   
-  void analyzersinglefile();
-  int doGenMatchingUnseeded(vector<int>);
+  void analyzersinglefile(int);
+  pair<int,int> doGenMatchingUnseeded(vector<int>);
   void addgenhist(TString);
   void addhist(TString);
   void addhistunseeded(TString);
-  void addhistcomparegenrecounseeded(TString);
   void fillgenhistinevent(TString, vector<int>);
   void fillhistinevent(TString, vector<int>);
   void fillhistineventunseeded(TString, vector<int>);
-  void fillhistcomparegenrecounseeded(TString, vector<int>);
   bool isL1EgSeeded(int);
   void sort(int*, double*, int);
   
@@ -44,6 +42,7 @@ class data_robustanalyzer {
   double egushltEgammaClusterShape[100], egushltEgammaClusterShape_sigmaIEtaIEta5x5[100], egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[100], egushltEgammaEcalPFClusterIso[100], egushltEgammaHcalPFClusterIso[100], egushltEgammaHoverE[100], egushltEgammaSuperClusterEnergy[100], egushltEcalSeedClusterTime[100];
   double eghltEgammaPixelMatchVars_s2[100], eghltEgammaEleGsfTrackIso[100], eghltEgammaGsfTrackVars_Chi2[100], eghltEgammaGsfTrackVars_Deta[100], eghltEgammaGsfTrackVars_DetaSeed[100], eghltEgammaGsfTrackVars_Dphi[100], eghltEgammaGsfTrackVars_MissingHits[100], eghltEgammaGsfTrackVars_NLayerIT[100], eghltEgammaGsfTrackVars_OneOESeedMinusOneOP[100], eghltEgammaGsfTrackVars_OneOESuperMinusOneOP[100], eghltEgammaGsfTrackVars_ValidHits[100];
   double egushltEgammaPixelMatchVars_s2[100], egushltEgammaEleGsfTrackIso[100], egushltEgammaGsfTrackVars_Chi2[100], egushltEgammaGsfTrackVars_Deta[100], egushltEgammaGsfTrackVars_DetaSeed[100], egushltEgammaGsfTrackVars_Dphi[100], egushltEgammaGsfTrackVars_MissingHits[100], egushltEgammaGsfTrackVars_NLayerIT[100], egushltEgammaGsfTrackVars_OneOESeedMinusOneOP[100], egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[100], egushltEgammaGsfTrackVars_ValidHits[100];
+  double eguspxlmch22hltEgammaPixelMatchVars_s2[100], eguspxlmch22hltEgammaEleGsfTrackIso[100], eguspxlmch22hltEgammaGsfTrackVars_Chi2[100], eguspxlmch22hltEgammaGsfTrackVars_Deta[100], eguspxlmch22hltEgammaGsfTrackVars_DetaSeed[100], eguspxlmch22hltEgammaGsfTrackVars_Dphi[100], eguspxlmch22hltEgammaGsfTrackVars_MissingHits[100], eguspxlmch22hltEgammaGsfTrackVars_NLayerIT[100], eguspxlmch22hltEgammaGsfTrackVars_OneOESeedMinusOneOP[100], eguspxlmch22hltEgammaGsfTrackVars_OneOESuperMinusOneOP[100], eguspxlmch22hltEgammaGsfTrackVars_ValidHits[100];
 
   std::vector<TH1F*> all1dhists;
 };

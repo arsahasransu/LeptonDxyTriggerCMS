@@ -401,7 +401,7 @@ int newplotter() {
   leggennosel.push_back("signal 1 m");
   legendEntries = leggennosel;  
   //comparesamevariable(filegennosel, namegennosel, "t1", 1000, 2000, 5, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma ecal time / ns");
-  comparesamevariable(filegennosel, namegennosel, "log10d0", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma log_{10}d_{0} / log_{10}cm");
+  //comparesamevariable(filegennosel, namegennosel, "log10d0", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma log_{10}d_{0} / log_{10}cm");
 
   std::vector<TFile*> filegenbarsel;
   std::vector<TString> namegenbarsel;
@@ -441,9 +441,38 @@ int newplotter() {
   namegenbarselptgt10.push_back("genbarselptgt10geneg");
   leggenbarselptgt10.push_back("signal 3 m");
   legendEntries = leggenbarselptgt10;  
-  comparesamevariable(filegenbarselptgt10, namegenbarselptgt10, "t1", 1000, 1200, 2, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen e/#gamma ecal t_{e}+t_{LLP} / ns");
-  comparesamevariable(filegenbarselptgt10, namegenbarselptgt10, "t0", 1000, 1200, 2, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen e/#gamma ecal t_{prompt} / ns");
-  comparesamevariable(filegenbarselptgt10, namegenbarselptgt10, "t1mt0", 900, 1600, 10, true, true, true, (float []){4e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen e/#gamma ecal time delay / ns");
+  //comparesamevariable(filegenbarselptgt10, namegenbarselptgt10, "t1", 1000, 1200, 2, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen e/#gamma ecal t_{e}+t_{LLP} / ns");
+  //comparesamevariable(filegenbarselptgt10, namegenbarselptgt10, "t0", 1000, 1200, 2, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen e/#gamma ecal t_{prompt} / ns");
+  //comparesamevariable(filegenbarselptgt10, namegenbarselptgt10, "t1mt0", 900, 1600, 10, true, true, true, (float []){4e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen e/#gamma ecal time delay / ns");
 
+  /* The code for analyzing different 
+     tracking seeds to displaced electrons 
+     starts from here 
+  */
+
+  std::vector<int> coloroptgenbarnewtracks{kBlue, kRed+2, kRed-3, kRed-7, kRed-9};
+  coloropt = coloroptgenbarnewtracks;
+  std::vector<TFile*> filegennewtr;
+  std::vector<TString> namegennewtr;
+  std::vector<TString> leggennewtr;
+  filegennewtr.push_back(sig3cmfile);
+  namegennewtr.push_back("gennoselgeneg");
+  leggennewtr.push_back("signal 3 cm");
+  legendEntries = leggennewtr;  
+  comparesamevariable(filegennewtr, namegennewtr, "egmult", 5, 10, 1, true, true, true, (float []){5e-1,2}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron multiplicity");
+  comparesamevariable(filegennewtr, namegennewtr, "pt", 50, 95, 1, true, true, true, (float []){5e-4,2e-1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron p_{T} / GeV");
+  comparesamevariable(filegennewtr, namegennewtr, "eta", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron #eta");
+  comparesamevariable(filegennewtr, namegennewtr, "phi", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron #phi");
+  comparesamevariable(filegennewtr, namegennewtr, "log10d0", 250, -1, 10, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron log_{10} d_{0} / log_{10} cm");
+  comparesamevariable(filegennewtr, namegennewtr, "leadpt", 50, 95, 1, true, true, true, (float []){5e-4,2e-1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{1} p_{T} / GeV");
+  comparesamevariable(filegennewtr, namegennewtr, "leadeta", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{1} #eta");
+  comparesamevariable(filegennewtr, namegennewtr, "leadphi", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{1} #phi");
+  comparesamevariable(filegennewtr, namegennewtr, "leadlog10d0", 250, -1, 10, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{1} log_{10} d_{0} / log_{10} cm");
+  comparesamevariable(filegennewtr, namegennewtr, "subleadpt", 50, 95, 1, true, true, true, (float []){5e-4,2e-1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{2} p_{T} / GeV");
+  comparesamevariable(filegennewtr, namegennewtr, "subleadeta", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{2} #eta");
+  comparesamevariable(filegennewtr, namegennewtr, "subleadphi", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{2} #phi");
+  comparesamevariable(filegennewtr, namegennewtr, "subleadlog10d0", 250, -1, 10, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{2} log_{10} d_{0} / log_{10} cm");
+  
+  
   return -1;
 }
