@@ -22,214 +22,55 @@ TString seltext[2] = {"line1", "line2"};
 std::vector<int> coloropt{1, kGreen-9, kGreen-7, kGreen-3, kGreen+2};
 std::vector<TString> legendEntries{"l1", "l2", "l3", "l4", "l5", "l6"};
 
-int comparemultihist(TString cutname, TString var, int xbinlow, int xbinhigh, int rebin=-1, bool logY=false, bool isMConly=false, bool overflow=false, float legPos[]=(float []){0.7,0.75,0.95,1}, float yrange[]=(float []){0.1,100}, bool normalized=false) {
+int efficiency(std::vector<TFile*> file, std::vector<TString> cutnames, double legpos[2], int nbins=0, double *rebin=0, TString xaxistitle="p_{T} / GeV") {
 
-  std::vector<TString> legNam;
-  if(!isMConly) legNam.push_back("2018 data");
-  legNam.push_back("c#tau = 3 cm");
-  //legNam.push_back("c#tau = 30 cm");
-  //legNam.push_back("c#tau = 1 m");
-  //legNam.push_back("c#tau = 3 m");
-
-  TString histname = cutname+"_"+var;
-  TH1F* datahist;
-  if(!isMConly) datahist = (TH1F*) datafile->Get(histname);
-  TH1F* sig3cmhist = (TH1F*) sig3cmfile->Get(histname);
-  //TH1F* sig30cmhist = (TH1F*) sig30cmfile->Get(histname);
-  //TH1F* sig1mhist = (TH1F*) sig1mfile->Get(histname);
-  //TH1F* sig3mhist = (TH1F*) sig3mfile->Get(histname);
-
-  // Get the title from histogram title
-  TString xtitle = sig3cmhist->GetTitle();
-
-  std::vector<TH1F*> allhists;
-  if(!isMConly) allhists.push_back(datahist);
-  allhists.push_back(sig3cmhist);
-  //allhists.push_back(sig30cmhist);
-  //allhists.push_back(sig1mhist);
-  //allhists.push_back(sig3mhist);
-
-  if(rebin==-1) rebin = 1;
-  xbinlow = xbinlow==-1?1:xbinlow;
-  xbinhigh = xbinhigh==-1?(overflow?allhists[0]->GetNbinsX()+1:allhists[0]->GetNbinsX()):xbinhigh;
-  xbinlow = xbinlow/rebin;
-  xbinhigh = xbinhigh/rebin;
-
-  for(unsigned int histctr=0; histctr<allhists.size(); histctr++) {
-    if(rebin!=1) allhists[histctr]->Rebin(rebin);
-
-    // Make changes to sig and bkg to enable good basic plotting
-    double err = 0.0;
-    //allhists[histctr]->SetBinContent(xbinlow,allhists[histctr]->IntegralAndError(0,xbinlow,err));
-    //allhists[histctr]->SetBinError(xbinlow,err);
-    err = 0.0;
-    if(overflow) {
-      allhists[histctr]->SetBinContent(xbinhigh,allhists[histctr]->IntegralAndError(xbinhigh,allhists[histctr]->GetNbinsX()+1,err));
-      allhists[histctr]->SetBinError(xbinhigh,err);
-    }
-
-    allhists[histctr]->GetXaxis()->SetRange(xbinlow, xbinhigh);
-    allhists[histctr]->GetXaxis()->SetTitle(xtitle);
-    allhists[histctr]->GetYaxis()->SetTitle("normalized number of events (a.u.)");
-
-    allhists[histctr]->SetTitle("");
-
-    allhists[histctr]->SetLineWidth(2);
-    if(isMConly) allhists[histctr]->SetLineColor(coloropt[histctr+1]);
-    else allhists[histctr]->SetLineColor(coloropt[histctr]);
+  if(cutnames.size()/2!=file.size()) {
+    cout<<"Inconsistent entries for file size and cutnames: Suggested cutnameSize = 2* fileSize"<<endl;
+    return -1;
   }
-
-  TCanvas* c1;
-  c1 = new TCanvas();
-  c1 = enhance_plotter(allhists, legNam, allhists[0]->GetXaxis()->GetTitle(),allhists[0]->GetYaxis()->GetTitle(),legPos,logY,yrange,normalized);
-  c1->SaveAs("./dirplots/"+cutname+"/"+cutname+"_"+var+".png");
   
-  return -1;
-}
+  std::vector<TEfficiency*> pEff;
+  TH1F* demo;
 
-// Comparison of the type cross-check between two histogram - filled v hollow
-int crossChecktwohist(TFile* file, vector<TString> cutname, TString var, int xbinlow, int xbinhigh, int rebin=-1, bool logY=false, float legPos[]=(float []){0.7,0.75,0.95,1}, float yrange[]=(float []){0.1,100}) {
-
-  std::vector<TString> legNam;
-  legNam.push_back("L3#mu filter - DoubleMu33Displaced");
-  legNam.push_back("L3#mu filter, p_{T}>16, |#eta|<2.5, d_{0}>0.1mm ");
-
-  TH1F* histfilled = (TH1F*) file->Get(cutname[0]+"_"+var);
-  TH1F* histhollow = (TH1F*) file->Get(cutname[1]+"_"+var);
-
-  std::vector<TH1F*> allhists;
-  allhists.push_back(histfilled);
-  allhists.push_back(histhollow);
-
-  // Get the title from histogram title
-  TString xtitle = histfilled->GetTitle();
-
-  if(rebin==-1) rebin = 1;
-  xbinlow = xbinlow==-1?0:xbinlow;
-  xbinhigh = xbinhigh==-1?allhists[0]->GetNbinsX()+1:xbinhigh;
-  xbinlow = xbinlow/rebin;
-  xbinhigh = xbinhigh/rebin;
-
-  for(unsigned int histctr=0; histctr<allhists.size(); histctr++) {
-    if(rebin!=1) allhists[histctr]->Rebin(rebin);
-
-    // Make changes to sig and bkg to enable good basic plotting
-    double err = 0.0;
-    allhists[histctr]->SetBinContent(xbinlow,allhists[histctr]->IntegralAndError(0,xbinlow,err));
-    allhists[histctr]->SetBinError(xbinlow,err);
-    err = 0.0;
-    allhists[histctr]->SetBinContent(xbinhigh,allhists[histctr]->IntegralAndError(xbinhigh,allhists[histctr]->GetNbinsX()+1,err));
-    allhists[histctr]->SetBinError(xbinhigh,err);
-
-    allhists[histctr]->GetXaxis()->SetRange(xbinlow, xbinhigh);
-    allhists[histctr]->GetXaxis()->SetTitle(xtitle);
-    allhists[histctr]->GetYaxis()->SetTitle("number of events");
+  for(unsigned int filenum=0; filenum<file.size(); filenum++) {
     
-    allhists[histctr]->SetTitle("");
+    TH1F* nosel = (TH1F*) file[filenum]->Get(cutnames[filenum*2]);
+    TH1F* sel = (TH1F*) file[filenum]->Get(cutnames[filenum*2+1]);
+    
+    nosel = (TH1F*) nosel->Rebin(nbins,"newx",rebin);
+    sel = (TH1F*) sel->Rebin(nbins,"newx",rebin);
+    if(filenum==0) demo = (TH1F*) sel->Clone();
+    
+    pEff.push_back(0);
+    if(TEfficiency::CheckConsistency((*sel),(*nosel))) {
+      pEff[filenum] = new TEfficiency((*sel),(*nosel));
+    }
+    
+    sel->SetLineColor(kRed);
+    gStyle->SetOptStat(0);
+    pEff[filenum]->SetLineWidth(3);
+    pEff[filenum]->SetLineColor(coloropt[filenum]);
   }
-
-  allhists[0]->SetFillColor(kBlue);
-  allhists[1]->SetLineColor(kRed);
   
-  TCanvas* c1;
-  c1 = new TCanvas();
-  c1 = enhance_plotter(allhists, legNam, allhists[0]->GetXaxis()->GetTitle(),allhists[0]->GetYaxis()->GetTitle(),legPos,logY,yrange,false);
-  c1->SaveAs("./dirplots/"+cutname[0]+"_"+cutname[1]+"/"+cutname[0]+"_"+cutname[1]+"_"+var+".png");
-
-  return -1;
-}
-
-int makeratehist(TString cutname, TString var, int xbinlow, int xbinhigh, int rebin=-1, bool logY=false, bool overflow=false, float legPos[]=(float []){0.7,0.75,0.95,1}, float seltextpos[]=(float []){0.1,1}, float yrange[]=(float []){0.1,1}, float drawsignalline=-1.0) {
-
-  std::vector<TString> legNam;
-  legNam.push_back("2018 data");
-  legNam.push_back("c#tau = 3 cm");
-  //legNam.push_back("c#tau = 30 cm");
-  //legNam.push_back("c#tau = 1 m");
-  //legNam.push_back("c#tau = 3 m");
-
-  TString histname = cutname+"_"+var;
-  TH1F* datahist;
-  datahist = (TH1F*) datafile->Get(histname);
-  datahist->Scale(datasf);
-  TH1F* sig3cmhist = (TH1F*) sig3cmfile->Get(histname);
-  sig3cmhist->Scale(sig3cmsf);
-  //TH1F* sig30cmhist = (TH1F*) sig30cmfile->Get(histname);
-  //sig30cmhist->Scale(sig30cmsf);
-  //TH1F* sig1mhist = (TH1F*) sig1mfile->Get(histname);
-  //sig1mhist->Scale(sig1msf);
-  //TH1F* sig3mhist = (TH1F*) sig3mfile->Get(histname);
-  //sig3mhist->Scale(sig3msf);
-
-  // Get the title from histogram title
-  TString xtitle = sig3cmhist->GetTitle();
-
   std::vector<TH1F*> allhists;
-  std::vector<TH1F*> allratehists;
-  allhists.push_back(datahist);
-  allhists.push_back(sig3cmhist);
-  //allhists.push_back(sig30cmhist);
-  //allhists.push_back(sig1mhist);
-  //allhists.push_back(sig3mhist);
-
-  double axisscale = 0.0;
-  for(unsigned int histctr=0; histctr<allhists.size(); histctr++) {
-
-    allratehists.push_back((TH1F*) allhists[histctr]->Clone());
-    for(unsigned int bincnt=0; bincnt<allhists[histctr]->GetNbinsX(); bincnt++) {
-      double err = 0;
-      allratehists[histctr]->SetBinContent(bincnt, allhists[histctr]->IntegralAndError(bincnt,allhists[histctr]->GetNbinsX()+1,err));
-      allratehists[histctr]->SetBinError(bincnt, err);
-    }
-    allratehists[histctr]->GetXaxis()->SetRange(xbinlow, xbinhigh);
-    allratehists[histctr]->GetXaxis()->SetTitle(xtitle);
-    allratehists[histctr]->GetYaxis()->SetTitle("rate / Hz");
-
-    allratehists[histctr]->SetTitle("");
-
-    allratehists[histctr]->SetLineWidth(2);
-    allratehists[histctr]->SetLineColor(coloropt[histctr]);
-    if(histctr==1) {
-      axisscale = allratehists[0]->GetBinContent(0)*0.8/allratehists[1]->GetBinContent(0);
-      allratehists[histctr]->Scale(axisscale);
-    }
-    if(histctr>1) {
-      allratehists[histctr]->Scale(axisscale);
-    }
-  }
-
-  cout<<allratehists[1]->GetMaximum()<<endl;
+  demo->SetTitle("");
+  demo->GetXaxis()->SetTitle(xaxistitle);
+  demo->GetYaxis()->SetTitle("RECO eff.");
+  demo->SetLineColorAlpha(kWhite,1);
+  demo->SetFillColorAlpha(kWhite,1);
+  allhists.push_back(demo);
+  
   TCanvas* c1;
   c1 = new TCanvas();
-  c1 = enhance_plotter_rate(allratehists, legNam, allratehists[0]->GetXaxis()->GetTitle(),allratehists[0]->GetYaxis()->GetTitle(),legPos,yrange,logY,false);
-
-  TPad* pad = (TPad*) c1->FindObject("pad3");
-  pad->cd();
-  TGaxis *axis;
-  axis = new TGaxis(allratehists[0]->GetBinLowEdge(xbinhigh+1),yrange[0],allratehists[0]->GetBinLowEdge(xbinhigh+1),yrange[1],yrange[0]/axisscale,yrange[1]/axisscale,510,"-L");
-  axis->SetLineColor(coloropt[1]);
-  axis->SetLabelColor(coloropt[1]);
-  axis->SetLabelFont(132);
-  axis->SetLabelSize(0.06);
-  axis->SetLabelOffset(-0.035);
-  axis->Draw();
-
-  if(drawsignalline!=-1.0) {
-    drawsignalline = allratehists[1]->GetMaximum();
-    TLine *signalline = new TLine(allratehists[0]->GetBinLowEdge(xbinlow),drawsignalline,allratehists[0]->GetBinLowEdge(xbinhigh+1),drawsignalline);
-    signalline->SetLineWidth(2);
-    signalline->SetLineColor(coloropt[1]);
-    signalline->SetLineStyle(9);
-    signalline->Draw();
+  c1 = enhance_plotter(allhists, legendEntries, allhists[0]->GetXaxis()->GetTitle(),allhists[0]->GetYaxis()->GetTitle(), (float []){0.7,0.65,0.9,0.95},false,(float []){0.0,1.1},false);
+  auto pad = c1->GetPad(3);
+  for(unsigned int filenum=0; filenum<file.size(); filenum++) {
+    pEff[filenum]->Draw("same");
   }
-
-  TLatex sel;
-  sel.SetTextFont(132);
-  sel.SetTextSize(0.05);
-  sel.DrawLatex(seltextpos[0], seltextpos[1]+0.1*(yrange[1]-yrange[0]), seltext[0]);
-  sel.DrawLatex(seltextpos[0], seltextpos[1], seltext[1]);
-  
-  c1->SaveAs("./dirplots/"+cutname+"/"+cutname+"_"+var+"_ratehist.png");
+  TLatex latex;
+  latex.DrawLatex((*legpos),(*legpos+1),seltext[0]);
+  latex.DrawLatex((*legpos),(*legpos+1)-0.1,seltext[1]);
+  c1->SaveAs("./dirplots/"+((TString)file[0]->GetName()).ReplaceAll(".root","")+"/"+cutnames[0]+"_eff.png");
   
   return -1;
 }
@@ -300,178 +141,360 @@ int comparesamevariable(std::vector<TFile*> file, std::vector<TString> cutname, 
 int newplotter() {
 
   std::vector<int> coloroptrate{1, kRed+2, kRed-3, kRed-7, kRed-9};
-  coloropt = coloroptrate;
-  seltext[0] = "N#mu#geq1, p_{T}#geq38 GeV, |#eta|<2.5, d_{0}>0.01 cm";
-  seltext[1] = "Ne/#gamma#geq1, p_{T}>38 GeV, |#eta|<2.65";
-  //makeratehist("sel3recoeg", "egpt", 66, 150, 1, false, false, (float []){0.55,0.775,0.75,0.975}, (float []){60,0.8}, (float []){0.1,1.39}, 0.875);
 
-  std::vector<int> coloroptschemeselelevetoid{1, 11, 4, 38};
-  coloropt = coloroptschemeselelevetoid;
-  std::vector<TFile*> fileselelevetoid;
-  std::vector<TString> nameselelevetoid;
-  std::vector<TString> legselelevetoid;
-  fileselelevetoid.push_back(datafile);
-  nameselelevetoid.push_back("selelevetoidusrecoebus");
-  legselelevetoid.push_back("data, vetoid");
-  fileselelevetoid.push_back(datafile);
-  nameselelevetoid.push_back("basicselusrecoebus");
-  legselelevetoid.push_back("data, noid");
-  fileselelevetoid.push_back(dyfile);
-  nameselelevetoid.push_back("selelevetoidusrecoebus");
-  legselelevetoid.push_back("DY, egvetoid");
-  fileselelevetoid.push_back(dyfile);
-  nameselelevetoid.push_back("basicselusrecoebus");
-  legselelevetoid.push_back("DY, noid");
-  legendEntries = legselelevetoid;  
-  //comparesamevariable(fileselelevetoid, nameselelevetoid, "leadsubleadM", -1, 120, 1, true, true, true, (float []){1e-3,3e-1}, (float []){0.2,0.65,0.45,0.95}, true, "M(e/#gamma_{1},e/#gamma_{2}) / GeV");
+  std::vector<TFile*> file;
+  std::vector<TString> name;
+  std::vector<TString> legend;
 
-  std::vector<int> coloroptschemebasicsel{14, 1, 16, 8, 46};
-  coloropt = coloroptschemebasicsel;
-  std::vector<TFile*> filebasicsel;
-  std::vector<TString> namebasicsel;
-  std::vector<TString> legbasicsel;
-  filebasicsel.push_back(datafile);
-  namebasicsel.push_back("basicselrecoeb");
-  legbasicsel.push_back("data");
-  filebasicsel.push_back(datafile);
-  namebasicsel.push_back("selelevetozwindidusrecoebus");
-  legbasicsel.push_back("data, egveto, 75<M<95");
-  filebasicsel.push_back(datafile);
-  namebasicsel.push_back("selelevetozoppoidusrecoebus");
-  legbasicsel.push_back("data, egveto, Z veto");
-  filebasicsel.push_back(dyfile);
-  namebasicsel.push_back("selelevetozwindidusrecoebus");
-  legbasicsel.push_back("DY, egvetom 75<M<95");
-  filebasicsel.push_back(sig3cmfile);
-  namebasicsel.push_back("basicselrecoeb");
-  legbasicsel.push_back("signal 3 cm");
-  legendEntries = legbasicsel;  
-  //comparesamevariable(filebasicsel, namebasicsel, "leadegin5x5noiseclnd", -1, 400, 10, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{1} #sigmai#etai#eta5x5 (noise cleaned)");
-  //comparesamevariable(filebasicsel, namebasicsel, "subleadegin5x5noiseclnd", -1, 400, 10, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{2} #sigmai#etai#eta5x5 (noise cleaned)");
-  //comparesamevariable(filebasicsel, namebasicsel, "leadeghovereoversupcluse", -1, 150, 2, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{1} H/E");
-  //comparesamevariable(filebasicsel, namebasicsel, "subleadeghovereoversupcluse", -1, 150, 2, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{2} H/E");
-  //comparesamevariable(filebasicsel, namebasicsel, "leadegecalpfclustisoovere", 50, 150, 4, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{1} ecal iso./E");
-  //comparesamevariable(filebasicsel, namebasicsel, "subleadegecalpfclustisoovere", 50, 150, 4, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{2} ecal iso./E");
-  //comparesamevariable(filebasicsel, namebasicsel, "leadeghcalpfclustisoovere", 50, 150, 4, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{1} hcal iso./E");
-  //comparesamevariable(filebasicsel, namebasicsel, "subleadeghcalpfclustisoovere", 50, 150, 1, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{2} hcal iso./E");
-  //comparesamevariable(filebasicsel, namebasicsel, "leadegpixelmchvar_s2", 40, 200, 2, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "pixel match");
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(sig3cmfile);
+  name.push_back("gennoseletalt2_4geneg_eta");
+  name.push_back("gennoseletalt2_4Anoselusrecomchgenel_eta");
+  coloropt.push_back(kRed-2);
+  legend.push_back("");
+  legendEntries = legend;
+  vector<double> binseta{-2.5,-2.3,-2.2,-1.9,-1.7,-1.6,-1.5,-1.4,-1.3,-1.2,-1.0,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1.0,1.2,1.3,1.4,1.5,1.6,1.7,1.9,2.2,2.3,2.5};
+  seltext[0] = "gen e: p_{T}>30 GeV, |#Delta#eta|<2.2";
+  seltext[1] = "trig object: p_{T}>10 GeV, |#Delta#eta|<2.65";
+  vector<double> legpos{-0.5,0.9};
+  efficiency(file, name, &legpos[0], 30, &binseta[0], "#eta");
+  name.clear();
+  name.push_back("gennoseletalt2_4geneg_pt");
+  name.push_back("gennoseletalt2_4Anoselusrecomchgenel_pt");
+  vector<double> binspt{10,13,15,17,19,21,23,25,27,30,34,38,42,46,50,66,82,100,150};
+  seltext[0] = "gen e: p_{T}>15 GeV, |#Delta#eta|<2.2";
+  seltext[1] = "trig object: p_{T}>10 GeV, |#Delta#eta|<2.65";
+  legpos = {60, 0.9};
+  efficiency(file, name, &legpos[0], 18, &binspt[0], "p_{T} / GeV");
+  name.clear();
+  name.push_back("gennoseletalt2_4geneg_log10d0");
+  name.push_back("gennoseletalt2_4Anoselusrecomchgenel_log10d0");
+  file.push_back(sig30cmfile);
+  name.push_back("gennoseletalt2_4geneg_log10d0");
+  name.push_back("gennoseletalt2_4Anoselusrecomchgenel_log10d0");
+  coloropt.push_back(kBlue-2);
+  file.push_back(sig1mfile);
+  name.push_back("gennoseletalt2_4geneg_log10d0");
+  name.push_back("gennoseletalt2_4Anoselusrecomchgenel_log10d0");
+  coloropt.push_back(kGreen-2);
+  vector<double> binslog10d0{-2,-1.5,-1,-0.6,-0.2,0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2,2.2,2.4,3,3.5,4,4.5,5};
+  seltext[0] = "gen e: p_{T}>30 GeV, |#Delta#eta|<2.2";
+  seltext[1] = "trig object: p_{T}>10 GeV, |#Delta#eta|<2.65";
+  legpos = {0, 0.9};
+  efficiency(file, name, &legpos[0], 22, &binslog10d0[0], "log_{10}d_{0} / log_{10}cm");
 
-  filebasicsel.clear();
-  namebasicsel.clear();
-  legbasicsel.clear();
-  filebasicsel.push_back(datafile);
-  namebasicsel.push_back("basicselrecoee");
-  legbasicsel.push_back("data");
-  filebasicsel.push_back(datafile);
-  namebasicsel.push_back("selelevetozwindidusrecoeeus");
-  legbasicsel.push_back("data, egveto, 75<M<95");
-  filebasicsel.push_back(datafile);
-  namebasicsel.push_back("selelevetozoppoidusrecoeeus");
-  legbasicsel.push_back("data, egveto, Z veto");
-  filebasicsel.push_back(dyfile);
-  namebasicsel.push_back("selelevetozwindidusrecoeeus");
-  legbasicsel.push_back("DY, egvetom 75<M<95");
-  filebasicsel.push_back(sig3cmfile);
-  namebasicsel.push_back("basicselrecoee");
-  legbasicsel.push_back("signal 3 cm");
-  legendEntries = legbasicsel;  
-  //comparesamevariable(filebasicsel, namebasicsel, "leadegin5x5noiseclnd", -1, 400, 10, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{1} #sigmai#etai#eta5x5 (noise cleaned)");
-  //comparesamevariable(filebasicsel, namebasicsel, "subleadegin5x5noiseclnd", 100, 800, 10, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{2} #sigmai#etai#eta5x5 (noise cleaned)");
-  //comparesamevariable(filebasicsel, namebasicsel, "leadeghovereoversupcluse", -1, 150, 2, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{1} H/E");
-  //comparesamevariable(filebasicsel, namebasicsel, "subleadeghovereoversupcluse", -1, 150, 2, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{2} H/E");
-  //comparesamevariable(filebasicsel, namebasicsel, "leadegecalpfclustisoovere", 50, 150, 4, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{1} ecal iso./E");
-  //comparesamevariable(filebasicsel, namebasicsel, "subleadegecalpfclustisoovere", 50, 150, 4, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{2} ecal iso./E");
-  //comparesamevariable(filebasicsel, namebasicsel, "leadeghcalpfclustisoovere", 50, 150, 4, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{1} hcal iso./E");
-  //comparesamevariable(filebasicsel, namebasicsel, "subleadeghcalpfclustisoovere", 50, 150, 1, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{2} hcal iso./E");
-  //comparesamevariable(filebasicsel, namebasicsel, "leadegpixelmchvar_s2", 40, 200, 2, true, true, true, (float []){1e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "pixel match");
-
-  std::vector<int> coloroptschemegennosel{4, 2, 46};
-  coloropt = coloroptschemegennosel;
-  std::vector<TFile*> filegennosel;
-  std::vector<TString> namegennosel;
-  std::vector<TString> leggennosel;
-  filegennosel.push_back(dyfile);
-  namegennosel.push_back("gennoselgeneg");
-  leggennosel.push_back("DY, mother Z");
-  filegennosel.push_back(sig3cmfile);
-  namegennosel.push_back("gennoselgeneg");
-  leggennosel.push_back("signal 3 cm");
-  filegennosel.push_back(sig1mfile);
-  namegennosel.push_back("gennoselgeneg");
-  leggennosel.push_back("signal 1 m");
-  legendEntries = leggennosel;  
-  //comparesamevariable(filegennosel, namegennosel, "t1", 1000, 2000, 5, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma ecal time / ns");
-  //comparesamevariable(filegennosel, namegennosel, "log10d0", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma log_{10}d_{0} / log_{10}cm");
-
-  std::vector<TFile*> filegenbarsel;
-  std::vector<TString> namegenbarsel;
-  std::vector<TString> leggenbarsel;
-  filegenbarsel.push_back(dyfile);
-  namegenbarsel.push_back("genbarselgeneg");
-  leggenbarsel.push_back("DY, mother Z");
-  filegenbarsel.push_back(sig3cmfile);
-  namegenbarsel.push_back("genbarselgeneg");
-  leggenbarsel.push_back("signal 3 cm");
-  filegenbarsel.push_back(sig1mfile);
-  namegenbarsel.push_back("genbarselgeneg");
-  leggenbarsel.push_back("signal 1 m");
-  legendEntries = leggenbarsel;  
-  //comparesamevariable(filegenbarsel, namegenbarsel, "t1", 1000, 1200, 2, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen e/#gamma ecal time / ns");
-  //comparesamevariable(filegenbarsel, namegenbarsel, "t0", 1000, 1200, 2, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen e/#gamma ecal time light / ns");
-  //comparesamevariable(filegenbarsel, namegenbarsel, "t1mt0", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen e/#gamma ecal time diff / ns");
-
-  std::vector<int> coloroptgenbarselptgt10{kBlue, kRed+2, kRed-3, kRed-7, kRed-9};
-  coloropt = coloroptgenbarselptgt10;
-  std::vector<TFile*> filegenbarselptgt10;
-  std::vector<TString> namegenbarselptgt10;
-  std::vector<TString> leggenbarselptgt10;
-  filegenbarselptgt10.push_back(dyfile);
-  namegenbarselptgt10.push_back("genbarselptgt10geneg");
-  leggenbarselptgt10.push_back("DY, mother Z");
-  filegenbarselptgt10.push_back(sig3cmfile);
-  namegenbarselptgt10.push_back("genbarselptgt10geneg");
-  leggenbarselptgt10.push_back("signal 3 cm");
-  filegenbarselptgt10.push_back(sig30cmfile);
-  namegenbarselptgt10.push_back("genbarselptgt10geneg");
-  leggenbarselptgt10.push_back("signal 30 cm");
-  filegenbarselptgt10.push_back(sig1mfile);
-  namegenbarselptgt10.push_back("genbarselptgt10geneg");
-  leggenbarselptgt10.push_back("signal 1 m");
-  filegenbarselptgt10.push_back(sig3mfile);
-  namegenbarselptgt10.push_back("genbarselptgt10geneg");
-  leggenbarselptgt10.push_back("signal 3 m");
-  legendEntries = leggenbarselptgt10;  
-  //comparesamevariable(filegenbarselptgt10, namegenbarselptgt10, "t1", 1000, 1200, 2, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen e/#gamma ecal t_{e}+t_{LLP} / ns");
-  //comparesamevariable(filegenbarselptgt10, namegenbarselptgt10, "t0", 1000, 1200, 2, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen e/#gamma ecal t_{prompt} / ns");
-  //comparesamevariable(filegenbarselptgt10, namegenbarselptgt10, "t1mt0", 900, 1600, 10, true, true, true, (float []){4e-3,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen e/#gamma ecal time delay / ns");
-
-  /* The code for analyzing different 
-     tracking seeds to displaced electrons 
-     starts from here 
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(sig3cmfile);
+  name.push_back("gennoseletalt2_4geneg");
+  legend.push_back("signal 3 cm");
+  coloropt.push_back(kRed);
+  file.push_back(sig3cmfile);
+  name.push_back("gennoseletalt2_4Anoselusrecomchgenel");
+  legend.push_back("3 cm trig. ch");
+  coloropt.push_back(kRed-2);
+  /*
+  file.push_back(sig30cmfile);
+  name.push_back("gennoselptgt30etalt2_2geneg");
+  legend.push_back("signal 30 cm");
+  coloropt.push_back(kBlue);
+  file.push_back(sig30cmfile);
+  name.push_back("gennoselptgt30etalt2_2Anoselusrecomchgenel");
+  legend.push_back("30 cm trig. mch");
+  coloropt.push_back(kBlue-2);
+  file.push_back(sig1mfile);
+  name.push_back("gennoselptgt30etalt2_2geneg");
+  legend.push_back("signal 1m");
+  coloropt.push_back(kGreen);
+  file.push_back(sig1mfile);
+  name.push_back("gennoselptgt30etalt2_2Anoselusrecomchgenel");
+  legend.push_back("1 m trig. mch");
+  coloropt.push_back(kGreen-2);
   */
+  legendEntries = legend;  
+  comparesamevariable(file, name, "egmult", 5, 15, 1, true, true, true, (float []){0.8,1e5}, (float []){0.5,0.6,0.75,0.89}, false, "electron multiplicity");
+  comparesamevariable(file, name, "pt", 50, 100, 1, true, true, true, (float []){0.8,1e5}, (float []){0.5,0.7,0.89,0.89}, false, "e/#gamma p_{T} / GeV");
+  comparesamevariable(file, name, "eta", -1, -1, 2, false, true, true, (float []){10,2400}, (float []){0.11,0.6,0.36,0.89}, false, "e/#gamma #eta");
+  comparesamevariable(file, name, "phi", -1, -1, 2, false, true, true, (float []){10,2400}, (float []){0.11,0.6,0.36,0.89}, false, "e/#gamma #phi");
+  comparesamevariable(file, name, "log10d0", 300, -1, 20, true, true, true, (float []){0.9,3000}, (float []){0.5,0.6,0.75,0.89}, false, "e/#gamma log_{10}d_{0} / log_{10}cm");
+  
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(sig3cmfile);
+  name.push_back("gennoselAnoselusgeneltrigebus");
+  legend.push_back("signal 3 cm");
+  coloropt.push_back(kRed);
+  file.push_back(sig3cmfile);
+  name.push_back("gennoselAnoselusgenmchgeneltrigebus");
+  legend.push_back("3 cm trig mch");
+  coloropt.push_back(kRed-2);
+  file.push_back(sig30cmfile);
+  name.push_back("gennoselAnoselusgeneltrigebus");
+  legend.push_back("signal 30 cm");
+  coloropt.push_back(kBlue);
+  file.push_back(sig30cmfile);
+  name.push_back("gennoselAnoselusgenmchgeneltrigebus");
+  legend.push_back("30 cm trig mch");
+  coloropt.push_back(kBlue-2);
+  legendEntries = legend;  
+  //comparesamevariable(file, name, "dEta", 1600, 2400, 10, true, true, true, (float []){0.8,1e3}, (float []){0.11,0.65,0.35,0.95}, false, "min. #Delta#eta for every gen e");
+  //comparesamevariable(file, name, "qdPhi", 1600, 2400, 10, true, true, true, (float []){0.8,1e3}, (float []){0.11,0.65,0.35,0.95}, false, "min. q#Delta#phi for every gen e");
 
-  std::vector<int> coloroptgenbarnewtracks{kBlue, kRed+2, kRed-3, kRed-7, kRed-9};
-  coloropt = coloroptgenbarnewtracks;
-  std::vector<TFile*> filegennewtr;
-  std::vector<TString> namegennewtr;
-  std::vector<TString> leggennewtr;
-  filegennewtr.push_back(sig3cmfile);
-  namegennewtr.push_back("gennoselgeneg");
-  leggennewtr.push_back("signal 3 cm");
-  legendEntries = leggennewtr;  
-  comparesamevariable(filegennewtr, namegennewtr, "egmult", 5, 10, 1, true, true, true, (float []){5e-1,2}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron multiplicity");
-  comparesamevariable(filegennewtr, namegennewtr, "pt", 50, 95, 1, true, true, true, (float []){5e-4,2e-1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron p_{T} / GeV");
-  comparesamevariable(filegennewtr, namegennewtr, "eta", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron #eta");
-  comparesamevariable(filegennewtr, namegennewtr, "phi", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron #phi");
-  comparesamevariable(filegennewtr, namegennewtr, "log10d0", 250, -1, 10, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron log_{10} d_{0} / log_{10} cm");
-  comparesamevariable(filegennewtr, namegennewtr, "leadpt", 50, 95, 1, true, true, true, (float []){5e-4,2e-1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{1} p_{T} / GeV");
-  comparesamevariable(filegennewtr, namegennewtr, "leadeta", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{1} #eta");
-  comparesamevariable(filegennewtr, namegennewtr, "leadphi", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{1} #phi");
-  comparesamevariable(filegennewtr, namegennewtr, "leadlog10d0", 250, -1, 10, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{1} log_{10} d_{0} / log_{10} cm");
-  comparesamevariable(filegennewtr, namegennewtr, "subleadpt", 50, 95, 1, true, true, true, (float []){5e-4,2e-1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{2} p_{T} / GeV");
-  comparesamevariable(filegennewtr, namegennewtr, "subleadeta", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{2} #eta");
-  comparesamevariable(filegennewtr, namegennewtr, "subleadphi", -1, -1, 1, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{2} #phi");
-  comparesamevariable(filegennewtr, namegennewtr, "subleadlog10d0", 250, -1, 10, true, true, true, (float []){5e-4,1}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron_{2} log_{10} d_{0} / log_{10} cm");
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(sig3cmfile);
+  name.push_back("gennoselAnoselusgeneltrigeeus");
+  legend.push_back("signal 3 cm");
+  coloropt.push_back(kRed);
+  file.push_back(sig3cmfile);
+  name.push_back("gennoselAnoselusgenmchgeneltrigeeus");
+  legend.push_back("3 cm trig mch");
+  coloropt.push_back(kRed-2);
+  file.push_back(sig30cmfile);
+  name.push_back("gennoselAnoselusgeneltrigeeus");
+  legend.push_back("signal 30 cm");
+  coloropt.push_back(kBlue);
+  file.push_back(sig30cmfile);
+  name.push_back("gennoselAnoselusgenmchgeneltrigeeus");
+  legend.push_back("30 cm trig mch");
+  coloropt.push_back(kBlue-2);
+  legendEntries = legend;  
+  //comparesamevariable(file, name, "dEta", 1600, 2400, 10, true, true, true, (float []){0.8,1e3}, (float []){0.11,0.65,0.35,0.95}, false, "min. #Delta#eta for every gen e");
+  //comparesamevariable(file, name, "qdPhi", 1600, 2400, 10, true, true, true, (float []){0.8,1e3}, (float []){0.11,0.65,0.35,0.95}, false, "min. q#Delta#phi for every gen e");
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicselptgt15geneg");
+  legend.push_back("signal 3 cm");
+  coloropt.push_back(kBlue);
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicselptgt15Abasicselusrecomchgenel");
+  legend.push_back("3 cm trig mch");
+  coloropt.push_back(kRed);
+  file.push_back(sig30cmfile);
+  name.push_back("genbasicselptgt15geneg");
+  legend.push_back("signal 30 cm");
+  coloropt.push_back(kBlue-2);
+  file.push_back(sig30cmfile);
+  name.push_back("genbasicselptgt15Abasicselusrecomchgenel");
+  legend.push_back("30 cm trig mch");
+  coloropt.push_back(kRed-2);
+  legendEntries = legend;  
+  //comparesamevariable(file, name, "egmult", 5, 10, 1, true, true, true, (float []){0.1,1e5}, (float []){0.11,0.65,0.35,0.95}, false, "gen electron multiplicity");
+  //comparesamevariable(file, name, "pt", 50, 95, 1, true, true, true, (float []){1e-1,1e5}, (float []){0.5,0.65,0.75,0.95}, false, "gen electron p_{T} / GeV");
+  //comparesamevariable(file, name, "eta", -1, -1, 1, true, true, true, (float []){1e-1,1e5}, (float []){0.5,0.65,0.75,0.95}, false, "gen electron #eta");
+  //comparesamevariable(file, name, "phi", -1, -1, 1, true, true, true, (float []){1e-1,1e5}, (float []){0.5,0.65,0.75,0.95}, false, "gen electron #phi");
+  //comparesamevariable(file, name, "log10d0", 250, -1, 10, true, true, true, (float []){1e-1,1e5}, (float []){0.5,0.65,0.75,0.95}, false, "gen electron log_{10} d_{0} / log_{10} cm");
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicselptgt15Abasicselusgenmchrecoebus");
+  legend.push_back("3 cm gen mch");
+  coloropt.push_back(kRed+2);
+  file.push_back(sig30cmfile);
+  name.push_back("genbasicselptgt15Abasicselusgenmchrecoebus");
+  legend.push_back("30 cm gen mch");
+  coloropt.push_back(kRed-3);
+  file.push_back(sig1mfile);
+  name.push_back("genbasicselptgt15Abasicselusgenmchrecoebus");
+  legend.push_back("1 m gen mch");
+  coloropt.push_back(kRed-7);
+  file.push_back(sig3mfile);
+  name.push_back("genbasicselptgt15Abasicselusgenmchrecoebus");
+  legend.push_back("3 m gen mch");
+  coloropt.push_back(kRed-9);
+  file.push_back(dyfile);
+  name.push_back("selelevetozwindidusrecoebus");
+  legend.push_back("dy, veto id, Z");
+  coloropt.push_back(kBlue);
+  legendEntries = legend;  
+  //comparesamevariable(file, name, "leadegin5x5noiseclnd", 50, 200, 5, true, true, true, (float []){1e-2,2}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{1} #sigmai#etai#eta_{5#times5} (noise cleaned)");
+  //comparesamevariable(file, name, "egseedclustime", 7500, 12500, 250, true, true, true, (float []){1e-3,1}, (float []){0.7,0.65,0.95,0.95}, true, "e/#gamma ecal seed cluster time / ns");
+  //comparesamevariable(file, name, "egpixelmchvar_s2", 45, 250, 10, true, true, true, (float []){1e-5,2}, (float []){0.5,0.74,0.75,0.99}, true, "e/#gamma pixel match var s2");
+  //comparesamevariable(file, name, "pxlmch22_egpixelmchvar_s2", 45, 250, 20, true, true, true, (float []){1e-4,2}, (float []){0.5,0.74,0.75,0.99}, true, "e/#gamma loose pixel match var s2");
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicselptgt15Abasicselusgenmchrecoeeus");
+  legend.push_back("3 cm gen mch");
+  coloropt.push_back(kRed+2);
+  file.push_back(sig30cmfile);
+  name.push_back("genbasicselptgt15Abasicselusgenmchrecoeeus");
+  legend.push_back("30 cm gen mch");
+  coloropt.push_back(kRed-3);
+  file.push_back(sig1mfile);
+  name.push_back("genbasicselptgt15Abasicselusgenmchrecoeeus");
+  legend.push_back("1 m gen mch");
+  coloropt.push_back(kRed-7);
+  file.push_back(sig3mfile);
+  name.push_back("genbasicselptgt15Abasicselusgenmchrecoeeus");
+  legend.push_back("3 m gen mch");
+  coloropt.push_back(kRed-9);
+  file.push_back(dyfile);
+  name.push_back("selelevetozwindidusrecoeeus");
+  legend.push_back("dy, veto id, Z");
+  coloropt.push_back(kBlue);
+  legendEntries = legend;  
+  //comparesamevariable(file, name, "leadegin5x5noiseclnd", -1, -1, 10, true, true, true, (float []){1e-2,2}, (float []){0.5,0.65,0.75,0.95}, true, "e/#gamma_{1} #sigmai#etai#eta_{5#times5} (noise cleaned)");
+  //comparesamevariable(file, name, "egseedclustime", 7500, 12500, 250, true, true, true, (float []){1e-2,1}, (float []){0.7,0.65,0.95,0.95}, true, "e/#gamma ecal seed cluster time / ns");
+  //comparesamevariable(file, name, "egpixelmchvar_s2", 45, 250, 10, true, true, true, (float []){1e-5,2}, (float []){0.5,0.74,0.75,0.99}, true, "e/#gamma pixel match var s2");
+  //comparesamevariable(file, name, "pxlmch22_egpixelmchvar_s2", 45, 250, 20, true, true, true, (float []){1e-4,2}, (float []){0.5,0.74,0.75,0.99}, true, "e/#gamma loose pixel match var s2");
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(dyfile);
+  name.push_back("selelevetozwindidusrecoebus");
+  legend.push_back("dy, veto id, Z");
+  coloropt.push_back(kBlue);
+  file.push_back(datafile);
+  name.push_back("basicselusrecoebus");
+  legend.push_back("data, no cut");
+  legendEntries = legend;  
+  coloropt.push_back(kGray);
+  file.push_back(datafile);
+  name.push_back("selelevetozwindidusrecoebus");
+  legend.push_back("data, veto id, Z");
+  legendEntries = legend;  
+  coloropt.push_back(kBlack);
+  //comparesamevariable(file, name, "egseedclustime", 7500, 12500, 250, true, true, true, (float []){1e-3,1}, (float []){0.7,0.65,0.95,0.95}, true, "e/#gamma ecal seed cluster time / ns");
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  name.push_back("basicselusrecoebus");
+  legend.push_back("signal 3 cm");
+  coloropt.push_back(kRed);
+  file.push_back(sig3cmfile);
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicselptgt15Abasicselusgenmchrecoebus");
+  legend.push_back("3 cm gen mch");
+  coloropt.push_back(kRed+2);
+  //comparesamevariable(file, name, "leadegin5x5noiseclnd", 50, 200, 5, true, true, true, (float []){0.5,1e5}, (float []){0.5,0.65,0.75,0.95}, false, "e/#gamma_{1} #sigmai#etai#eta_{5#times5} (noise cleaned)");
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicselptgt15Abasicselusgenmchrecoebus");
+  legend.push_back("3 cm gen mch");
+  coloropt.push_back(kRed+2);
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicselptgt15Abasicselusgenmchrecoebus_pxlmch22");
+  legend.push_back("pxlmch22 gen mch");
+  coloropt.push_back(kBlue+2);
+  file.push_back(sig3cmfile);
+  name.push_back("basicselusrecoebus");
+  legend.push_back("signal 3 cm");
+  coloropt.push_back(kRed);
+  file.push_back(sig3cmfile);
+  name.push_back("basicselusrecoebus_pxlmch22");
+  legend.push_back("pxlmch22");
+  coloropt.push_back(kBlue);
+  legendEntries = legend;  
+  //comparesamevariable(file, name, "egpixelmchvar_s2", 45, 250, 10, true, true, true, (float []){0.5,1e5}, (float []){0.5,0.74,0.75,0.99}, false, "e/#gamma loose pixel match var s2");
+  //comparesamevariable(file, name, "leadegooeseedoop", -1, -1, 10, true, true, true, (float []){0.5,1e5}, (float []){0.5,0.74,0.75,0.99}, false, "e/#gamma_{1} track 1/E-1/p / GeV^{-1}");
+  //comparesamevariable(file, name, "subleadegooeseedoop", -1, -1, 10, true, true, true, (float []){0.5,1e5}, (float []){0.5,0.74,0.75,0.99}, false, "e/#gamma_{2} track 1/E-1/p / GeV^{-1}");
+  //comparesamevariable(file, name, "leadegchi2", -1, -1, 1, true, true, true, (float []){0.5,1e5}, (float []){0.5,0.74,0.75,0.99}, false, "e/#gamma track #chi^2");
+  //comparesamevariable(file, name, "leadegdeta", -1, -1, 1, true, true, true, (float []){0.5,1e5}, (float []){0.5,0.74,0.75,0.99}, false, "e/#gamma track #Delta#eta_{in}");
+  //comparesamevariable(file, name, "leadegdetaseed", -1, -1, 1, true, true, true, (float []){0.5,1e5}, (float []){0.5,0.74,0.75,0.99}, false, "e/#gamma track #Delta#eta_{in}^{seed}");
+  //comparesamevariable(file, name, "leadegdphi", -1, -1, 1, true, true, true, (float []){0.5,1e5}, (float []){0.5,0.74,0.75,0.99}, false, "e/#gamma track #Delta#phi_{in}");
+  //comparesamevariable(file, name, "leadegmhits", -1, -1, 1, true, true, true, (float []){0.5,1e5}, (float []){0.5,0.74,0.75,0.99}, false, "e/#gamma track missing hits");
+  //comparesamevariable(file, name, "leadegnlayerit", -1, -1, 1, true, true, true, (float []){0.5,1e5}, (float []){0.5,0.74,0.75,0.99}, false, "e/#gamma track layer num");
+  //comparesamevariable(file, name, "leadegooesclsoop", 50, 200, 5, true, true, true, (float []){0.5,1e5}, (float []){0.5,0.74,0.75,0.99}, false, "e/#gamma_{1} 1/E_{sclus}-1/p / GeV^{-1}");
+  //comparesamevariable(file, name, "leadegvalhits", -1, -1, 1, true, true, true, (float []){0.5,1e5}, (float []){0.5,0.74,0.75,0.99}, false, "e/#gamma valid hits");
+  //comparesamevariable(file, name, "leadegtrkiso", 10, 200, 5, true, true, true, (float []){0.5,1e5}, (float []){0.5,0.74,0.75,0.99}, false, "e/#gamma_{1} trk. iso. / GeV");
+
+  /* ////////////////////////////////////
+     BLOCK FOR ANALYZING THE ECAL TIMING
+     ///////////////////////////////////
+     */
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(sig3cmfile);
+  name.push_back("gennoselgeneg");
+  legend.push_back("signal 3 cm");
+  coloropt.push_back(kBlue);
+  legendEntries = legend;  
+  //comparesamevariable(filegennewtr, namegennewtr, "egmult", 5, 10, 1, true, true, true, (float []){5e-1,2}, (float []){0.5,0.65,0.75,0.95}, true, "gen electron multiplicity");
+
+  // Study the reco. efficiency of DY electrons
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(dyfile);
+  name.push_back("gennoselptgt30etalt2_2geneg_eta");
+  name.push_back("gennoselptgt30etalt2_2Anoselusrecomchgenel_eta");
+  coloropt.push_back(kBlue-2);
+  legend.push_back("");
+  legendEntries = legend;
+  binseta = {-2.5,-2.3,-2.2,-1.9,-1.7,-1.6,-1.5,-1.4,-1.3,-1.2,-1.0,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1.0,1.2,1.3,1.4,1.5,1.6,1.7,1.9,2.2,2.3,2.5};
+  seltext[0] = "";
+  seltext[1] = "";
+  legpos = {-0.5,0.9};
+  //efficiency(file, name, &legpos[0], 30, &binseta[0], "#eta");
+  name.clear();
+  name.push_back("gennoselptgt15etalt2_2geneg_pt");
+  name.push_back("gennoselptgt15etalt2_2Anoselusrecomchgenel_pt");
+  binspt = {10,13,15,17,19,21,23,25,27,30,34,38,42,46,50,66,82,100,150};
+  seltext[0] = "";
+  seltext[1] = "";
+  legpos[0] = 60;
+  legpos[1] = 0.9;
+  //efficiency(file, name, &legpos[0], 18, &binspt[0], "p_{T} / GeV");
+  name.clear();
+  name.push_back("gennoselptgt30etalt2_2geneg_log10d0");
+  name.push_back("gennoselptgt30etalt2_2Anoselusrecomchgenel_log10d0");
+  binslog10d0 = {-2,-1.5,-1,-0.6,-0.2,0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2,2.2,2.4,3,3.5,4,4.5,5};
+  seltext[0] = "";
+  seltext[1] = "";
+  legpos[0] = 0;
+  legpos[1] = 0.9;
+  //efficiency(file, name, &legpos[0], 22, &binslog10d0[0], "log_{10}d_{0} / log_{10}cm");
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(dyfile);
+  name.push_back("gennoselgeneg");
+  legend.push_back("DY, mother Z");
+  coloropt.push_back(kBlue);
+  file.push_back(dyfile);
+  name.push_back("gennoselAnoselusrecomchgenel");
+  legend.push_back("SC, ang. matched");
+  coloropt.push_back(kBlue+2);
+  legendEntries = legend;  
+  //comparesamevariable(file, name, "egmult", 5, 15, 1, true, true, true, (float []){0.8,1e7}, (float []){0.5,0.6,0.75,0.89}, false, "electron multiplicity");
+  //comparesamevariable(file, name, "pt", 50, 100, 1, true, true, true, (float []){0.8,1e7}, (float []){0.5,0.7,0.89,0.89}, false, "e/#gamma p_{T} / GeV");
+  //comparesamevariable(file, name, "eta", -1, -1, 2, false, true, true, (float []){10,2e4}, (float []){0.11,0.6,0.36,0.89}, false, "e/#gamma #eta");
+  //comparesamevariable(file, name, "phi", -1, -1, 2, false, true, true, (float []){10,2e4}, (float []){0.11,0.6,0.36,0.89}, false, "e/#gamma #phi");
+  //comparesamevariable(file, name, "log10d0", 300, -1, 20, false, true, true, (float []){0,1.5e5}, (float []){0.5,0.6,0.75,0.89}, false, "e/#gamma log_{10}d_{0} / log_{10}cm");
   
   
   return -1;

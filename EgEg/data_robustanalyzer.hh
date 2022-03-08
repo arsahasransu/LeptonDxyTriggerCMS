@@ -15,13 +15,15 @@ class data_robustanalyzer {
   ~data_robustanalyzer();
   
   void analyzersinglefile(int);
-  pair<int,int> doGenMatchingUnseeded(vector<int>);
+  vector< pair<int,int> > doGenMatchingUnseeded(vector<int>,vector<int>);
   void addgenhist(TString);
   void addhist(TString);
   void addhistunseeded(TString);
+  void addhistgenmchunseeded(TString);
   void fillgenhistinevent(TString, vector<int>);
   void fillhistinevent(TString, vector<int>);
   void fillhistineventunseeded(TString, vector<int>);
+  void fillhistineventgenmchunseeded(TString, vector<int>, vector<int>);
   bool isL1EgSeeded(int);
   void sort(int*, double*, int);
   
