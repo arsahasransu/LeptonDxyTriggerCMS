@@ -136,7 +136,9 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   // Define the histograms
   if(isMC) addgenhist("gennosel");
   if(isMC) addgenhist("genetabin14_16_24");
-  if(isMC) addgenhist("gennoselptgt30");
+  if(isMC) addgenhist("genptgt10");
+  if(isMC) addgenhist("genptgt10etalt12");
+  if(isMC) addgenhist("genptgt10etabin16_24");
   if(isMC) addgenhist("genptgt10etabin14_16_24");
   if(isMC) addgenhist("genptgt10etabin14_16_24d0lt1cm");
   if(isMC) addgenhist("genbarsel");
@@ -146,11 +148,14 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   addhistunseeded("noselus");
   if(isMC)addhistgenmchunseeded("gennoselAnoselus");
   if(isMC)addhistgenmchunseeded("genetabin14_16_24Anoselus");
-  if(isMC)addhistgenmchunseeded("gennoselptgt30Anoselus");
+  if(isMC)addhistgenmchunseeded("genptgt10Anoselus");
+  if(isMC)addhistgenmchunseeded("genptgt10etalt12Anoselus");
+  if(isMC)addhistgenmchunseeded("genptgt10etabin16_24Anoselus");
   if(isMC)addhistgenmchunseeded("genptgt10etabin14_16_24Anoselus");
   if(isMC)addhistgenmchunseeded("genptgt10etabin14_16_24d0lt1cmAnoselus");
   addhist("basicsel");
   addhistunseeded("basicselus");
+  if(isMC)addhistgenmchunseeded("genptgt10Abasicselus");
   if(isMC)addhistgenmchunseeded("genbasicselptgt15Abasicselus");
   addhist("selelevetoid");
   addhistunseeded("selelevetoidus");
@@ -166,7 +171,9 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     vector<int> genelpos;
     vector<int> gennoselegidx;
     vector<int> genetabin14_16_24egidx;
-    vector<int> gennoselptgt30egidx;
+    vector<int> genptgt10egidx;
+    vector<int> genptgt10etalt12egidx;
+    vector<int> genptgt10etabin16_24egidx;
     vector<int> genptgt10etabin14_16_24egidx;
     vector<int> genptgt10etabin14_16_24d0lt1cmegidx;
     vector<int> genbarselegidx;
@@ -198,6 +205,16 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       int numgen = 0;
       for(unsigned int genCtr=0; genCtr<genLepN; genCtr++) {
 
+	// Calculate the impact parameter and transverse displacement
+	TLorentzVector part;
+	part.SetPtEtaPhiM(genLepPt[genCtr],genLepEta[genCtr],genLepPhi[genCtr],0.0005);
+	double d0 = genLepVx[genCtr]*part.Py()-genLepVy[genCtr]*part.Px();
+	double lxy = TMath::Sqrt(genLepVx[genCtr]*genLepVx[genCtr]+genLepVy[genCtr]*genLepVy[genCtr]);
+	d0 /= genLepPt[genCtr];
+	genLepDxy[genCtr] = d0;
+	genLepLxy[genCtr] = lxy;
+
+	// Select and assign the gen electrons with pt ordering
 	bool genselect = true;
 	genselect *= abs(genLepPid[genCtr])==11;
 	genselect *= abs(genLepMomPid[genCtr])==9000007 || abs(genLepMomPid[genCtr])==23;
@@ -220,7 +237,9 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       
       bool gennoseleg = false;
       bool genetabin14_16_24eg = false;
-      bool gennoselptgt30eg = false;
+      bool genptgt10eg = false;
+      bool genptgt10etalt12eg = false;
+      bool genptgt10etabin16_24eg = false;
       bool genptgt10etabin14_16_24eg = false;
       bool genptgt10etabin14_16_24d0lt1cmeg = false;
       bool genbarseleg = false;
@@ -236,10 +255,22 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	if(genetabin14_16_24eg) genetabin14_16_24egidx.push_back(genCtr);
 	else genetabin14_16_24egidx.push_back(-1);
 
-	gennoselptgt30eg = true;
-	gennoselptgt30eg *= genLepPt[genCtr]>30;
-	if(gennoselptgt30eg) gennoselptgt30egidx.push_back(genCtr);
-	else gennoselptgt30egidx.push_back(-1);
+	genptgt10eg = true;
+	genptgt10eg *= genLepPt[genCtr]>10;
+	if(genptgt10eg) genptgt10egidx.push_back(genCtr);
+	else genptgt10egidx.push_back(-1);
+
+	genptgt10etalt12eg = true;
+	genptgt10etalt12eg *= genLepPt[genCtr]>10;
+	genptgt10etalt12eg *= abs(genLepEta[genCtr])<1.2;
+	if(genptgt10etalt12eg) genptgt10etalt12egidx.push_back(genCtr);
+	else genptgt10etalt12egidx.push_back(-1);
+
+	genptgt10etabin16_24eg = true;
+	genptgt10etabin16_24eg *= genLepPt[genCtr]>10;
+	genptgt10etabin16_24eg *= abs(genLepEta[genCtr])>1.6 && abs(genLepEta[genCtr])<2.4;
+	if(genptgt10etabin16_24eg) genptgt10etabin16_24egidx.push_back(genCtr);
+	else genptgt10etabin16_24egidx.push_back(-1);
 
 	genptgt10etabin14_16_24eg = true;
 	genptgt10etabin14_16_24eg *= genLepPt[genCtr]>10;
@@ -274,19 +305,21 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 
       fillgenhistinevent("gennosel",gennoselegidx); // Verified that this is always 2 electrons
       fillgenhistinevent("genetabin14_16_24",genetabin14_16_24egidx);
-      fillgenhistinevent("gennoselptgt30",gennoselptgt30egidx);
+      fillgenhistinevent("genptgt10",genptgt10egidx);
+      fillgenhistinevent("genptgt10etalt12",genptgt10etalt12egidx);
+      fillgenhistinevent("genptgt10etabin16_24",genptgt10etabin16_24egidx);
       fillgenhistinevent("genptgt10etabin14_16_24",genptgt10etabin14_16_24egidx);
       fillgenhistinevent("genptgt10etabin14_16_24d0lt1cm",genptgt10etabin14_16_24d0lt1cmegidx);
       fillgenhistinevent("genbarsel",genbarselegidx);
       fillgenhistinevent("genbarselptgt10",genbarselptgt10egidx);
       fillgenhistinevent("genbasicselptgt15",genbasicselptgt15egidx);
-    }
+    } // End of loop on gen electrons
     
     if(egusRecoN<0 || egRecoN<0) throw "Error!! Negative number of objects pas possible.";
       
     if(egusRecoN>=1) { // Atleast one reco eg us object in the event
 
-      if(egRecoN>egusRecoN) throw("Error!!! Cannot have more seeded objects than unseeded objects in an event.");
+      if(egRecoN>egusRecoN) cout<<"Error!!! Cannot have more seeded objects than unseeded objects in an event."<<endl;
       
       // Sort the egamma objects based on their pT
       vector<int> sortedegidx(egRecoN);
@@ -425,16 +458,21 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     // Perform genmatching and fill the histograms
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("gennoselAnoselus", gennoselegidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genetabin14_16_24Anoselus", genetabin14_16_24egidx, noselegusidx);
-    if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("gennoselptgt30Anoselus", gennoselptgt30egidx, noselegusidx);
+    if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10Anoselus", genptgt10egidx, noselegusidx);
+    if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10etalt12Anoselus", genptgt10etalt12egidx, noselegusidx);
+    if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10etabin16_24Anoselus", genptgt10etabin16_24egidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10etabin14_16_24Anoselus", genptgt10etabin14_16_24egidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10etabin14_16_24d0lt1cmAnoselus", genptgt10etabin14_16_24d0lt1cmegidx, noselegusidx);
+    if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10Abasicselus", genptgt10egidx, basicselegusidx);
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicselptgt15Abasicselus", genbasicselptgt15egidx, basicselegusidx);
     
     // Clear all the vectors
     genelpos.clear();
     gennoselegidx.clear();
     genetabin14_16_24egidx.clear();
-    gennoselptgt30egidx.clear();
+    genptgt10egidx.clear();
+    genptgt10etalt12egidx.clear();
+    genptgt10etabin16_24egidx.clear();
     genptgt10etabin14_16_24egidx.clear();
     genptgt10etabin14_16_24d0lt1cmegidx.clear();
     genbarselegidx.clear();
@@ -513,11 +551,14 @@ void data_robustanalyzer::fillgenhistinevent(TString selection, vector<int> egid
   if(egidx.size()!=2) throw "Error! Code always has 2 indices for gen electrons";
 
   TH1F* egmult = (TH1F*) outfile->Get(selection+"geneg_egmult");
+  TH1F* egmompid = (TH1F*) outfile->Get(selection+"geneg_egmompid");
   TH1F* pt = (TH1F*) outfile->Get(selection+"geneg_pt");
   TH1F* eta = (TH1F*) outfile->Get(selection+"geneg_eta");
   TH1F* phi = (TH1F*) outfile->Get(selection+"geneg_phi");
   TH1F* gend0 = (TH1F*) outfile->Get(selection+"geneg_d0");
   TH1F* log10d0 = (TH1F*) outfile->Get(selection+"geneg_log10d0");
+  TH1F* genlxy = (TH1F*) outfile->Get(selection+"geneg_lxy");
+  TH1F* log10lxy = (TH1F*) outfile->Get(selection+"geneg_log10lxy");
   TH1F* t1 = (TH1F*) outfile->Get(selection+"geneg_t1");
   TH1F* t0 = (TH1F*) outfile->Get(selection+"geneg_t0");
   TH1F* t1mt0 = (TH1F*) outfile->Get(selection+"geneg_t1mt0");
@@ -526,24 +567,29 @@ void data_robustanalyzer::fillgenhistinevent(TString selection, vector<int> egid
   TH1F* leadegphi = (TH1F*) outfile->Get(selection+"geneg_leadphi");
   TH1F* leadegd0 = (TH1F*) outfile->Get(selection+"geneg_leadd0");
   TH1F* leadeglog10d0 = (TH1F*) outfile->Get(selection+"geneg_leadlog10d0");
+  TH1F* leadeglxy = (TH1F*) outfile->Get(selection+"geneg_leadlxy");
+  TH1F* leadeglog10lxy = (TH1F*) outfile->Get(selection+"geneg_leadlog10lxy");
   TH1F* subleadegpt = (TH1F*) outfile->Get(selection+"geneg_subleadpt");
   TH1F* subleadegeta = (TH1F*) outfile->Get(selection+"geneg_subleadeta");
   TH1F* subleadegphi = (TH1F*) outfile->Get(selection+"geneg_subleadphi");
   TH1F* subleadegd0 = (TH1F*) outfile->Get(selection+"geneg_subleadd0");
   TH1F* subleadeglog10d0 = (TH1F*) outfile->Get(selection+"geneg_subleadlog10d0");
+  TH1F* subleadeglxy = (TH1F*) outfile->Get(selection+"geneg_subleadlxy");
+  TH1F* subleadeglog10lxy = (TH1F*) outfile->Get(selection+"geneg_subleadlog10lxy");
 
   int genelmult = 0;
 
   if(egidx[0] != -1) {
-    TLorentzVector el;
-    el.SetPtEtaPhiM(genLepPt[egidx[0]],genLepEta[egidx[0]],genLepPhi[egidx[0]],0.0005);
-    double d0 = genLepVx[egidx[0]]*el.Py()-genLepVy[egidx[0]]*el.Px();
-    d0 /= genLepPt[egidx[0]];
+    //TLorentzVector el;
+    //el.SetPtEtaPhiM(genLepPt[egidx[0]],genLepEta[egidx[0]],genLepPhi[egidx[0]],0.0005);
+    egmompid->Fill(genLepMomPid[egidx[0]]);
     pt->Fill(genLepPt[egidx[0]]);
     eta->Fill(genLepEta[egidx[0]]);
     phi->Fill(genLepPhi[egidx[0]]);
-    gend0->Fill(d0);
-    log10d0->Fill(TMath::Log10(TMath::Abs(d0)));
+    gend0->Fill(genLepDxy[egidx[0]]);
+    log10d0->Fill(TMath::Log10(TMath::Abs(genLepDxy[egidx[0]])));
+    genlxy->Fill(genLepLxy[egidx[0]]);
+    log10lxy->Fill(TMath::Log10(TMath::Abs(genLepLxy[egidx[0]])));
     if(genLepTimeAct[egidx[0]]>(-1e9)) {
       t1->Fill(genLepTimeAct[egidx[0]]);
       t0->Fill(genLepTimeLight[egidx[0]]);
@@ -552,20 +598,23 @@ void data_robustanalyzer::fillgenhistinevent(TString selection, vector<int> egid
     leadegpt->Fill(genLepPt[egidx[0]]);
     leadegeta->Fill(genLepEta[egidx[0]]);
     leadegphi->Fill(genLepPhi[egidx[0]]);
-    leadegd0->Fill(d0);
-    leadeglog10d0->Fill(TMath::Log10(TMath::Abs(d0)));
+    leadegd0->Fill(genLepDxy[egidx[0]]);
+    leadeglog10d0->Fill(TMath::Log10(TMath::Abs(genLepDxy[egidx[0]])));
+    leadeglxy->Fill(genLepLxy[egidx[0]]);
+    leadeglog10lxy->Fill(TMath::Log10(TMath::Abs(genLepLxy[egidx[0]])));
     genelmult++;
   }
   if(egidx[1] != -1) {
-    TLorentzVector el;
-    el.SetPtEtaPhiM(genLepPt[egidx[1]],genLepEta[egidx[1]],genLepPhi[egidx[1]],0.0005);
-    double d0 = genLepVx[egidx[1]]*el.Py()-genLepVy[egidx[1]]*el.Px();
-    d0 /= genLepPt[egidx[1]];
+    //TLorentzVector el;
+    //el.SetPtEtaPhiM(genLepPt[egidx[1]],genLepEta[egidx[1]],genLepPhi[egidx[1]],0.0005);
+    egmompid->Fill(genLepMomPid[egidx[1]]);
     pt->Fill(genLepPt[egidx[1]]);
     eta->Fill(genLepEta[egidx[1]]);
     phi->Fill(genLepPhi[egidx[1]]);
-    gend0->Fill(d0);
-    log10d0->Fill(TMath::Log10(TMath::Abs(d0)));
+    gend0->Fill(genLepDxy[egidx[1]]);
+    log10d0->Fill(TMath::Log10(TMath::Abs(genLepDxy[egidx[1]])));
+    genlxy->Fill(genLepLxy[egidx[1]]);
+    log10lxy->Fill(TMath::Log10(TMath::Abs(genLepLxy[egidx[1]])));
     if(genLepTimeAct[egidx[1]]>(-1e9)) {
       t1->Fill(genLepTimeAct[egidx[1]]);
       t0->Fill(genLepTimeLight[egidx[1]]);
@@ -574,8 +623,10 @@ void data_robustanalyzer::fillgenhistinevent(TString selection, vector<int> egid
     subleadegpt->Fill(genLepPt[egidx[1]]);
     subleadegeta->Fill(genLepEta[egidx[1]]);
     subleadegphi->Fill(genLepPhi[egidx[1]]);
-    subleadegd0->Fill(d0);
-    subleadeglog10d0->Fill(TMath::Log10(TMath::Abs(d0)));
+    subleadegd0->Fill(genLepDxy[egidx[1]]);
+    subleadeglog10d0->Fill(TMath::Log10(TMath::Abs(genLepDxy[egidx[1]])));
+    subleadeglxy->Fill(genLepLxy[egidx[1]]);
+    subleadeglog10lxy->Fill(TMath::Log10(TMath::Abs(genLepLxy[egidx[1]])));
     genelmult++;
   }
 
@@ -1431,16 +1482,22 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
   TH1F* genphi = (TH1F*) outfile->Get(selection+"recomchgenel_phi");
   TH1F* gend0 = (TH1F*) outfile->Get(selection+"recomchgenel_d0");
   TH1F* genlog10d0 = (TH1F*) outfile->Get(selection+"recomchgenel_log10d0");
+  TH1F* genlxy = (TH1F*) outfile->Get(selection+"recomchgenel_lxy");
+  TH1F* genlog10lxy = (TH1F*) outfile->Get(selection+"recomchgenel_log10lxy");
   TH1F* genleadpt = (TH1F*) outfile->Get(selection+"recomchgenel_leadpt");
   TH1F* genleadeta = (TH1F*) outfile->Get(selection+"recomchgenel_leadeta");
   TH1F* genleadphi = (TH1F*) outfile->Get(selection+"recomchgenel_leadphi");
   TH1F* genleadd0 = (TH1F*) outfile->Get(selection+"recomchgenel_leadd0");
   TH1F* genleadlog10d0 = (TH1F*) outfile->Get(selection+"recomchgenel_leadlog10d0");
+  TH1F* genleadlxy = (TH1F*) outfile->Get(selection+"recomchgenel_leadlxy");
+  TH1F* genleadlog10lxy = (TH1F*) outfile->Get(selection+"recomchgenel_leadlog10lxy");
   TH1F* gensubleadpt = (TH1F*) outfile->Get(selection+"recomchgenel_subleadpt");
   TH1F* gensubleadeta = (TH1F*) outfile->Get(selection+"recomchgenel_subleadeta");
   TH1F* gensubleadphi = (TH1F*) outfile->Get(selection+"recomchgenel_subleadphi");
   TH1F* gensubleadd0 = (TH1F*) outfile->Get(selection+"recomchgenel_subleadd0");
   TH1F* gensubleadlog10d0 = (TH1F*) outfile->Get(selection+"recomchgenel_subleadlog10d0");
+  TH1F* gensubleadlxy = (TH1F*) outfile->Get(selection+"recomchgenel_subleadlxy");
+  TH1F* gensubleadlog10lxy = (TH1F*) outfile->Get(selection+"recomchgenel_subleadlog10lxy");
 
   // Varibales for gen matched triiger electrons
   TH1F* leadegpt = (TH1F*) outfile->Get(selection+"genmchrecoegus_leadegpt");
@@ -1668,10 +1725,10 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
     el.SetPtEtaPhiM(genLepPt[gen1],genLepEta[gen1],genLepPhi[gen1],0.0005);
     vecegus.SetPtEtaPhiM(egusRecoPt[egus1],egusRecoEta[egus1],egusRecoPhi[egus1],0.0005);
     double qdPhi = genq*(el.DeltaPhi(vecegus));
-    double d0 = genLepVx[gen1]*el.Py()-genLepVy[gen1]*el.Px();
-    d0 /= genLepPt[gen1];
-    gend0->Fill(d0);
-    genlog10d0->Fill(TMath::Log10(TMath::Abs(d0)));
+    gend0->Fill(genLepDxy[gen1]);
+    genlog10d0->Fill(TMath::Log10(TMath::Abs(genLepDxy[gen1])));
+    genlxy->Fill(genLepLxy[gen1]);
+    genlog10lxy->Fill(TMath::Log10(TMath::Abs(genLepLxy[gen1])));
     if(abs(genLepEta[gen1])<1.479) {
       genmchgeneltrigebus_dEta->Fill(genLepEta[gen1]-egusRecoEta[egus1]);
       genmchgeneltrigebus_qdPhi->Fill(qdPhi);
@@ -1683,8 +1740,10 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
     genleadpt->Fill(genLepPt[gen1]);
     genleadeta->Fill(genLepEta[gen1]);
     genleadphi->Fill(genLepPhi[gen1]);
-    genleadd0->Fill(d0);    
-    genleadlog10d0->Fill(TMath::Log10(TMath::Abs(d0)));    
+    genleadd0->Fill(genLepDxy[gen1]);    
+    genleadlog10d0->Fill(TMath::Log10(TMath::Abs(genLepDxy[gen1])));    
+    genleadlxy->Fill(genLepLxy[gen1]);    
+    genleadlog10lxy->Fill(TMath::Log10(TMath::Abs(genLepLxy[gen1])));    
   }
   if(egus2!=-1) {
     mchcnt++;
@@ -1696,10 +1755,10 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
     el.SetPtEtaPhiM(genLepPt[gen2],genLepEta[gen2],genLepPhi[gen2],0.0005);
     vecegus.SetPtEtaPhiM(egusRecoPt[egus2],egusRecoEta[egus2],egusRecoPhi[egus2],0.0005);
     double qdPhi = genq*(el.DeltaPhi(vecegus));
-    double d0 = genLepVx[gen2]*el.Py()-genLepVy[gen2]*el.Px();
-    d0 /= genLepPt[gen2];
-    gend0->Fill(d0);
-    genlog10d0->Fill(TMath::Log10(TMath::Abs(d0)));
+    gend0->Fill(genLepDxy[gen2]);
+    genlog10d0->Fill(TMath::Log10(TMath::Abs(genLepDxy[gen2])));
+    genlxy->Fill(genLepLxy[gen2]);
+    genlog10lxy->Fill(TMath::Log10(TMath::Abs(genLepLxy[gen2])));
     if(abs(genLepEta[gen2])<1.479) {
       genmchgeneltrigebus_dEta->Fill(genLepEta[gen2]-egusRecoEta[egus2]);
       genmchgeneltrigebus_qdPhi->Fill(qdPhi);
@@ -1711,8 +1770,10 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
     gensubleadpt->Fill(genLepPt[gen2]);
     gensubleadeta->Fill(genLepEta[gen2]);
     gensubleadphi->Fill(genLepPhi[gen2]);
-    gensubleadd0->Fill(d0);    
-    gensubleadlog10d0->Fill(TMath::Log10(TMath::Abs(d0)));    
+    gensubleadd0->Fill(genLepDxy[gen2]);    
+    gensubleadlog10d0->Fill(TMath::Log10(TMath::Abs(genLepDxy[gen2])));    
+    gensubleadlxy->Fill(genLepLxy[gen2]);    
+    gensubleadlog10lxy->Fill(TMath::Log10(TMath::Abs(genLepLxy[gen2])));    
   }
   genegmult->Fill(mchcnt);
   
@@ -2077,11 +2138,14 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 void data_robustanalyzer::addgenhist(TString selection) {
   
   all1dhists.push_back(new TH1F(selection+"geneg_egmult","gen N e/#gamma",50,-5,45));
+  all1dhists.push_back(new TH1F(selection+"geneg_egmompid","gen mom pdg id",100,-50,50));
   all1dhists.push_back(new TH1F(selection+"geneg_pt","gen e/#gamma p_{T} / GeV",550,-50,500));
   all1dhists.push_back(new TH1F(selection+"geneg_eta","gen e/#gamma #eta",100,-5,5));
   all1dhists.push_back(new TH1F(selection+"geneg_phi","gen e/#gamma #phi",66,-3.3,3.3));
   all1dhists.push_back(new TH1F(selection+"geneg_d0","gen e/#gamma d_{0} / cm",20000,-100,100));
   all1dhists.push_back(new TH1F(selection+"geneg_log10d0","gen e/#gamma log_{10}d_{0} / log_{10}cm",1000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"geneg_lxy","gen e/#gamma l_{xy} / cm",20000,-10,190));
+  all1dhists.push_back(new TH1F(selection+"geneg_log10lxy","gen e/#gamma log_{10}l_{xy} / log_{10}cm",600,-1,5));
   all1dhists.push_back(new TH1F(selection+"geneg_t1","gen e/#gamma time ecal",10000,-100,900));
   all1dhists.push_back(new TH1F(selection+"geneg_t0","gen e/#gamma time ecal (equivalent prompt)",10000,-100,900));
   all1dhists.push_back(new TH1F(selection+"geneg_t1mt0","gen e/#gamma time ecal (more than prompt)",10000,-10,90));
@@ -2090,11 +2154,15 @@ void data_robustanalyzer::addgenhist(TString selection) {
   all1dhists.push_back(new TH1F(selection+"geneg_leadphi","gen e/#gamma #phi",66,-3.3,3.3));
   all1dhists.push_back(new TH1F(selection+"geneg_leadd0","gen e/#gamma d_{0} / cm",20000,-100,100));
   all1dhists.push_back(new TH1F(selection+"geneg_leadlog10d0","gen e/#gamma log_{10}d_{0} / log_{10}cm",1000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"geneg_leadlxy","gen e/#gamma l_{xy} / cm",20000,-10,190));
+  all1dhists.push_back(new TH1F(selection+"geneg_leadlog10lxy","gen e/#gamma log_{10}l_{xy} / log_{10}cm",600,-1,5));
   all1dhists.push_back(new TH1F(selection+"geneg_subleadpt","gen e/#gamma p_{T} / GeV",550,-50,500));
   all1dhists.push_back(new TH1F(selection+"geneg_subleadeta","gen e/#gamma #eta",100,-5,5));
   all1dhists.push_back(new TH1F(selection+"geneg_subleadphi","gen e/#gamma #phi",66,-3.3,3.3));
   all1dhists.push_back(new TH1F(selection+"geneg_subleadd0","gen e/#gamma d_{0} / cm",20000,-100,100));
   all1dhists.push_back(new TH1F(selection+"geneg_subleadlog10d0","gen e/#gamma log_{10}d_{0} / log_{10}cm",1000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"geneg_subleadlxy","gen e/#gamma l_{xy} / cm",20000,-10,190));
+  all1dhists.push_back(new TH1F(selection+"geneg_subleadlog10lxy","gen e/#gamma log_{10}l_{xy} / log_{10}cm",600,-1,5));
 }
 
 // Function to add a set of histograms for a selection
@@ -2394,16 +2462,22 @@ void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recomchgenel_phi","gen e/#gamma #phi",66,-3.3,3.3));
   all1dhists.push_back(new TH1F(selection+"recomchgenel_d0","gen e/#gamma d_{0} / cm",20000,-100,100));
   all1dhists.push_back(new TH1F(selection+"recomchgenel_log10d0","gen e/#gamma log_{10}d_{0} / log_{10}cm",1000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"recomchgenel_lxy","gen e/#gamma l_{xy} / cm",20000,-10,190));
+  all1dhists.push_back(new TH1F(selection+"recomchgenel_log10lxy","gen e/#gamma log_{10}l_{xy} / log_{10}cm",600,-1,5));
   all1dhists.push_back(new TH1F(selection+"recomchgenel_leadpt","gen e/#gamma_{1} p_{T} / GeV",550,-50,500));
   all1dhists.push_back(new TH1F(selection+"recomchgenel_leadeta","gen e/#gamma_{1} #eta",100,-5,5));
   all1dhists.push_back(new TH1F(selection+"recomchgenel_leadphi","gen e/#gamma_{1} #phi",66,-3.3,3.3));
   all1dhists.push_back(new TH1F(selection+"recomchgenel_leadd0","gen e/#gamma_{1} d_{0} / cm",20000,-100,100));
   all1dhists.push_back(new TH1F(selection+"recomchgenel_leadlog10d0","gen e/#gamma_{1} log_{10}d_{0} / log_{10}cm",1000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"recomchgenel_leadlxy","gen e/#gamma_{1} l_{xy} / cm",20000,-10,190));
+  all1dhists.push_back(new TH1F(selection+"recomchgenel_leadlog10lxy","gen e/#gamma_{1} log_{10}l_{xy} / log_{10}cm",600,-1,5));
   all1dhists.push_back(new TH1F(selection+"recomchgenel_subleadpt","gen e/#gamma_{2} p_{T} / GeV",550,-50,500));
   all1dhists.push_back(new TH1F(selection+"recomchgenel_subleadeta","gen e/#gamma_{2} #eta",100,-5,5));
   all1dhists.push_back(new TH1F(selection+"recomchgenel_subleadphi","gen e/#gamma_{2} #phi",66,-3.3,3.3));
   all1dhists.push_back(new TH1F(selection+"recomchgenel_subleadd0","gen e/#gamma_{2} d_{0} / cm",20000,-100,100));
   all1dhists.push_back(new TH1F(selection+"recomchgenel_subleadlog10d0","gen e/#gamma_{2} log_{10}d_{0} / log_{10}cm",1000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"recomchgenel_subleadlxy","gen e/#gamma_{2} l_{xy} / cm",20000,-10,190));
+  all1dhists.push_back(new TH1F(selection+"recomchgenel_subleadlog10lxy","gen e/#gamma_{2} log_{10}l_{xy} / log_{10}cm",600,-1,5));
 
   // Variables for gen matched trigger electron
   all1dhists.push_back(new TH1F(selection+"genmchrecoegus_leadegpt","gen matched reco e/#gamma p_{T} / GeV",550,-50,500));

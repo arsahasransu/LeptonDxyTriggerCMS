@@ -35,7 +35,7 @@ class data_robustanalyzer {
 
   bool isMC;
   int genLepN, egRecoN, egusRecoN, l1FiltN, l1egObjN;
-  double genLepPid[100], genLepPt[100], genLepEta[100], genLepPhi[100], genLepVx[100], genLepVy[100], genLepVz[100], genLepNMom[100], genLepMomPid[100], genLepTimeLight[100], genLepTimeAct[100], genLepTimeDiff[100];
+  double genLepPid[100], genLepPt[100], genLepEta[100], genLepPhi[100], genLepVx[100], genLepVy[100], genLepVz[100], genLepDxy[100], genLepLxy[100], genLepNMom[100], genLepMomPid[100], genLepTimeLight[100], genLepTimeAct[100], genLepTimeDiff[100];
   double l1FiltPt[100], l1FiltEta[100], l1FiltPhi[100];
   double l1egObjPt[100], l1egObjEta[100], l1egObjPhi[100];
   double egRecoPt[100], egRecoEta[100], egRecoPhi[100];
