@@ -26,23 +26,16 @@ echo "Run over. Clean up and combine files."
 
 rm data_robustanalyzer.out
 
-rm hists_M200dM20ctau3cm.root
-rm hists_M200dM20ctau30cm.root
-rm hists_M200dM20ctau3m.root
-rm hists_M200dM20ctau1m.root
-rm hists_DY.root
-rm hists_Efmrl.root
-
-hadd hists_M200dM20ctau3cm.root hists_M200dM20ctau3cm_?.root
-hadd hists_M200dM20ctau30cm.root hists_M200dM20ctau30cm_?.root
-hadd hists_M200dM20ctau3m.root hists_M200dM20ctau3m_?.root
-hadd hists_M200dM20ctau1m.root hists_M200dM20ctau1m_?.root
-hadd hists_DY.root hists_DY_?.root
-hadd hists_Efmrl.root hists_Efmrl_?.root
+hadd -f hists_M200dM20ctau3cm.root hists_M200dM20ctau3cm_?.root
+hadd -f hists_M200dM20ctau30cm.root hists_M200dM20ctau30cm_?.root
+hadd -f hists_M200dM20ctau3m.root hists_M200dM20ctau3m_?.root
+hadd -f hists_M200dM20ctau1m.root hists_M200dM20ctau1m_?.root
+hadd -f hists_DY.root hists_DY_?.root
+hadd -f hists_Efmrl.root hists_Efmrl?_?.root
 
 rm hists_M200dM20ctau3cm_?.root
 rm hists_M200dM20ctau30cm_?.root
 rm hists_M200dM20ctau3m_?.root
 rm hists_M200dM20ctau1m_?.root
 rm hists_DY_?.root
-rm hists_Efmrl_?.root
+rm hists_Efmrl?_?.root
