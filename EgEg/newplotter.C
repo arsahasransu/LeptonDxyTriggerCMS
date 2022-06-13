@@ -372,6 +372,62 @@ int newplotter() {
   //comparesamevariable(file, name, "dPromptEta", 3000, 5000, 10, true, true, true, (float []){8e-1,1e4}, (float []){-1,0.55,0.85,0.99}, false, "#Delta#eta(prompt eq. gen, trig. us)");
   //comparesamevariable(file, name, "qdPromptPhi", 2000, 5000, 10, true, true, true, (float []){8e-1,1e7}, (float []){-1,0.55,0.85,0.99}, false, "Q_{gen}#Delta#phi(prompt eq. gen, trig. us)");
   
+  // Plots for comparing gen matching
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(sig3mfile);
+  name.push_back("genbasicptgt10selbarAcuttimedelayonlyusrecomchgenel");
+  legend.push_back("3m HLT_DiPhoton10Time1p4ns");
+  coloropt.push_back(4);
+  file.push_back(sig3mfile);
+  name.push_back("genbasicptgt10selbarAdieg33caloidlusrecomchgenel");
+  legend.push_back("3m HLT_DoublePhoton33");
+  coloropt.push_back(38);
+  file.push_back(sig1mfile);
+  name.push_back("genbasicptgt10selbarAcuttimedelayonlyusrecomchgenel");
+  legend.push_back("1m HLT_DiPhoton10Time1p4ns");
+  coloropt.push_back(218);
+  file.push_back(sig1mfile);
+  name.push_back("genbasicptgt10selbarAdieg33caloidlusrecomchgenel");
+  legend.push_back("1m HLT_DoublePhoton33");
+  coloropt.push_back(219);
+  legendEntries = legend;
+  //comparesamevariable(file, name, "pt", 50, 120, 1, true, true, true, (float []){8e-1,2e2}, (float []){0.4,0.6,0.55,0.95}, false, "electron p_{T} / GeV");
+  //comparesamevariable(file, name, "d0", 9000, 11000, 20, true, true, true, (float []){8e-1,1e4}, (float []){0.8,0.6,0.95,0.95}, false, "electron d_{0} / cm");
+  //comparesamevariable(file, name, "lxy", 1000, 11500, 100, true, true, true, (float []){8e-1,1e5}, (float []){0.8,0.6,0.95,0.95}, false, "electron l_{xy} / cm");
+  //comparesamevariable(file, name, "log10d0", 250, -1, 20, true, true, true, (float []){8e-1,2e2}, (float []){-1,0.6,0.75,0.95}, false, "electron log_{10}d_{0} / log_{10}cm");
+  //comparesamevariable(file, name, "log10lxy", -1, -1, 10, true, true, true, (float []){8e-1,1e5}, (float []){0.8,0.6,0.95,0.95}, false, "electron log_{10}l_{xy} / log_{10}cm");
+
+  // Plots for comparing gen matching
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(sig30cmfile);
+  name.push_back("genbasicptgt10selbarAcuttimedelaysminusrecomchgenel");
+  legend.push_back("30cm HLT_DiPhoton10Timelt2ns_sminlt0p1");
+  coloropt.push_back(210);
+  file.push_back(sig30cmfile);
+  name.push_back("genbasicptgt10selbarAdieg33caloidlusrecomchgenel");
+  legend.push_back("30cm HLT_DoublePhoton33");
+  coloropt.push_back(212);
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicptgt10selbarAcuttimedelaysminusrecomchgenel");
+  legend.push_back("3cm HLT_DiPhoton10Timelt2ns_sminlt0p1");
+  coloropt.push_back(2);
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicptgt10selbarAdieg33caloidlusrecomchgenel");
+  legend.push_back("3cm HLT_DoublePhoton33");
+  coloropt.push_back(50);
+  legendEntries = legend;
+  //comparesamevariable(file, name, "pt", 50, 120, 1, true, true, true, (float []){8e-1,2e2}, (float []){-1,0.6,-1,0.95}, false, "electron p_{T} / GeV");
+  //comparesamevariable(file, name, "d0", 9000, 11000, 20, true, true, true, (float []){8e-1,1e4}, (float []){0.8,0.6,0.95,0.95}, false, "electron d_{0} / cm");
+  //comparesamevariable(file, name, "lxy", 1000, 11500, 100, true, true, true, (float []){8e-1,1e5}, (float []){0.8,0.6,0.95,0.95}, false, "electron l_{xy} / cm");
+  comparesamevariable(file, name, "log10d0", 50, -1, 20, true, true, true, (float []){8e-1,2e2}, (float []){-1,0.6,-1,0.95}, false, "electron log_{10}d_{0} / log_{10}cm");
+  //comparesamevariable(file, name, "log10lxy", -1, -1, 10, true, true, true, (float []){8e-1,1e5}, (float []){0.8,0.6,0.95,0.95}, false, "electron log_{10}l_{xy} / log_{10}cm");
+
   file.clear();
   name.clear();
   legend.clear();
@@ -826,7 +882,7 @@ int newplotter() {
 
   seltext[0] = "2 unseeded e/#gamma: p_{T}>10 GeV, |#eta|<2.5, smin<0.16";
   seltext[1] = "#sigmai#etai#eta<0.016(0.04), H/E<0.5(0.6), time<2ns";  
-  makeratehist("cut3usrecoegus", "subleadegpt", 50, 150, 1, false, false, (float []){0.55,0.65,0.75,0.975}, (float []){55,4}, (float []){0,10}, 0.875);
+  //makeratehist("cut3usrecoegus", "subleadegpt", 50, 150, 1, false, false, (float []){0.55,0.65,0.75,0.975}, (float []){55,4}, (float []){0,10}, 0.875);
 
   return -1;
 }

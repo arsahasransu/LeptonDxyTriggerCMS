@@ -147,7 +147,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   endevent = endevent<totEntries?endevent:totEntries; // Verfied that this logic to parallelize works
 
   // Count events passing certain selections
-  int nosel=0, noselus=0, basicsel=0, basicselus=0, selelevetoid=0, selelevetoidus=0, selelevetozwindidus=0, selelevetozoppoidus=0, seleletightid=0, seleletightidus=0, dieg70id=0, dieg70idus=0, dieg33caloidl=0, cut1us=0, cut2us=0, cut3us=0;
+  int nosel=0, noselus=0, basicsel=0, basicselus=0, selelevetoid=0, selelevetoidus=0, selelevetozwindidus=0, selelevetozoppoidus=0, seleletightid=0, seleletightidus=0, dieg70id=0, dieg70idus=0, dieg33caloidl=0, cut1us=0, cut2us=0, cut3us=0, cuttimedelayonlyus=0, cuttimedelaysminus=0;
   // Trigger cross-check
   bool dipho70trig = false;
   bool dipho33caloidltrig = false;
@@ -193,6 +193,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   addhistunseeded("dieg70idus");
   addhist("dieg33caloidlid");
   addhistunseeded("dieg33caloidlidus");
+  if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAdieg33caloidlus");
+  if(isMC)addhistgenmchunseeded("genbasicptgt10selecAdieg33caloidlus");
   addhistunseeded("cut1us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcut1us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAcut1us");
@@ -202,6 +204,12 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   addhistunseeded("cut3us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcut3us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAcut3us");
+  addhistunseeded("cuttimedelayonlyus");
+  if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcuttimedelayonlyus");
+  if(isMC)addhistgenmchunseeded("genbasicptgt10selecAcuttimedelayonlyus");
+  addhistunseeded("cuttimedelaysminus");
+  if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcuttimedelaysminus");
+  if(isMC)addhistgenmchunseeded("genbasicptgt10selecAcuttimedelaysminus");
   
   // Loop beginning on events
   for(unsigned int event=beginevent; event<endevent; event++) {
@@ -238,6 +246,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     vector<int> cut1usidx;
     vector<int> cut2usidx;
     vector<int> cut3usidx;
+    vector<int> cuttimedelayonlyusidx;
+    vector<int> cuttimedelaysminusidx;
   
     inputChain->GetEntry(event);
     //if(event>10000) break;
@@ -424,6 +434,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       bool cut1egus = false;
       bool cut2egus = false;
       bool cut3egus = false;
+      bool cuttimedelayonlyegus = false;
+      bool cuttimedelaysminegus = false;
     
       // Loop beginning on egamma reco objects
       for(unsigned int egidx=0; egidx<egRecoN; egidx++) {
@@ -543,6 +555,23 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	cut3egus *= (egushltEcalSeedClusterTime[idx]<2);
 	if(cut3egus) cut3usidx.push_back(idx);
 
+      	cuttimedelayonlyegus = true;
+	cuttimedelayonlyegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
+	cuttimedelayonlyegus *= (egusRecoPt[idx]>=10);
+	cuttimedelayonlyegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]);
+	cuttimedelayonlyegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
+	cuttimedelayonlyegus *= (egushltEcalSeedClusterTime[idx]>1.4);
+	if(cuttimedelayonlyegus) cuttimedelayonlyusidx.push_back(idx);
+
+      	cuttimedelaysminegus = true;
+	cuttimedelaysminegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
+	cuttimedelaysminegus *= (egusRecoPt[idx]>=10);
+	cuttimedelaysminegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]);
+	cuttimedelaysminegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
+	cuttimedelaysminegus *= (egushltEcalSeedClusterTime[idx]<2);
+	cuttimedelaysminegus *= (egushltEgammaClusterShape_smin[idx]<0.1);
+	if(cuttimedelaysminegus) cuttimedelaysminusidx.push_back(idx);
+
       } // End of loop on unseeded egamma objects
 
       selelevetozwindidegusidx = selelevetoidegusidx;
@@ -579,6 +608,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       if(cut1usidx.size()>=2) fillhistineventunseeded("cut1us", cut1usidx);
       if(cut2usidx.size()>=2) fillhistineventunseeded("cut2us", cut2usidx);
       if(cut3usidx.size()>=2) fillhistineventunseeded("cut3us", cut3usidx);
+      if(cuttimedelayonlyusidx.size()>=2) fillhistineventunseeded("cuttimedelayonlyus", cuttimedelayonlyusidx);
+      if(cuttimedelaysminusidx.size()>=2) fillhistineventunseeded("cuttimedelaysminus", cuttimedelaysminusidx);
       
     } // End of condition requiring atleast one egReco object
 
@@ -638,12 +669,18 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicselptgt15Abasicselus", genbasicselptgt15egidx, basicselegusidx);
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAbasicselus", genbasicptgt10selbaregidx, basicselegusidx);
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAbasicselus", genbasicptgt10selecegidx, basicselegusidx);
+    if(isMC && dieg33caloidlidegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAdieg33caloidlus", genbasicptgt10selbaregidx, dieg33caloidlidegusidx);
+    if(isMC && dieg33caloidlidegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAdieg33caloidlus", genbasicptgt10selecegidx, dieg33caloidlidegusidx);
     if(isMC && cut1usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcut1us", genbasicptgt10selbaregidx, cut1usidx);
     if(isMC && cut1usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcut1us", genbasicptgt10selecegidx, cut1usidx);
     if(isMC && cut2usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcut2us", genbasicptgt10selbaregidx, cut2usidx);
     if(isMC && cut2usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcut2us", genbasicptgt10selecegidx, cut2usidx);
     if(isMC && cut3usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcut3us", genbasicptgt10selbaregidx, cut3usidx);
     if(isMC && cut3usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcut3us", genbasicptgt10selecegidx, cut3usidx);
+    if(isMC && cuttimedelayonlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcuttimedelayonlyus", genbasicptgt10selbaregidx, cuttimedelayonlyusidx);
+    if(isMC && cuttimedelayonlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcuttimedelayonlyus", genbasicptgt10selecegidx, cuttimedelayonlyusidx);
+    if(isMC && cuttimedelaysminusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcuttimedelaysminus", genbasicptgt10selbaregidx, cuttimedelaysminusidx);
+    if(isMC && cuttimedelaysminusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcuttimedelaysminus", genbasicptgt10selecegidx, cuttimedelaysminusidx);
     
     // Clear all the vectors
     genelpos.clear();
@@ -677,6 +714,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     cut1usidx.clear();
     cut2usidx.clear();
     cut3usidx.clear();
+    cuttimedelayonlyusidx.clear();
+    cuttimedelaysminusidx.clear();
 
   } // End of loop on events
 
