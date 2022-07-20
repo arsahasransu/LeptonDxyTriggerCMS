@@ -189,6 +189,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   addhistunseeded("selelevetozoppoidus");
   addhist("seleletightid");
   addhistunseeded("seleletightidus");
+  addhistunseeded("seleletightcaloidus");
   addhist("dieg70id");
   addhistunseeded("dieg70idus");
   addhist("dieg33caloidlid");
@@ -239,6 +240,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     vector<int> selelevetozoppoidegusidx;
     vector<int> seleletightidegidx;
     vector<int> seleletightidegusidx;
+    vector<int> seleletightcaloidegusidx;
     vector<int> dieg70idegidx;
     vector<int> dieg70idegusidx;
     vector<int> dieg33caloidlidegidx;
@@ -427,6 +429,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       bool selelevetoidegus = false;
       bool seleletightideg = false;
       bool seleletightidegus = false;
+      bool seleletightcaloidegus = false;
       bool dieg70ideg = false;
       bool dieg70idegus = false;
       bool dieg33caloidlideg = false;
@@ -516,6 +519,13 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	seleletightidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.159:abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.0197);
 	if(seleletightidegus) seleletightidegusidx.push_back(idx);
 
+      	seleletightcaloidegus = true;
+	seleletightcaloidegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
+	seleletightcaloidegus *= (egusRecoPt[idx]>=15);
+	seleletightcaloidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0104:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0353);
+	seleletightcaloidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.026*egushltEgammaSuperClusterEnergy[idx]+1.15:egushltEgammaHoverE[idx]<0.0188*egushltEgammaSuperClusterEnergy[idx]+2.06);
+	if(seleletightcaloidegus) seleletightcaloidegusidx.push_back(idx);
+
       	dieg70idegus = true;
 	//dieg70idegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
 	dieg70idegus *= (egusRecoPt[idx]>=70);
@@ -599,6 +609,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       }
       fillhistinevent("seleletightid", seleletightidegidx);
       fillhistineventunseeded("seleletightidus", seleletightidegusidx);
+      fillhistineventunseeded("seleletightcaloidus", seleletightcaloidegusidx);
       fillhistinevent("dieg70id", dieg70idegidx);
       fillhistineventunseeded("dieg70idus", dieg70idegusidx);
       if(dieg33caloidlidegidx.size()>=1 && dieg33caloidlidegusidx.size()>=2) {
@@ -707,6 +718,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     selelevetozoppoidegusidx.clear();
     seleletightidegidx.clear();
     seleletightidegusidx.clear();
+    seleletightcaloidegusidx.clear();
     dieg70idegidx.clear();
     dieg70idegusidx.clear();
     dieg33caloidlidegidx.clear();
