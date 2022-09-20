@@ -147,7 +147,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   endevent = endevent<totEntries?endevent:totEntries; // Verfied that this logic to parallelize works
 
   // Count events passing certain selections
-  int nosel=0, noselus=0, basicsel=0, basicselus=0, selelevetoid=0, selelevetoidus=0, selelevetozwindidus=0, selelevetozoppoidus=0, seleletightid=0, seleletightidus=0, dieg70id=0, dieg70idus=0, dieg33caloidl=0, cut1us=0, cut2us=0, cut3us=0, cuttimedelayonlyus=0, cuttimedelaysminus=0;
+  int nosel=0, noselus=0, basicsel=0, basicselus=0, selelevetoid=0, selelevetoidus=0, selelevetozwindidus=0, selelevetozoppoidus=0, seleletightid=0, seleletightidus=0, dieg70id=0, dieg70idus=0, dieg33caloidl=0, cut1us=0, cut2us=0, cut3us=0, cuttimedelayonlyus=0, cuttimedelaysminus=0, cuttimegt1nsonlyus=0, cutsminlt0p16onlyus=0;
   // Trigger cross-check
   bool dipho70trig = false;
   bool dipho33caloidltrig = false;
@@ -211,6 +211,10 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   addhistunseeded("cuttimedelaysminus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcuttimedelaysminus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAcuttimedelaysminus");
+  addhistunseeded("cuttimegt1nsonlyus");
+  if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcuttimegt1nsonlyus");
+  addhistunseeded("cutsminlt0p16onlyus");
+  if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcutsminlt0p16onlyus");
   
   // Loop beginning on events
   for(unsigned int event=beginevent; event<endevent; event++) {
@@ -250,6 +254,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     vector<int> cut3usidx;
     vector<int> cuttimedelayonlyusidx;
     vector<int> cuttimedelaysminusidx;
+    vector<int> cuttimegt1nsonlyusidx;
+    vector<int> cutsminlt0p16onlyusidx;
   
     inputChain->GetEntry(event);
     //if(event>10000) break;
@@ -439,6 +445,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       bool cut3egus = false;
       bool cuttimedelayonlyegus = false;
       bool cuttimedelaysminegus = false;
+      bool cuttimegt1nsonlyegus = false;
+      bool cutsminlt0p16onlyegus = false;
     
       // Loop beginning on egamma reco objects
       for(unsigned int egidx=0; egidx<egRecoN; egidx++) {
@@ -578,9 +586,24 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	cuttimedelaysminegus *= (egusRecoPt[idx]>=10);
 	cuttimedelaysminegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]);
 	cuttimedelaysminegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
-	cuttimedelaysminegus *= (egushltEcalSeedClusterTime[idx]<2);
-	cuttimedelaysminegus *= (egushltEgammaClusterShape_smin[idx]<0.1);
+	cuttimedelaysminegus *= (egushltEgammaClusterShape_smin[idx]<0.12);
 	if(cuttimedelaysminegus) cuttimedelaysminusidx.push_back(idx);
+
+      	cuttimegt1nsonlyegus = true;
+	cuttimegt1nsonlyegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
+	cuttimegt1nsonlyegus *= (egusRecoPt[idx]>=10);
+	cuttimegt1nsonlyegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]);
+	cuttimegt1nsonlyegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
+	cuttimegt1nsonlyegus *= (egushltEcalSeedClusterTime[idx]>1);
+	if(cuttimegt1nsonlyegus) cuttimegt1nsonlyusidx.push_back(idx);
+
+      	cutsminlt0p16onlyegus = true;
+	cutsminlt0p16onlyegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
+	cutsminlt0p16onlyegus *= (egusRecoPt[idx]>=10);
+	cutsminlt0p16onlyegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]);
+	cutsminlt0p16onlyegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
+        cutsminlt0p16onlyegus *= (egushltEgammaClusterShape_smin[idx]<0.16);
+	if(cutsminlt0p16onlyegus) cutsminlt0p16onlyusidx.push_back(idx);
 
       } // End of loop on unseeded egamma objects
 
@@ -621,6 +644,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       if(cut3usidx.size()>=2) fillhistineventunseeded("cut3us", cut3usidx);
       if(cuttimedelayonlyusidx.size()>=2) fillhistineventunseeded("cuttimedelayonlyus", cuttimedelayonlyusidx);
       if(cuttimedelaysminusidx.size()>=2) fillhistineventunseeded("cuttimedelaysminus", cuttimedelaysminusidx);
+      if(cuttimegt1nsonlyusidx.size()>=2) fillhistineventunseeded("cuttimegt1nsonlyus", cuttimegt1nsonlyusidx);
+      if(cutsminlt0p16onlyusidx.size()>=2) fillhistineventunseeded("cutsminlt0p16onlyus", cutsminlt0p16onlyusidx);
       
     } // End of condition requiring atleast one egReco object
 
@@ -692,6 +717,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     if(isMC && cuttimedelayonlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcuttimedelayonlyus", genbasicptgt10selecegidx, cuttimedelayonlyusidx);
     if(isMC && cuttimedelaysminusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcuttimedelaysminus", genbasicptgt10selbaregidx, cuttimedelaysminusidx);
     if(isMC && cuttimedelaysminusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcuttimedelaysminus", genbasicptgt10selecegidx, cuttimedelaysminusidx);
+    if(isMC && cuttimegt1nsonlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcuttimegt1nsonlyus", genbasicptgt10selbaregidx, cuttimegt1nsonlyusidx);
+    if(isMC && cutsminlt0p16onlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcutsminlt0p16onlyus", genbasicptgt10selbaregidx, cutsminlt0p16onlyusidx);
     
     // Clear all the vectors
     genelpos.clear();
@@ -728,6 +755,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     cut3usidx.clear();
     cuttimedelayonlyusidx.clear();
     cuttimedelaysminusidx.clear();
+    cuttimegt1nsonlyusidx.clear();
+    cutsminlt0p16onlyusidx.clear();
 
   } // End of loop on events
 

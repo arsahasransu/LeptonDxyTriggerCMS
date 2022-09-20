@@ -216,7 +216,7 @@ int plotter() {
   scale.push_back(6.0/139.0);
 
   legendEntries = legend;
-  comparesamevariable(file, name, "log10d0", 250, -1, 20, true, true, true, (float []){0.009,20}, (float []){0.7,0.6,0.94,0.95}, false, "electron log_{10} d_{0} [log_{10} cm]","number of events / Run 2 integral");
+  //comparesamevariable(file, name, "log10d0", 250, -1, 20, true, true, true, (float []){0.009,20}, (float []){0.7,0.6,0.94,0.95}, false, "electron log_{10} d_{0} [log_{10} cm]","number of events / Run 2 integral");
   
   return -1;
 }

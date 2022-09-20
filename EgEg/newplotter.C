@@ -596,7 +596,7 @@ int newplotter() {
   seltext[3] = "H/E < 0.026(0.0188)";
   //makeratehist("basicselusrecoegus", "leadegpt", 50, 150, 1, false, false, (float []){0.55,0.65,0.75,0.975}, (float []){60,1000}, (float []){0,1e4}, 0.875);
   //makeratehist("basicselusrecoegus", "subleadegpt", 50, 150, 1, false, false, (float []){0.55,0.65,0.75,0.975}, (float []){60,1000}, (float []){0,1e4}, 0.875);
-  makeratehist("seleletightcaloidusrecoegus", "subleadegpt", 50, 110, 1, false, false, (float []){0.65,0.65,0.85,0.975}, (float []){28,6}, (float []){0,28}, 0.875, "e/#gamma p_{T} [GeV]");
+  //makeratehist("seleletightcaloidusrecoegus", "subleadegpt", 50, 110, 1, false, false, (float []){0.65,0.65,0.85,0.975}, (float []){28,6}, (float []){0,28}, 0.875, "e/#gamma p_{T} [GeV]");
   
   // Study the unseeded egamma object properties
   file.clear();
@@ -920,6 +920,44 @@ int newplotter() {
   //comparesamevariable(file, name, "pvz", 24000, 26000, 20, true, true, true, (float []){8e-1,1e4}, (float []){0.8,0.6,0.95,0.95}, false, "mother v_{z} / cm");
   //comparesamevariable(file, name, "prompteta", -1, -1, 1, true, true, true, (float []){8e-1,1e4}, (float []){0.8,0.6,0.95,0.95}, false, "prompt equivalent electron #eta");
   //comparesamevariable(file, name, "promptphi", -1, -1, 1, true, true, true, (float []){8e-1,1e3}, (float []){0.3,0.3,0.65,0.75}, false, "prompt equivalent electron #phi");
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(sig1mfile);
+  name.push_back("genbasicptgt10selbarAdieg33caloidlusrecomchgenel");
+  legend.push_back("dieg33");
+  coloropt.push_back(kBlue);
+  file.push_back(sig1mfile);
+  name.push_back("genbasicptgt10selbarAcuttimedelayonlyusrecomchgenel");
+  legend.push_back(" c#tau = 1 m, t > 1.4 ns");
+  coloropt.push_back(kRed-2);
+  file.push_back(sig1mfile);
+  name.push_back("genbasicptgt10selbarAcuttimegt1nsonlyusrecomchgenel");
+  legend.push_back(" c#tau = 1 m, t > 1 ns");
+  coloropt.push_back(kRed);
+  legendEntries = legend;
+  comparesamevariable(file, name, "log10d0", 350, -1, 20, true, true, true, (float []){8e-1,5e2}, (float []){0.6,0.6,0.75,0.95}, false, "electron log_{10}d_{0} / log_{10}cm");
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicptgt10selbarAdieg33caloidlusrecomchgenel");
+  legend.push_back("dieg33");
+  coloropt.push_back(kBlue);
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicptgt10selbarAcuttimedelaysminusrecomchgenel");
+  legend.push_back(" c#tau = 3 cm, t > 1.4 ns");
+  coloropt.push_back(kRed-2);
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicptgt10selbarAcutsminlt0p16onlyusrecomchgenel");
+  legend.push_back(" c#tau = 3 cm, t > 1 ns");
+  coloropt.push_back(kRed);
+  legendEntries = legend;
+  comparesamevariable(file, name, "log10d0", 150, -1, 20, true, true, true, (float []){8e-1,5e2}, (float []){0.6,0.6,0.75,0.95}, false, "electron log_{10}d_{0} / log_{10}cm");
 
   return -1;
 }
