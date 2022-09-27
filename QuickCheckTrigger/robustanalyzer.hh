@@ -9,16 +9,21 @@
 using namespace std;
 
 class robustanalyzer {
-
- public:
+  
+public:
   robustanalyzer(TString, TString, int);
   ~robustanalyzer();
   
   void analyzersinglefile(int);
   void addHLTFilterhist(TString);
   void fillHLTFilterhist(TString, vector<int>, vector<double>*, vector<double>*, vector<double>*);
+  void addPhotonCollectionhist(TString);
+  void fillPhotonCollectionhist(TString, vector<int>);
+  void addObjectFilterAngMatchhist(TString);
+  vector< pair<int,int> > fillObjectFilterAngMatchhist(TString, vector<int>, vector<double>*, vector<double>*, vector<double>*, vector<int>, vector<double>*, vector<double>*, vector<double>*);
   void sort(int*, double*, int);
-  
+  vector<int> getFiltMatchedPhoIndex(vector<pair<int,int>>, double, double);
+    
 private:
   
   int nC;
