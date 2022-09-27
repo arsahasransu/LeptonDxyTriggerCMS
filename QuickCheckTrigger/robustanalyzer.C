@@ -165,12 +165,12 @@ void robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt to ra
     
     if(HLT_DiPhoton10sminlt0p12) {
       vector<pair<int,int>> sminlt0p12_noselpho_angmch_indices = fillObjectFilterAngMatchhist("sminlt0p12_noselpho_angmch", dieg10sminlt0p12_finalidx, dieg10sminlt0p12_usfinfilt_pt, dieg10sminlt0p12_usfinfilt_eta, dieg10sminlt0p12_usfinfilt_phi, noselpho_idx, pho_pt, pho_eta, pho_phi);
-      //vector<int> sminlt0p12_noselEBpho_idx = getFiltMatchedPhoIndex(sminlt0p12_noselpho_angmch_indices, 0.0, 1.479);
-      //vector<int> sminlt0p12_noselEEpho_idx = getFiltMatchedPhoIndex(sminlt0p12_noselpho_angmch_indices, 1.479, 4);
-      //if(sminlt0p12_noselEBpho_idx[0]!=-1) fillPhotonCollectionhist("sminlt0p12_EB_pho_idx", sminlt0p12_noselEBpho_idx);
-      //if(sminlt0p12_noselEEpho_idx[0]!=-1) fillPhotonCollectionhist("sminlt0p12_EE_pho_idx", sminlt0p12_noselEEpho_idx);
-      //sminlt0p12_noselEBpho_idx.clear();
-      //sminlt0p12_noselEEpho_idx.clear();
+      vector<int> sminlt0p12_noselEBpho_idx = getFiltMatchedPhoIndex(sminlt0p12_noselpho_angmch_indices, 0.0, 1.479);
+      vector<int> sminlt0p12_noselEEpho_idx = getFiltMatchedPhoIndex(sminlt0p12_noselpho_angmch_indices, 1.479, 4);
+      if(sminlt0p12_noselEBpho_idx[0]!=-1) fillPhotonCollectionhist("sminlt0p12_EB_pho_idx", sminlt0p12_noselEBpho_idx);
+      if(sminlt0p12_noselEEpho_idx[0]!=-1) fillPhotonCollectionhist("sminlt0p12_EE_pho_idx", sminlt0p12_noselEEpho_idx);
+      sminlt0p12_noselEBpho_idx.clear();
+      sminlt0p12_noselEEpho_idx.clear();
     }
 
     dieg10sminlt0p12_finalidx.clear();
@@ -386,8 +386,10 @@ vector<int> robustanalyzer::getFiltMatchedPhoIndex(vector<pair<int,int>> matched
   vector<int> phoIdx;
   for(pair<int,int> filtphoidx : matchedFilterPhotonIndices) {
     int phoindex = filtphoidx.second;
-    if(abs(pho_eta->at(phoindex))>etamin && abs(pho_eta->at(phoindex))<etamax) {
-      phoIdx.push_back(phoindex);
+    if(phoindex!=-1) {
+      if(abs(pho_eta->at(phoindex))>etamin && abs(pho_eta->at(phoindex))<etamax) {
+	phoIdx.push_back(phoindex);
+      }
     }
   }
   if(phoIdx.size()==0) phoIdx.push_back(-1);
