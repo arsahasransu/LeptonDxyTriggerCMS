@@ -122,8 +122,11 @@ void robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt to ra
   addPhotonCollectionhist("nosel_EE_pho_idx");
   addPhotonCollectionhist("sminlt0p12_EB_pho_idx");
   addPhotonCollectionhist("sminlt0p12_EE_pho_idx");
+  addPhotonCollectionhist("time1p4ns_EB_pho_idx");
+  addPhotonCollectionhist("time1p4ns_EE_pho_idx");
 
   addObjectFilterAngMatchhist("sminlt0p12_noselpho_angmch");
+  addObjectFilterAngMatchhist("time1p4ns_noselpho_angmch");
   
   // Loop beginning on events
   for(unsigned int event=beginevent; event<endevent; event++) {
@@ -140,11 +143,11 @@ void robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt to ra
 
     vector<int> dieg10sminlt0p12_finalidx(dieg10sminlt0p12_usfinfilt_n);
     iota(begin(dieg10sminlt0p12_finalidx), end(dieg10sminlt0p12_finalidx), 0);
-    fillHLTFilterhist("dieg10sminlt0p12_final", dieg10sminlt0p12_finalidx, dieg10sminlt0p12_usfinfilt_pt, dieg10sminlt0p12_usfinfilt_eta, dieg10sminlt0p12_usfinfilt_phi);
+    if(HLT_DiPhoton10sminlt0p12) fillHLTFilterhist("dieg10sminlt0p12_final", dieg10sminlt0p12_finalidx, dieg10sminlt0p12_usfinfilt_pt, dieg10sminlt0p12_usfinfilt_eta, dieg10sminlt0p12_usfinfilt_phi);
     
     vector<int> dieg10time1p4ns_finalidx(dieg10time1p4ns_usfinfilt_n);
     iota(begin(dieg10time1p4ns_finalidx), end(dieg10time1p4ns_finalidx), 0);
-    fillHLTFilterhist("dieg10time1p4ns_final", dieg10time1p4ns_finalidx, dieg10time1p4ns_usfinfilt_pt, dieg10time1p4ns_usfinfilt_eta, dieg10time1p4ns_usfinfilt_phi);
+    if(HLT_DiPhoton10Time1p4ns) fillHLTFilterhist("dieg10time1p4ns_final", dieg10time1p4ns_finalidx, dieg10time1p4ns_usfinfilt_pt, dieg10time1p4ns_usfinfilt_eta, dieg10time1p4ns_usfinfilt_phi);
 
     vector<int> noselpho_idx(pho_pt->size());
     vector<int> noselEBpho_idx;
@@ -171,6 +174,16 @@ void robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt to ra
       if(sminlt0p12_noselEEpho_idx[0]!=-1) fillPhotonCollectionhist("sminlt0p12_EE_pho_idx", sminlt0p12_noselEEpho_idx);
       sminlt0p12_noselEBpho_idx.clear();
       sminlt0p12_noselEEpho_idx.clear();
+    }
+
+    if(HLT_DiPhoton10Time1p4ns) {
+      vector<pair<int,int>> time1p4ns_noselpho_angmch_indices = fillObjectFilterAngMatchhist("time1p4ns_noselpho_angmch", dieg10time1p4ns_finalidx, dieg10time1p4ns_usfinfilt_pt, dieg10time1p4ns_usfinfilt_eta, dieg10time1p4ns_usfinfilt_phi, noselpho_idx, pho_pt, pho_eta, pho_phi);
+      vector<int> time1p4ns_noselEBpho_idx = getFiltMatchedPhoIndex(time1p4ns_noselpho_angmch_indices, 0.0, 1.479);
+      vector<int> time1p4ns_noselEEpho_idx = getFiltMatchedPhoIndex(time1p4ns_noselpho_angmch_indices, 1.479, 4);
+      if(time1p4ns_noselEBpho_idx[0]!=-1) fillPhotonCollectionhist("time1p4ns_EB_pho_idx", time1p4ns_noselEBpho_idx);
+      if(time1p4ns_noselEEpho_idx[0]!=-1) fillPhotonCollectionhist("time1p4ns_EE_pho_idx", time1p4ns_noselEEpho_idx);
+      time1p4ns_noselEBpho_idx.clear();
+      time1p4ns_noselEEpho_idx.clear();
     }
 
     dieg10sminlt0p12_finalidx.clear();

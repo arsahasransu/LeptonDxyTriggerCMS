@@ -146,10 +146,10 @@ int plotter() {
   coloropt.push_back(kRed);
 
   legendEntries = legend;  
-  //comparesamevariable(file, name, "mult", 5, 15, 1, true, true, true, (float []){8e-1,1e5}, (float []){0.5,0.6,0.75,0.89}, false, "photon filter multiplicity");
-  //comparesamevariable(file, name, "pt", 50, 100, 1, true, true, true, (float []){0.8,1e4}, (float []){0.6,0.6,0.89,0.95}, false, "photon filter p_{T} / GeV");
-  //comparesamevariable(file, name, "eta", -1, -1, 2, false, true, true, (float []){0,700}, (float []){0.11,0.7,0.36,0.99}, false, "photon filter #eta");
-  //comparesamevariable(file, name, "phi", -1, -1, 2, false, true, true, (float []){0,350}, (float []){0.25,0.3,0.49,0.55}, false, "photon filter #phi");
+  comparesamevariable(file, name, "mult", 5, 15, 1, true, true, true, (float []){8e-1,1e5}, (float []){0.5,0.6,0.75,0.89}, false, "photon filter multiplicity");
+  comparesamevariable(file, name, "pt", 50, 100, 1, true, true, true, (float []){0.8,1e4}, (float []){0.6,0.6,0.89,0.95}, false, "photon filter p_{T} / GeV");
+  comparesamevariable(file, name, "eta", -1, -1, 2, false, true, true, (float []){0,700}, (float []){0.11,0.7,0.36,0.99}, false, "photon filter #eta");
+  comparesamevariable(file, name, "phi", -1, -1, 2, false, true, true, (float []){0,350}, (float []){0.25,0.3,0.49,0.55}, false, "photon filter #phi");
   
   file.clear();
   name.clear();
@@ -161,10 +161,10 @@ int plotter() {
   coloropt.push_back(kRed);
 
   legendEntries = legend;  
-  //comparesamevariable(file, name, "mult", 5, 15, 1, true, true, true, (float []){8e-1,1e3}, (float []){0.5,0.6,0.75,0.89}, false, "photon filter multiplicity");
-  //comparesamevariable(file, name, "pt", 50, 100, 1, true, true, true, (float []){0.8,5e2}, (float []){0.6,0.6,0.89,0.95}, false, "photon filter p_{T} / GeV");
-  //comparesamevariable(file, name, "eta", -1, -1, 2, false, true, true, (float []){0,150}, (float []){0.11,0.7,0.36,0.99}, false, "photon filter #eta");
-  //comparesamevariable(file, name, "phi", -1, -1, 2, false, true, true, (float []){0,50}, (float []){0.25,0.3,0.49,0.55}, false, "photon filter #phi");
+  comparesamevariable(file, name, "mult", 5, 15, 1, true, true, true, (float []){8e-1,1e3}, (float []){0.5,0.6,0.75,0.89}, false, "photon filter multiplicity");
+  comparesamevariable(file, name, "pt", 50, 100, 1, true, true, true, (float []){0.8,5e2}, (float []){0.6,0.6,0.89,0.95}, false, "photon filter p_{T} / GeV");
+  comparesamevariable(file, name, "eta", -1, -1, 2, false, true, true, (float []){0,150}, (float []){0.11,0.7,0.36,0.99}, false, "photon filter #eta");
+  comparesamevariable(file, name, "phi", -1, -1, 2, false, true, true, (float []){0,50}, (float []){0.25,0.3,0.49,0.55}, false, "photon filter #phi");
   
   file.clear();
   name.clear();
@@ -181,10 +181,10 @@ int plotter() {
   coloropt.push_back(kBlue);
 
   legendEntries = legend;  
-  //comparesamevariable(file, name, "Deta", 9800, 10200, 4, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #Delta#eta");
-  //comparesamevariable(file, name, "Dphi", 3200, 3400, 1, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #Delta#phi");
-  //comparesamevariable(file, name, "Dr", -1, 250, 4, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #DeltaR");
-  //comparesamevariable(file, name, "Dpt", 97000, 101000, 40, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #Deltap_{T} [GeV]");
+  comparesamevariable(file, name, "Deta", 9800, 10200, 4, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #Delta#eta");
+  comparesamevariable(file, name, "Dphi", 3200, 3400, 1, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #Delta#phi");
+  comparesamevariable(file, name, "Dr", -1, 250, 4, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #DeltaR");
+  comparesamevariable(file, name, "Dpt", 97000, 101000, 40, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #Deltap_{T} [GeV]");
 
   file.clear();
   name.clear();
@@ -201,10 +201,10 @@ int plotter() {
   coloropt.push_back(kBlue);
 
   legendEntries = legend;  
-  //comparesamevariable(file, name, "Deta", 9800, 10200, 4, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #Delta#eta");
-  //comparesamevariable(file, name, "Dphi", 3200, 3400, 1, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #Delta#phi");
-  //comparesamevariable(file, name, "Dr", -1, 250, 4, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #DeltaR");
-  //comparesamevariable(file, name, "Dpt", 97000, 101000, 40, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #Deltap_{T} [GeV]");
+  comparesamevariable(file, name, "Deta", 9800, 10200, 4, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #Delta#eta");
+  comparesamevariable(file, name, "Dphi", 3200, 3400, 1, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #Delta#phi");
+  comparesamevariable(file, name, "Dr", -1, 250, 4, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #DeltaR");
+  comparesamevariable(file, name, "Dpt", 97000, 101000, 40, true, true, true, (float []){8e-1,1e5}, (float []){0.3,0.85,0.75,0.99}, false, "pre match #Deltap_{T} [GeV]");
 
   file.clear();
   name.clear();
@@ -221,13 +221,13 @@ int plotter() {
   coloropt.push_back(kBlue);
 
   legendEntries = legend;  
-  //comparesamevariable(file, name, "mult", 5, 15, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.6,0.89,0.95}, false, "photon multiplicity");
-  //comparesamevariable(file, name, "pt", 50, 250, 1, true, true, true, (float []){0.8,1e5}, (float []){0.6,0.6,0.89,0.95}, false, "photon p_{T} [GeV]");
-  //comparesamevariable(file, name, "eta", -1, -1, 5, true, true, true, (float []){0.8,1e5}, (float []){0.6,0.8,0.89,0.95}, false, "photon #eta");
-  //comparesamevariable(file, name, "phi", -1, -1, 1, true, true, true, (float []){0.8,1e5}, (float []){0.6,0.8,0.89,0.95}, false, "photon #phi");
-  //comparesamevariable(file, name, "seedtime", -1, -1, 1000, true, true, true, (float []){0.8,1e5}, (float []){0.6,0.6,0.89,0.95}, false, "photon SC seed time [ns]");
-  //comparesamevariable(file, name, "smin", -1, -1, 10, true, true, true, (float []){0.8,1e5}, (float []){0.6,0.6,0.89,0.95}, false, "photon smin");
-  //comparesamevariable(file, name, "smax", -1, -1, 1, true, true, true, (float []){0.8,1e5}, (float []){0.6,0.6,0.89,0.95}, false, "photon smaj");
+  comparesamevariable(file, name, "mult", 5, 15, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.6,0.89,0.95}, false, "photon multiplicity");
+  comparesamevariable(file, name, "pt", 50, 250, 1, true, true, true, (float []){0.8,1e5}, (float []){0.6,0.6,0.89,0.95}, false, "photon p_{T} [GeV]");
+  comparesamevariable(file, name, "eta", -1, -1, 5, true, true, true, (float []){0.8,1e5}, (float []){0.6,0.8,0.89,0.95}, false, "photon #eta");
+  comparesamevariable(file, name, "phi", -1, -1, 1, true, true, true, (float []){0.8,1e5}, (float []){0.6,0.8,0.89,0.95}, false, "photon #phi");
+  comparesamevariable(file, name, "seedtime", -1, -1, 1000, true, true, true, (float []){0.8,1e5}, (float []){0.6,0.6,0.89,0.95}, false, "photon SC seed time [ns]");
+  comparesamevariable(file, name, "smin", -1, -1, 10, true, true, true, (float []){0.8,1e5}, (float []){0.6,0.6,0.89,0.95}, false, "photon smin");
+  comparesamevariable(file, name, "smax", -1, -1, 1, true, true, true, (float []){0.8,1e5}, (float []){0.6,0.6,0.89,0.95}, false, "photon smaj");
 
   return -1;
 }
