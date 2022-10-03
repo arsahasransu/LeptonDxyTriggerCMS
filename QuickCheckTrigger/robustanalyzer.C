@@ -233,7 +233,7 @@ void robustanalyzer::fillPhotonCollectionhist(TString selection, vector<int> idx
     hsmax->Fill(pho_smax->at(index));
   }
 }
-
+/*
 // Function to fill a set of histograms for angular matching between filters and objects
 vector< pair<int,int> > robustanalyzer::fillObjectFilterAngMatchhist(TString selection, vector<int> filtidx, vector<double> *filtpt, vector<double> *filteta, vector<double> *filtphi, vector<int> objidx, vector<double> *objpt, vector<double> *objeta, vector<double> *objphi) {
 
@@ -340,7 +340,7 @@ vector< pair<int,int> > robustanalyzer::fillObjectFilterAngMatchhist(TString sel
   return matchedObjectFilterPairs;
   
 }
-
+*/
 // Function to add a set of histograms for HLT Filters
 void robustanalyzer::addHLTFilterhist(TString selection) {
   all1dhists.push_back(new TH1F(selection+"_filt_mult","filter mult.",50,-5,45));
@@ -408,3 +408,121 @@ vector<int> robustanalyzer::getFiltMatchedPhoIndex(vector<pair<int,int>> matched
   if(phoIdx.size()==0) phoIdx.push_back(-1);
   return phoIdx;
 }
+
+// Function to fill a set of histograms for angular matching between filters and objects
+vector< pair<int,int> > robustanalyzer::fillObjectFilterAngMatchhist(TString selection, vector<int> filtidx, vector<double> *filtpt, vector<double> *filteta, vector<double> *filtphi, vector<int> objidx, vector<double> *objpt, vector<double> *objeta, vector<double> *objphi) {
+
+  //if(filtidx.size()==0 || objidx.size()==0) return;
+  
+  TH1F* premchfiltebDeta = (TH1F*) outfile->Get(selection+"_filteb_obj_premch_Deta");
+  TH1F* premchfiltebDphi = (TH1F*) outfile->Get(selection+"_filteb_obj_premch_Dphi");
+  TH1F* premchfiltebDr = (TH1F*) outfile->Get(selection+"_filteb_obj_premch_Dr");
+  TH1F* premchfiltebDpt = (TH1F*) outfile->Get(selection+"_filteb_obj_premch_Dpt");
+  TH1F* premchfilteeDeta = (TH1F*) outfile->Get(selection+"_filtee_obj_premch_Deta");
+  TH1F* premchfilteeDphi = (TH1F*) outfile->Get(selection+"_filtee_obj_premch_Dphi");
+  TH1F* premchfilteeDr = (TH1F*) outfile->Get(selection+"_filtee_obj_premch_Dr");
+  TH1F* premchfilteeDpt = (TH1F*) outfile->Get(selection+"_filtee_obj_premch_Dpt");
+  
+  TH1F* aftmchfiltebDeta = (TH1F*) outfile->Get(selection+"_filteb_obj_aftmch_Deta");
+  TH1F* aftmchfiltebDphi = (TH1F*) outfile->Get(selection+"_filteb_obj_aftmch_Dphi");
+  TH1F* aftmchfiltebDr = (TH1F*) outfile->Get(selection+"_filteb_obj_aftmch_Dr");
+  TH1F* aftmchfiltebDpt = (TH1F*) outfile->Get(selection+"_filteb_obj_aftmch_Dpt");
+  TH1F* aftmchfilteeDeta = (TH1F*) outfile->Get(selection+"_filtee_obj_aftmch_Deta");
+  TH1F* aftmchfilteeDphi = (TH1F*) outfile->Get(selection+"_filtee_obj_aftmch_Dphi");
+  TH1F* aftmchfilteeDr = (TH1F*) outfile->Get(selection+"_filtee_obj_aftmch_Dr");
+  TH1F* aftmchfilteeDpt = (TH1F*) outfile->Get(selection+"_filtee_obj_aftmch_Dpt");
+
+  vector< pair<int,int> > matchedObjectFilterPairs;
+  vector<bool> objectMatched(objidx.size(), false);
+  
+  // Before filter object matching
+  for(int filtindex : filtidx) {
+    double lowestDeta=9e9, lowestDphi=9e9, lowestDr=9e9, lowestDpt=9e9;
+    TVector3 filtvec;
+    filtvec.SetPtEtaPhi(filtpt->at(filtindex), filteta->at(filtindex), filtphi->at(filtindex));
+    matchedObjectFilterPairs.push_back(make_pair(filtindex,-1));
+    for(int objindex : objidx) {
+      TVector3 objvec;
+      objvec.SetPtEtaPhi(objpt->at(objindex), objeta->at(objindex), objphi->at(objindex));
+      if(abs(filteta->at(filtindex)-objeta->at(objindex)) < abs(lowestDeta)) lowestDeta = filteta->at(filtindex)-objeta->at(objindex);
+      if(abs(filtvec.DeltaPhi(objvec)) < abs(lowestDphi)) lowestDphi = filtvec.DeltaPhi(objvec);
+      if(abs(filtvec.DeltaR(objvec)) < abs(lowestDr)) lowestDr = filtvec.DeltaR(objvec);
+      if(abs(filtpt->at(filtindex)-objpt->at(objindex)) < abs(lowestDpt)) lowestDpt = filtpt->at(filtindex)-objpt->at(objindex);
+    }
+    if(abs(filteta->at(filtindex))<1.479) {
+      if(lowestDeta!=9e9) premchfiltebDeta->Fill(lowestDeta);
+      if(lowestDphi!=9e9) premchfiltebDphi->Fill(lowestDphi);
+      if(lowestDr!=9e9) premchfiltebDr->Fill(lowestDr);
+      if(lowestDpt!=9e9) premchfiltebDpt->Fill(lowestDpt);
+    }
+    else {
+      if(lowestDeta!=9e9) premchfilteeDeta->Fill(lowestDeta);
+      if(lowestDphi!=9e9) premchfilteeDphi->Fill(lowestDphi);
+      if(lowestDr!=9e9) premchfilteeDr->Fill(lowestDr);
+      if(lowestDpt!=9e9) premchfilteeDpt->Fill(lowestDpt);
+    }
+  }
+
+  // Match with filter
+  for(int findex=0; findex<filtidx.size(); findex++) {
+    int filtindex = filtidx[findex];
+    TVector3 filtvec;
+    filtvec.SetPtEtaPhi(filtpt->at(filtindex), filteta->at(filtindex), filtphi->at(filtindex));
+    double lowestDr = 9e9;
+    int lowestphoindex = -1;
+    int lowestphopos = -1;
+    bool matchfound = false;
+    for(int oindex=0; oindex<objidx.size(); oindex++) {
+      int objindex = objidx[oindex];
+      if(objectMatched[oindex]) continue;
+      TVector3 objvec;
+      objvec.SetPtEtaPhi(objpt->at(objindex), objeta->at(objindex), objphi->at(objindex));
+      if(abs(filtvec.DeltaR(objvec))<abs(lowestDr)) {
+	lowestDr = filtvec.DeltaR(objvec);
+	lowestphoindex = objindex;
+	lowestphopos = oindex;
+      }
+    }
+    // Matching condition
+    if(lowestphoindex != -1) {
+      if(abs(filteta->at(filtindex))<1.479) {
+	if(abs(lowestDr)<0.1) matchfound = true;
+      }
+      else {
+	if(abs(lowestDr)<0.075) matchfound = true;
+      }
+      if(matchfound) {
+	objectMatched[lowestphopos] = true;
+	matchedObjectFilterPairs[findex] = make_pair(filtindex,lowestphoindex);
+      }
+    }
+    // End of matching condition
+  } // End of loop on filter
+  
+  // After matching
+  for(pair<int,int> matchedindex : matchedObjectFilterPairs) {
+    int filtindex = matchedindex.first;
+    int objindex = matchedindex.second;
+    if(objindex==-1) continue;
+    TVector3 filtvec;
+    filtvec.SetPtEtaPhi(filtpt->at(filtindex), filteta->at(filtindex), filtphi->at(filtindex));
+    TVector3 objvec;
+    objvec.SetPtEtaPhi(objpt->at(objindex), objeta->at(objindex), objphi->at(objindex));
+    if(abs(filteta->at(filtindex))<1.479) {
+      aftmchfiltebDeta->Fill(filteta->at(filtindex)-objeta->at(objindex));
+      aftmchfiltebDphi->Fill(filtvec.DeltaPhi(objvec));
+      aftmchfiltebDr->Fill(filtvec.DeltaR(objvec));
+      aftmchfiltebDpt->Fill(filtpt->at(filtindex)-objpt->at(objindex));
+    }
+    else {
+      aftmchfilteeDeta->Fill(filteta->at(filtindex)-objeta->at(objindex));
+      aftmchfilteeDphi->Fill(filtvec.DeltaPhi(objvec));
+      aftmchfilteeDr->Fill(filtvec.DeltaR(objvec));
+      aftmchfilteeDpt->Fill(filtpt->at(filtindex)-objpt->at(objindex));
+    }
+  }
+
+  return matchedObjectFilterPairs;
+  
+}
+
