@@ -299,6 +299,7 @@ void TriggerAnalyzerRAWMiniAOD::analyze(const edm::Event& iEvent, const edm::Eve
       }
       std::cout<<"Compare seedtime: "<<seedtime<<"with seedtime2:"<<seedtime2<<std::endl;*/
       pho_seedtime.push_back(seedtime);
+      pho_n++;
     }
   }
 
