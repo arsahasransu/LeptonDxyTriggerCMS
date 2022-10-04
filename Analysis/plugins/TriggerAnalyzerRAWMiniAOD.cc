@@ -267,7 +267,7 @@ void TriggerAnalyzerRAWMiniAOD::analyze(const edm::Event& iEvent, const edm::Eve
   pho_n = 0;
   if(photonH.isValid()) {
     double seedtime = DBL_MAX;
-    double seedtime2 = DBL_MAX;
+    //double seedtime2 = DBL_MAX;
     for(auto pho_iter=photonH->begin(); pho_iter!=photonH->end(); pho_iter++) {
       pho_pt.push_back(pho_iter->pt());
       pho_eta.push_back(pho_iter->eta());
@@ -278,7 +278,7 @@ void TriggerAnalyzerRAWMiniAOD::analyze(const edm::Event& iEvent, const edm::Eve
       pho_smax.push_back(ssFull5x5.smMajor);
 
       seedtime = DBL_MAX;
-      seedtime2 = DBL_MAX;
+      //seedtime2 = DBL_MAX;
       DetId SCseedID = pho_iter->seed()->seed();
       if(rechitebH.isValid() && seedtime==DBL_MAX) {
 	auto rechitseed = rechitebH->find(SCseedID);
@@ -292,13 +292,13 @@ void TriggerAnalyzerRAWMiniAOD::analyze(const edm::Event& iEvent, const edm::Eve
 	  seedtime = rechitseed->time();
 	}
       }
-      auto rechits2 = pho_iter->recHits();
+      /*auto rechits2 = pho_iter->recHits();
       auto rechitseed2 = rechits2->find(SCseedID);
       if(rechitseed2!=rechits2->end()) {
 	seedtime2 = rechitseed2->time();
       }
+      std::cout<<"Compare seedtime: "<<seedtime<<"with seedtime2:"<<seedtime2<<std::endl;*/
       pho_seedtime.push_back(seedtime);
-      std::cout<<"Compare seedtime: "<<seedtime<<"with seedtime2:"<<seedtime2<<std::endl;
     }
   }
 
