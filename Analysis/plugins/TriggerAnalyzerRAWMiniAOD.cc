@@ -76,9 +76,13 @@ private:
   vector<double> dieg10caloidl_usfinfilt_phi;
   int pho_n;
   vector<double> pho_pt;
+  vector<double> pho_e;
   vector<double> pho_eta;
   vector<double> pho_phi;
   vector<double> pho_seedtime;
+  vector<double> pho_sinin_noiseclnd;
+  vector<double> pho_hoebc;
+  vector<double> pho_hoe;
   vector<double> pho_smin;
   vector<double> pho_smax;
   int pv_n;
@@ -128,9 +132,13 @@ TriggerAnalyzerRAWMiniAOD::TriggerAnalyzerRAWMiniAOD(const edm::ParameterSet& iC
   tree->Branch("dieg10caloidl_usfinfilt_phi", &dieg10caloidl_usfinfilt_phi);
   tree->Branch("pho_n", &pho_n, "pho_n/i");
   tree->Branch("pho_pt", &pho_pt);
+  tree->Branch("pho_e", &pho_e);
   tree->Branch("pho_eta", &pho_eta);
   tree->Branch("pho_phi", &pho_phi);
   tree->Branch("pho_seedtime", &pho_seedtime);
+  tree->Branch("pho_sinin_noiseclnd", &pho_sinin_noiseclnd);
+  tree->Branch("pho_hoebc", &pho_hoebc);
+  tree->Branch("pho_hoe", &pho_hoe);
   tree->Branch("pho_smin", &pho_smin);
   tree->Branch("pho_smax", &pho_smax);
   tree->Branch("pv_n", &pv_n, "pv_n/i");
@@ -270,12 +278,16 @@ void TriggerAnalyzerRAWMiniAOD::analyze(const edm::Event& iEvent, const edm::Eve
     //double seedtime2 = DBL_MAX;
     for(auto pho_iter=photonH->begin(); pho_iter!=photonH->end(); pho_iter++) {
       pho_pt.push_back(pho_iter->pt());
+      pho_e.push_back(pho_iter->energy());
       pho_eta.push_back(pho_iter->eta());
       pho_phi.push_back(pho_iter->phi());
 
       auto& ssFull5x5 = pho_iter->full5x5_showerShapeVariables();
       pho_smin.push_back(ssFull5x5.smMinor);
       pho_smax.push_back(ssFull5x5.smMajor);
+      pho_sinin_noiseclnd.push_back(pho_iter->full5x5_sigmaIetaIeta());
+      pho_hoebc.push_back(pho_iter->full5x5_hcalOverEcalBc());
+      pho_hoe.push_back(pho_iter->full5x5_hcalOverEcal());
 
       seedtime = DBL_MAX;
       //seedtime2 = DBL_MAX;
@@ -333,10 +345,15 @@ void TriggerAnalyzerRAWMiniAOD::clearVars() {
   dieg10caloidl_usfinfilt_eta.clear();
   dieg10caloidl_usfinfilt_phi.clear();
   pho_pt.clear();
+  pho_e.clear();
   pho_eta.clear();
   pho_phi.clear();
   pho_seedtime.clear();
+  pho_sinin_noiseclnd.clear();
+  pho_hoebc.clear();
+  pho_hoe.clear();
   pho_smin.clear();
+  pho_smax.clear();
   pv_x.clear();
   pv_xerr.clear();
   pv_y.clear();
