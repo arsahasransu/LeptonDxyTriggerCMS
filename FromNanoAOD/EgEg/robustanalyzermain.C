@@ -15,8 +15,8 @@ int main(int argc, char* argv[]) {
   try {
     
     stringstream ssdata;
-    ssdata<<"hists_egdata_"<<cnt<<".root";
-    robustanalyzer rana_data("/eos/cms/store/group/dpg_trigger/comm_trigger/TriggerStudiesGroup/STEAM/anayak/2022NanoAOD/EGammaV1/Files2/nano_aod_0.root",ssdata.str(), true);
+    ssdata<<argv[3]<<cnt<<".root";
+    robustanalyzer rana_data(argv[2],ssdata.str(), true);
     rana_data.analyzersinglefile(cnt);
     
   }
