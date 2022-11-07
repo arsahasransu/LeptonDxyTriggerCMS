@@ -1,6 +1,6 @@
 /*
  * AUTHOR: Abanti Ranadhir Sahasransu - asahasra@cern.ch
- * The code was made to read NanoAOD provately created by the EXO group
+ * The code was made to read NanoAOD data for preliminary trigger efficiency created by the EXO group
  * for fast processing the new Run 3 data.
  */
 
@@ -115,6 +115,7 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
   addhist("nosel_el");
   addhist("bar_el");
   addhist("gt2_bar_el");
+  addhist("mid_gt2_bar_el");
   addhist("met_mid_gt2_bar_el");
   addhist("t1p4_mid_gt2_bar_el");
   addhist("sm12_mid_gt2_bar_el");
@@ -122,13 +123,13 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
   addhist("sm12_met_mid_gt2_bar_el");
   addhist("ec_el");
   addhist("gt2_ec_el");
+  addhist("mid_gt2_ec_el");
   addhist("met_mid_gt2_ec_el");
   addhist("t1p4_mid_gt2_ec_el");
   addhist("sm12_mid_gt2_ec_el");
   addhist("t1p4_met_mid_gt2_ec_el");
   addhist("sm12_met_mid_gt2_ec_el");
-  addhist("nosel_lowptel");
-
+  //addhist("nosel_lowptel");
   //addhist("nosel_photon");
   
   // Loop beginning on events
@@ -139,8 +140,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
     vector<int> midbarelidx;
     vector<int> ecelidx;
     vector<int> midecelidx;
-    vector<int> nosellowptelidx;
-    vector<int> noselphidx;
+    //vector<int> nosellowptelidx;
+    //vector<int> noselphidx;
   
     inputChain->GetEntry(event);
     //if(event>1000) break;
@@ -155,6 +156,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
 		       HLT_PFMET200_NotCleaned ||
 		       HLT_PFMET200_BeamHaloCleaned ||
 		       HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight);
+    if((HLT_PFMET120_PFMHT120_IDTight || HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF || HLT_PFMETNoMu120_PFMHTNoMu120_IDTight || HLT_CaloMET80_NotCleaned || HLT_PFMET200_NotCleaned || HLT_PFMET200_BeamHaloCleaned || HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight) && (!mettrigs)) throw "Logical error!! Type 1";
+    if(((!HLT_PFMET120_PFMHT120_IDTight) && (!HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF) && (!HLT_PFMETNoMu120_PFMHTNoMu120_IDTight) && (!HLT_CaloMET80_NotCleaned) && (!HLT_PFMET200_NotCleaned) && (!HLT_PFMET200_BeamHaloCleaned) && (!HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight)) && (mettrigs)) throw "Logical error!! Type 2";
     Bool_t t1p4nstrig = HLT_DiPhoton10Time1p4ns;
     Bool_t sminlt0p12trig = HLT_DiPhoton10sminlt0p12;
     
@@ -199,7 +202,7 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
       if(midecsel) midecelidx.push_back(idx);
       
     } // End of loop on electrons
-       
+    /*       
     // Loop beginning on low pt electrons
     for(unsigned int idx=0; idx<lowpteln; idx++) {
 
@@ -213,10 +216,11 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
       noselphidx.push_back(idx);
       
     } // End of loop on photons
-
+    */
     fillhistinevent("nosel_el", noselelidx);
     fillhistinevent("bar_el", barelidx);
     if(barelidx.size()>=2) fillhistinevent("gt2_bar_el", barelidx);
+    if(midbarelidx.size()>=2) fillhistinevent("mid_gt2_bar_el", midbarelidx);
     if(mettrigs && midbarelidx.size()>=2) fillhistinevent("met_mid_gt2_bar_el", midbarelidx);
     if(t1p4nstrig && midbarelidx.size()>=2) fillhistinevent("t1p4_mid_gt2_bar_el", midbarelidx);
     if(sminlt0p12trig && midbarelidx.size()>=2) fillhistinevent("sm12_mid_gt2_bar_el", midbarelidx);
@@ -224,12 +228,13 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
     if(sminlt0p12trig && mettrigs && midbarelidx.size()>=2) fillhistinevent("sm12_met_mid_gt2_bar_el", midbarelidx);
     fillhistinevent("ec_el", ecelidx);
     if(ecelidx.size()>=2) fillhistinevent("gt2_ec_el", ecelidx);
+    if(midecelidx.size()>=2) fillhistinevent("mid_gt2_ec_el", midecelidx);
     if(mettrigs && midecelidx.size()>=2) fillhistinevent("met_mid_gt2_ec_el", midecelidx);
     if(t1p4nstrig && midecelidx.size()>=2) fillhistinevent("t1p4_mid_gt2_ec_el", midecelidx);
     if(sminlt0p12trig && midecelidx.size()>=2) fillhistinevent("sm12_mid_gt2_ec_el", midecelidx);
     if(t1p4nstrig && mettrigs && midecelidx.size()>=2) fillhistinevent("t1p4_met_mid_gt2_ec_el", midecelidx);
     if(sminlt0p12trig && mettrigs && midecelidx.size()>=2) fillhistinevent("sm12_met_mid_gt2_ec_el", midecelidx);
-    fillhistinevent("nosel_lowptel", nosellowptelidx);
+    //fillhistinevent("nosel_lowptel", nosellowptelidx);
     //fillhistinevent("noselphoton", noselphidx);
 
     // Clear all the vectors
@@ -238,8 +243,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
     midbarelidx.clear();
     ecelidx.clear();
     midecelidx.clear();
-    nosellowptelidx.clear();
-    noselphidx.clear();
+    //nosellowptelidx.clear();
+    //noselphidx.clear();
 
   } // End of loop on events
 
