@@ -102,7 +102,7 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
 
   int totEntries = inputChain->GetEntries();
   cout<<"Total number of entries: "<<totEntries<<endl;
-  int nCores = numCores; // Assume parallel processing over numCores cores where
+  int nCores = numCores-1; // Assume parallel processing over numCores cores where
   // there is a lesser no.of events in the last core
   int beginevent = splitCnt*(totEntries/nCores);
   int endevent = (splitCnt+1)*(totEntries/nCores);
