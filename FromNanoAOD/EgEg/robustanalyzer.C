@@ -430,38 +430,38 @@ void robustanalyzer::addhist(TString selection) {
   all1dhists.push_back(new TH1F(selection+"_event_rho","rho",1000,-10,90));
   all1dhists.push_back(new TH1F(selection+"_event_trigdec","Trigger Decisions",100,-50,50));
 
-  all1dhists.push_back(new TH1F(selection+"_electron_mult","N electron",50,-5,45));
+  all1dhists.push_back(new TH1F(selection+"_el_mult","N electron",50,-5,45));
 
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_pt","electron_{1} p_{T} / GeV",550,-50,500));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_pt","electron_{1} p_{T} / GeV",550,-50,500));
 
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_eta","electron_{1} #eta",100,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_phi","electron_{1} #phi",66,-3.3,3.3));
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_sieie","electron_{1} #sigmai#etai#eta",1000,0,0.1));
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_hoe","electron_{1} H/E",1000,0,10));
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_detasc","electron_{1} #Delta#eta(SC, trk seed)",1000,-0.03,0.07));
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_ooemoop","electron_{1} E^{-1}-p^{-1} / GeV^{-1}",1000,-0.1,0.9));
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_convveto","electron_{1} conversion veto",5,-2,3));
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_log10d0","electron_{1} log_{10}d_{0} / log_{10}cm",10000,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_d0","electron_{1} d_{0} / cm",10000,-50,50));
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_d0Err","electron_{1} #sigmad_{0}",5,-2,3));
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_log10dz","electron_{1} log_{10}d_{z} / log_{10}cm",10000,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_dz","electron_{1} d_{z} / cm",10000,-50,50));
-  all1dhists.push_back(new TH1F(selection+"_electron_lead_dzErr","electron_{1} #sigmad_{z}",5,-2,3));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_eta","electron_{1} #eta",100,-5,5));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_phi","electron_{1} #phi",66,-3.3,3.3));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_sieie","electron_{1} #sigmai#etai#eta",1000,0,0.1));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_hoe","electron_{1} H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_detasc","electron_{1} #Delta#eta(SC, trk seed)",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_ooemoop","electron_{1} E^{-1}-p^{-1} / GeV^{-1}",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_convveto","electron_{1} conversion veto",5,-2,3));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_log10d0","electron_{1} log_{10}d_{0} / log_{10}cm",10000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_d0","electron_{1} d_{0} / cm",10000,-50,50));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_d0Err","electron_{1} #sigmad_{0}",5,-2,3));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_log10dz","electron_{1} log_{10}d_{z} / log_{10}cm",10000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_dz","electron_{1} d_{z} / cm",10000,-50,50));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_dzErr","electron_{1} #sigmad_{z}",5,-2,3));
 
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_pt","electron_{2} p_{T} / GeV",550,-50,500));
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_eta","electron_{2} #eta",100,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_phi","electron_{2} #phi",66,-3.3,3.3));
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_sieie","electron_{2} #sigmai#etai#eta",1000,0,0.1));
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_hoe","electron_{2} H/E",1000,0,10));
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_detasc","electron_{2} #Delta#eta(SC, trk seed)",1000,-0.03,0.07));
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_ooemoop","electron_{2} E^{-1}-p^{-1} / GeV^{-1}",1000,-0.1,0.9));
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_convveto","electron_{2} conversion veto",5,-2,3));
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_log10d0","electron_{2} log_{10}d_{0} / log_{10}cm",10000,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_d0","electron_{2} d_{0} / cm",10000,-50,50));
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_d0Err","electron_{2} #sigmad_{0}",5,-2,3));
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_log10dz","electron_{2} log_{10}d_{z} / log_{10}cm",10000,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_dz","electron_{2} d_{z} / cm",10000,-50,50));
-  all1dhists.push_back(new TH1F(selection+"_electron_sublead_dzErr","electron_{2} #sigmad_{z}",5,-2,3));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_pt","electron_{2} p_{T} / GeV",550,-50,500));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_eta","electron_{2} #eta",100,-5,5));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_phi","electron_{2} #phi",66,-3.3,3.3));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_sieie","electron_{2} #sigmai#etai#eta",1000,0,0.1));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_hoe","electron_{2} H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_detasc","electron_{2} #Delta#eta(SC, trk seed)",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_ooemoop","electron_{2} E^{-1}-p^{-1} / GeV^{-1}",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_convveto","electron_{2} conversion veto",5,-2,3));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_log10d0","electron_{2} log_{10}d_{0} / log_{10}cm",10000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_d0","electron_{2} d_{0} / cm",10000,-50,50));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_d0Err","electron_{2} #sigmad_{0}",5,-2,3));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_log10dz","electron_{2} log_{10}d_{z} / log_{10}cm",10000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_dz","electron_{2} d_{z} / cm",10000,-50,50));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_dzErr","electron_{2} #sigmad_{z}",5,-2,3));
 }
 
 // Function to sort the indices based on a factor (Usually pT)
