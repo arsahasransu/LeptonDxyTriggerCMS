@@ -136,19 +136,9 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
 
     vector<int> noselelidx;
     vector<int> barelidx;
-    vector<int> gt2barelidx;
-    vector<int> mettrigmediumidgt2barelidx;
-    vector<int> t1p4mediumidgt2barelidx;
-    vector<int> sm12mediumidgt2barelidx;
-    vector<int> t1p4mettrigmediumidgt2barelidx;
-    vector<int> sm12mettrigmediumidgt2barelidx;
+    vector<int> midbarelidx;
     vector<int> ecelidx;
-    vector<int> gt2ecelidx;
-    vector<int> mettrigmediumidgt2ecelidx;
-    vector<int> t1p4mediumidgt2ecelidx;
-    vector<int> sm12mediumidgt2ecelidx;
-    vector<int> t1p4mettrigmediumidgt2ecelidx;
-    vector<int> sm12mettrigmediumidgt2ecelidx;
+    vector<int> midecelidx;
     vector<int> nosellowptelidx;
     vector<int> noselphidx;
   
@@ -156,6 +146,17 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
     //if(event>1000) break;
     //if(event!=283991 && event!=326114) continue;
     if(event%10000==0) std::cout<<"Processed event: "<<event+1<<std::endl;
+
+    // Section for trigger conditions
+    Bool_t mettrigs = (HLT_PFMET120_PFMHT120_IDTight ||
+		       HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF ||
+		       HLT_PFMETNoMu120_PFMHTNoMu120_IDTight ||
+		       HLT_CaloMET80_NotCleaned ||
+		       HLT_PFMET200_NotCleaned ||
+		       HLT_PFMET200_BeamHaloCleaned ||
+		       HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight);
+    Bool_t t1p4nstrig = HLT_DiPhoton10Time1p4ns;
+    Bool_t sminlt0p12trig = HLT_DiPhoton10sminlt0p12;
     
     // Loop beginning on electrons
     for(unsigned int idx=0; idx<eln; idx++) {
@@ -175,102 +176,28 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
       barelsel *= TMath::Abs(eleta[idx])<1.479;
       if(barelsel) barelidx.push_back(idx);
 
-      bool mettrigmediumidgt2barsel = true;
-      mettrigmediumidgt2barsel *= TMath::Abs(eleta[idx]) < 1.479;
-      mettrigmediumidgt2barsel *= (HLT_PFMET120_PFMHT120_IDTight ||
-				HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF ||
-				HLT_PFMETNoMu120_PFMHTNoMu120_IDTight ||
-				HLT_CaloMET80_NotCleaned ||
-				HLT_PFMET200_NotCleaned ||
-				HLT_PFMET200_BeamHaloCleaned ||
-				HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight);
-      mettrigmediumidgt2barsel *= elsieie[idx] < 0.0103;
-      mettrigmediumidgt2barsel *= eldetasc[idx] < 0.00481;
-      mettrigmediumidgt2barsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
-      mettrigmediumidgt2barsel *= elooemoop[idx] < 0.0966;
-      mettrigmediumidgt2barsel *= elconvveto[idx];
-      if(mettrigmediumidgt2barsel) mettrigmediumidgt2barelidx.push_back(idx);
+      bool midbarsel = true;
+      midbarsel *= TMath::Abs(eleta[idx]) < 1.479;
+      midbarsel *= elsieie[idx] < 0.0103;
+      midbarsel *= eldetasc[idx] < 0.00481;
+      midbarsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
+      midbarsel *= elooemoop[idx] < 0.0966;
+      midbarsel *= elconvveto[idx];
+      if(midbarsel) midbarelidx.push_back(idx);
       
-      bool t1p4mediumidgt2barsel = true;
-      t1p4mediumidgt2barsel *= TMath::Abs(eleta[idx]) < 1.479;
-      t1p4mediumidgt2barsel *= HLT_DiPhoton10Time1p4ns;
-      t1p4mediumidgt2barsel *= elsieie[idx] < 0.0103;
-      t1p4mediumidgt2barsel *= eldetasc[idx] < 0.00481;
-      t1p4mediumidgt2barsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
-      t1p4mediumidgt2barsel *= elooemoop[idx] < 0.0966;
-      t1p4mediumidgt2barsel *= elconvveto[idx];
-      if(t1p4mediumidgt2barsel) t1p4mediumidgt2barelidx.push_back(idx);
-      
-      bool sm12mediumidgt2barsel = true;
-      sm12mediumidgt2barsel *= TMath::Abs(eleta[idx]) < 1.479;
-      sm12mediumidgt2barsel *= HLT_DiPhoton10sminlt0p12;
-      sm12mediumidgt2barsel *= elsieie[idx] < 0.0103;
-      sm12mediumidgt2barsel *= eldetasc[idx] < 0.00481;
-      sm12mediumidgt2barsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
-      sm12mediumidgt2barsel *= elooemoop[idx] < 0.0966;
-      sm12mediumidgt2barsel *= elconvveto[idx];
-      if(sm12mediumidgt2barsel) sm12mediumidgt2barelidx.push_back(idx);
-      
-      bool t1p4mettrigmediumidgt2barsel = true;
-      t1p4mettrigmediumidgt2barsel *= mettrigmediumidgt2barsel;
-      t1p4mettrigmediumidgt2barsel *= HLT_DiPhoton10Time1p4ns;
-      if(t1p4mettrigmediumidgt2barsel) t1p4mettrigmediumidgt2barelidx.push_back(idx);
-      
-      bool sm12mettrigmediumidgt2barsel = true;
-      sm12mettrigmediumidgt2barsel *= mettrigmediumidgt2barsel;
-      sm12mettrigmediumidgt2barsel *= HLT_DiPhoton10sminlt0p12;
-      if(sm12mettrigmediumidgt2barsel) sm12mettrigmediumidgt2barelidx.push_back(idx);
-
       bool ecelsel = true;
       ecelsel *= TMath::Abs(eleta[idx]) > 1.479;
       if(ecelsel) ecelidx.push_back(idx);
 
-      bool mettrigmediumidgt2ecsel = true;
-      mettrigmediumidgt2ecsel *= TMath::Abs(eleta[idx]) > 1.479;
-      mettrigmediumidgt2ecsel *= (HLT_PFMET120_PFMHT120_IDTight ||
-				HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF ||
-				HLT_PFMETNoMu120_PFMHTNoMu120_IDTight ||
-				HLT_CaloMET80_NotCleaned ||
-				HLT_PFMET200_NotCleaned ||
-				HLT_PFMET200_BeamHaloCleaned ||
-				HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight);
-      mettrigmediumidgt2ecsel *= elsieie[idx] < 0.0103;
-      mettrigmediumidgt2ecsel *= eldetasc[idx] < 0.00481;
-      mettrigmediumidgt2ecsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
-      mettrigmediumidgt2ecsel *= elooemoop[idx] < 0.0966;
-      mettrigmediumidgt2ecsel *= elconvveto[idx];
-      if(mettrigmediumidgt2ecsel) mettrigmediumidgt2ecelidx.push_back(idx);
+      bool midecsel = true;
+      midecsel *= TMath::Abs(eleta[idx]) > 1.479;
+      midecsel *= elsieie[idx] < 0.0103;
+      midecsel *= eldetasc[idx] < 0.00481;
+      midecsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
+      midecsel *= elooemoop[idx] < 0.0966;
+      midecsel *= elconvveto[idx];
+      if(midecsel) midecelidx.push_back(idx);
       
-      bool t1p4mediumidgt2ecsel = true;
-      t1p4mediumidgt2ecsel *= TMath::Abs(eleta[idx]) > 1.479;
-      t1p4mediumidgt2ecsel *= HLT_DiPhoton10Time1p4ns;
-      t1p4mediumidgt2ecsel *= elsieie[idx] < 0.0103;
-      t1p4mediumidgt2ecsel *= eldetasc[idx] < 0.00481;
-      t1p4mediumidgt2ecsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
-      t1p4mediumidgt2ecsel *= elooemoop[idx] < 0.0966;
-      t1p4mediumidgt2ecsel *= elconvveto[idx];
-      if(t1p4mediumidgt2ecsel) t1p4mediumidgt2ecelidx.push_back(idx);
-      
-      bool sm12mediumidgt2ecsel = true;
-      sm12mediumidgt2ecsel *= TMath::Abs(eleta[idx]) > 1.479;
-      sm12mediumidgt2ecsel *= HLT_DiPhoton10sminlt0p12;
-      sm12mediumidgt2ecsel *= elsieie[idx] < 0.0103;
-      sm12mediumidgt2ecsel *= eldetasc[idx] < 0.00481;
-      sm12mediumidgt2ecsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
-      sm12mediumidgt2ecsel *= elooemoop[idx] < 0.0966;
-      sm12mediumidgt2ecsel *= elconvveto[idx];
-      if(sm12mediumidgt2ecsel) sm12mediumidgt2ecelidx.push_back(idx);
-      
-      bool t1p4mettrigmediumidgt2ecsel = true;
-      t1p4mettrigmediumidgt2ecsel *= mettrigmediumidgt2ecsel;
-      t1p4mettrigmediumidgt2ecsel *= HLT_DiPhoton10Time1p4ns;
-      if(t1p4mettrigmediumidgt2ecsel) t1p4mettrigmediumidgt2ecelidx.push_back(idx);
-
-      bool sm12mettrigmediumidgt2ecsel = true;
-      sm12mettrigmediumidgt2ecsel *= mettrigmediumidgt2ecsel;
-      sm12mettrigmediumidgt2ecsel *= HLT_DiPhoton10sminlt0p12;
-      if(sm12mettrigmediumidgt2ecsel) sm12mettrigmediumidgt2ecelidx.push_back(idx);
-
     } // End of loop on electrons
        
     // Loop beginning on low pt electrons
@@ -287,43 +214,30 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
       
     } // End of loop on photons
 
-    if(barelidx.size()>=2) gt2barelidx = barelidx;
-    if(ecelidx.size()>=2) gt2ecelidx = ecelidx;
-    
     fillhistinevent("nosel_el", noselelidx);
     fillhistinevent("bar_el", barelidx);
-    fillhistinevent("gt2_bar_el", gt2barelidx);
-    if(mettrigmediumidgt2barelidx.size()>=2) fillhistinevent("met_mid_gt2_bar_el", mettrigmediumidgt2barelidx);
-    if(t1p4mediumidgt2barelidx.size()>=2) fillhistinevent("t1p4_mid_gt2_bar_el", t1p4mediumidgt2barelidx);
-    if(sm12mediumidgt2barelidx.size()>=2) fillhistinevent("sm12_mid_gt2_bar_el", sm12mediumidgt2barelidx);
-    if(t1p4mettrigmediumidgt2barelidx.size()>=2) fillhistinevent("t1p4_met_mid_gt2_bar_el", t1p4mettrigmediumidgt2barelidx);
-    if(sm12mettrigmediumidgt2barelidx.size()>=2) fillhistinevent("sm12_met_mid_gt2_bar_el", sm12mettrigmediumidgt2barelidx);
+    if(barelidx.size()>=2) fillhistinevent("gt2_bar_el", barelidx);
+    if(mettrigs && midbarelidx.size()>=2) fillhistinevent("met_mid_gt2_bar_el", midbarelidx);
+    if(t1p4nstrig && midbarelidx.size()>=2) fillhistinevent("t1p4_mid_gt2_bar_el", midbarelidx);
+    if(sminlt0p12trig && midbarelidx.size()>=2) fillhistinevent("sm12_mid_gt2_bar_el", midbarelidx);
+    if(t1p4nstrig && mettrigs && midbarelidx.size()>=2) fillhistinevent("t1p4_met_mid_gt2_bar_el", midbarelidx);
+    if(sminlt0p12trig && mettrigs && midbarelidx.size()>=2) fillhistinevent("sm12_met_mid_gt2_bar_el", midbarelidx);
     fillhistinevent("ec_el", ecelidx);
-    fillhistinevent("gt2_ec_el", gt2ecelidx);
-    if(mettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("met_mid_gt2_ec_el", mettrigmediumidgt2ecelidx);
-    if(t1p4mediumidgt2ecelidx.size()>=2) fillhistinevent("t1p4_mid_gt2_ec_el", t1p4mediumidgt2ecelidx);
-    if(sm12mediumidgt2ecelidx.size()>=2) fillhistinevent("sm12_mid_gt2_ec_el", sm12mediumidgt2ecelidx);
-    if(t1p4mettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("t1p4_met_mid_gt2_ec_el", t1p4mettrigmediumidgt2ecelidx);
-    if(sm12mettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("sm12_met_mid_gt2_ec_el", sm12mettrigmediumidgt2ecelidx);
+    if(ecelidx.size()>=2) fillhistinevent("gt2_ec_el", ecelidx);
+    if(mettrigs && midecelidx.size()>=2) fillhistinevent("met_mid_gt2_ec_el", midecelidx);
+    if(t1p4nstrig && midecelidx.size()>=2) fillhistinevent("t1p4_mid_gt2_ec_el", midecelidx);
+    if(sminlt0p12trig && midecelidx.size()>=2) fillhistinevent("sm12_mid_gt2_ec_el", midecelidx);
+    if(t1p4nstrig && mettrigs && midecelidx.size()>=2) fillhistinevent("t1p4_met_mid_gt2_ec_el", midecelidx);
+    if(sminlt0p12trig && mettrigs && midecelidx.size()>=2) fillhistinevent("sm12_met_mid_gt2_ec_el", midecelidx);
     fillhistinevent("nosel_lowptel", nosellowptelidx);
     //fillhistinevent("noselphoton", noselphidx);
 
     // Clear all the vectors
     noselelidx.clear();
     barelidx.clear();
-    gt2barelidx.clear();
-    mettrigmediumidgt2barelidx.clear();
-    t1p4mediumidgt2barelidx.clear();
-    sm12mediumidgt2barelidx.clear();
-    t1p4mettrigmediumidgt2barelidx.clear();
-    sm12mettrigmediumidgt2barelidx.clear();
+    midbarelidx.clear();
     ecelidx.clear();
-    gt2ecelidx.clear();
-    mettrigmediumidgt2ecelidx.clear();
-    t1p4mediumidgt2ecelidx.clear();
-    sm12mediumidgt2ecelidx.clear();
-    t1p4mettrigmediumidgt2ecelidx.clear();
-    sm12mettrigmediumidgt2ecelidx.clear();
+    midecelidx.clear();
     nosellowptelidx.clear();
     noselphidx.clear();
 
