@@ -163,6 +163,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   addhistunseeded("selelevetozoppoidus");
   addhist("seleletightid");
   addhistunseeded("seleletightidus");
+  addhistunseeded("elptgt10caloidus");
   
   // Loop beginning on events
   for(unsigned int event=beginevent; event<endevent; event++) {
@@ -189,6 +190,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     vector<int> selelevetozoppoidegusidx;
     vector<int> seleletightidegidx;
     vector<int> seleletightidegusidx;
+    vector<int> elptgt10caloidegusidx;
   
     inputChain->GetEntry(event);
     //if(event>1000) break;
@@ -336,6 +338,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       bool selelevetoidegus = false;
       bool seleletightideg = false;
       bool seleletightidegus = false;
+      bool elptgt10caloidegus = false;
     
       // Loop beginning on egamma reco objects
       for(unsigned int egidx=0; egidx<egRecoN; egidx++) {
@@ -401,6 +404,12 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	seleletightidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.159:abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.0197);
 	if(seleletightidegus) seleletightidegusidx.push_back(idx);
 
+	elptgt10caloidegus = true;
+	elptgt10caloidegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
+	elptgt10caloidegus *= (egusRecoPt[idx]>=15);
+	elptgt10caloidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0104:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0353);
+	if(elptgt10caloidegus) elptgt10caloidegusidx.push_back(idx);
+
       } // End of loop on unseeded egamma objects
 
       selelevetozwindidegusidx = selelevetoidegusidx;
@@ -428,6 +437,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       }
       fillhistinevent("seleletightid", seleletightidegidx);
       fillhistineventunseeded("seleletightidus", seleletightidegusidx);
+      fillhistineventunseeded("elptgt10caloidus", elptgt10caloidegusidx);
       
     } // End of condition requiring atleast one egReco object
 
@@ -488,6 +498,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     selelevetozoppoidegusidx.clear();
     seleletightidegidx.clear();
     seleletightidegusidx.clear();
+    elptgt10caloidegusidx.clear();
 
   } // End of loop on events
 

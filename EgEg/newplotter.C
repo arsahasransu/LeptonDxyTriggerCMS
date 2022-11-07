@@ -298,15 +298,19 @@ int newplotter() {
   name.clear();
   legend.clear();
   coloropt.clear();
-  file.push_back(dyfile);
-  name.push_back("selelevetozwindidusrecoebus");
-  legend.push_back("dy, veto id, Z");
-  coloropt.push_back(kBlue);
+  //file.push_back(dyfile);
+  //name.push_back("selelevetozwindidusrecoebus");
+  //legend.push_back("dy, veto id, Z");
+  //coloropt.push_back(kBlue);
   file.push_back(datafile);
   name.push_back("selelevetozwindidusrecoebus");
-  legend.push_back("data, veto id, Z");
+  legend.push_back("Z#rightarrowee");
   coloropt.push_back(kBlack);
-  file.push_back(sig3cmfile);
+  file.push_back(datafile);
+  name.push_back("elptgt10caloidusrecoebus");
+  legend.push_back("2e, p_{T}>10 GeV, caloid");
+  coloropt.push_back(kGray+1);
+  /*file.push_back(sig3cmfile);
   name.push_back("genptgt10Abasicselusgenmchrecoebus");
   legend.push_back("3 cm gen mch");
   coloropt.push_back(kRed+3);
@@ -321,7 +325,7 @@ int newplotter() {
   file.push_back(sig3mfile);
   name.push_back("genptgt10Abasicselusgenmchrecoebus");
   legend.push_back("3 m gen mch");
-  coloropt.push_back(kRed-9);
+  coloropt.push_back(kRed-9);*/
   /*
   coloropt.push_back(kBlue);
   file.push_back(datafile);
@@ -333,7 +337,7 @@ int newplotter() {
   legend.push_back("data, veto id, Z");
   */
   legendEntries = legend;
-  comparesamevariable(file, name, "egseedclustime", 7500, 13500, 250, true, true, true, (float []){1e-3,1}, (float []){0.65,0.6,0.8,0.95}, true, "e/#gamma ecal seed cluster time / ns");
+  comparesamevariable(file, name, "egseedclustime", 7500, 13500, 125, true, true, true, (float []){1e-4,10}, (float []){0.55,0.6,0.7,0.95}, true, "e/#gamma ecal seed cluster time / ns");
 
   return -1;
 }

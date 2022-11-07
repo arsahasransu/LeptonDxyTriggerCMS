@@ -115,11 +115,15 @@ void robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt to ra
   addhist("bar_electron");
   addhist("gt2_bar_electron");
   addhist("metTrig_MediumID_gt2_bar_electron");
+  addhist("time1p4ns_MediumID_gt2_bar_electron");
+  addhist("sminlt0p12_MediumID_gt2_bar_electron");
   addhist("time1p4ns_metTrig_MediumID_gt2_bar_electron");
   addhist("sminlt0p12_metTrig_MediumID_gt2_bar_electron");
   addhist("ec_electron");
   addhist("gt2_ec_electron");
   addhist("metTrig_MediumID_gt2_ec_electron");
+  addhist("time1p4ns_MediumID_gt2_ec_electron");
+  addhist("sminlt0p12_MediumID_gt2_ec_electron");
   addhist("time1p4ns_metTrig_MediumID_gt2_ec_electron");
   addhist("sminlt0p12_metTrig_MediumID_gt2_ec_electron");
   addhist("nosel_lowptelectron");
@@ -295,11 +299,11 @@ void robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt to ra
     if(sminlt0p12mettrigmediumidgt2barelidx.size()>=2) fillhistinevent("sminlt0p12_metTrig_MediumID_gt2_bar_electron", sminlt0p12mettrigmediumidgt2barelidx);
     fillhistinevent("ec_electron", ecelidx);
     fillhistinevent("gt2_ec_electron", gt2ecelidx);
-    if(mettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("metTrig_MediumID_ec_electron", mettrigmediumidgt2ecelidx);
-    if(time1p4nsmediumidgt2ecelidx.size()>=2) fillhistinevent("time1p4ns_MediumID_ec_electron", time1p4nsmediumidgt2ecelidx);
-    if(sminlt0p12mediumidgt2ecelidx.size()>=2) fillhistinevent("sminlt0p12_MediumID_ec_electron", sminlt0p12mediumidgt2ecelidx);
-    if(time1p4nsmettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("time1p4ns_metTrig_MediumID_ec_electron", time1p4nsmettrigmediumidgt2ecelidx);
-    if(sminlt0p12mettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("sminlt0p12_metTrig_MediumID_ec_electron", sminlt0p12mettrigmediumidgt2ecelidx);
+    if(mettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("metTrig_MediumID_gt2_ec_electron", mettrigmediumidgt2ecelidx);
+    if(time1p4nsmediumidgt2ecelidx.size()>=2) fillhistinevent("time1p4ns_MediumID_gt2_ec_electron", time1p4nsmediumidgt2ecelidx);
+    if(sminlt0p12mediumidgt2ecelidx.size()>=2) fillhistinevent("sminlt0p12_MediumID_gt2_ec_electron", sminlt0p12mediumidgt2ecelidx);
+    if(time1p4nsmettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("time1p4ns_metTrig_MediumID_gt2_ec_electron", time1p4nsmettrigmediumidgt2ecelidx);
+    if(sminlt0p12mettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("sminlt0p12_metTrig_MediumID_gt2_ec_electron", sminlt0p12mettrigmediumidgt2ecelidx);
     fillhistinevent("nosel_lowptelectron", nosellowptelidx);
     //fillhistinevent("noselphoton", noselphidx);
 
