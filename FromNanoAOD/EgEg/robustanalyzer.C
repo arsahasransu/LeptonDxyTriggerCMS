@@ -115,6 +115,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
   addhist("nosel_el");
   addhist("bar_el");
   addhist("gt2_bar_el");
+  addhist("id1_gt2_bar_el");
+  addhist("id2_gt2_bar_el");
   addhist("mid_gt2_bar_el");
   addhist("met_mid_gt2_bar_el");
   addhist("t1p4_mid_gt2_bar_el");
@@ -132,17 +134,19 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
   //addhist("nosel_lowptel");
   //addhist("nosel_photon");
   
+  vector<int> noselelidx;
+  vector<int> barelidx;
+  vector<int> id1barelidx;
+  vector<int> id2barelidx;
+  vector<int> midbarelidx;
+  vector<int> ecelidx;
+  vector<int> midecelidx;
+  //vector<int> nosellowptelidx;
+  //vector<int> noselphidx;
+  
   // Loop beginning on events
   for(unsigned int event=beginevent; event<endevent; event++) {
 
-    vector<int> noselelidx;
-    vector<int> barelidx;
-    vector<int> midbarelidx;
-    vector<int> ecelidx;
-    vector<int> midecelidx;
-    //vector<int> nosellowptelidx;
-    //vector<int> noselphidx;
-  
     inputChain->GetEntry(event);
     //if(event>1000) break;
     //if(event!=283991 && event!=326114) continue;
@@ -179,13 +183,24 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
       barelsel *= TMath::Abs(eleta[idx])<1.479;
       if(barelsel) barelidx.push_back(idx);
 
+      bool id1barsel = true;
+      id1barsel *= TMath::Abs(eleta[idx]) < 1.479;
+      id1barsel *= elsieie[idx] < 0.0103;
+      if(id1barsel) id1barelidx.push_back(idx);
+      
+      bool id2barsel = true;
+      id2barsel *= TMath::Abs(eleta[idx]) < 1.479;
+      id2barsel *= elsieie[idx] < 0.0103;
+      id2barsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
+      if(id2barsel) id2barelidx.push_back(idx);
+      
       bool midbarsel = true;
       midbarsel *= TMath::Abs(eleta[idx]) < 1.479;
       midbarsel *= elsieie[idx] < 0.0103;
-      midbarsel *= eldetasc[idx] < 0.00481;
+      //midbarsel *= eldetasc[idx] < 0.00481;
       midbarsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
       midbarsel *= elooemoop[idx] < 0.0966;
-      midbarsel *= elconvveto[idx];
+      //midbarsel *= elconvveto[idx];
       if(midbarsel) midbarelidx.push_back(idx);
       
       bool ecelsel = true;
@@ -220,6 +235,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
     fillhistinevent("nosel_el", noselelidx);
     fillhistinevent("bar_el", barelidx);
     if(barelidx.size()>=2) fillhistinevent("gt2_bar_el", barelidx);
+    if(id1barelidx.size()>=2) fillhistinevent("id1_gt2_bar_el", id1barelidx);
+    if(id2barelidx.size()>=2) fillhistinevent("id2_gt2_bar_el", id2barelidx);
     if(midbarelidx.size()>=2) fillhistinevent("mid_gt2_bar_el", midbarelidx);
     if(mettrigs && midbarelidx.size()>=2) fillhistinevent("met_mid_gt2_bar_el", midbarelidx);
     if(t1p4nstrig && midbarelidx.size()>=2) fillhistinevent("t1p4_mid_gt2_bar_el", midbarelidx);
@@ -240,6 +257,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
     // Clear all the vectors
     noselelidx.clear();
     barelidx.clear();
+    id1barelidx.clear();
+    id2barelidx.clear();
     midbarelidx.clear();
     ecelidx.clear();
     midecelidx.clear();
