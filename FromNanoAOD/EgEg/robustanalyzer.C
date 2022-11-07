@@ -125,6 +125,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
   addhist("sm12_met_mid_gt2_bar_el");
   addhist("ec_el");
   addhist("gt2_ec_el");
+  addhist("id1_gt2_ec_el");
+  addhist("id2_gt2_ec_el");
   addhist("mid_gt2_ec_el");
   addhist("met_mid_gt2_ec_el");
   addhist("t1p4_mid_gt2_ec_el");
@@ -140,6 +142,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
   vector<int> id2barelidx;
   vector<int> midbarelidx;
   vector<int> ecelidx;
+  vector<int> id1ecelidx;
+  vector<int> id2ecelidx;
   vector<int> midecelidx;
   //vector<int> nosellowptelidx;
   //vector<int> noselphidx;
@@ -207,13 +211,24 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
       ecelsel *= TMath::Abs(eleta[idx]) > 1.479;
       if(ecelsel) ecelidx.push_back(idx);
 
+      bool id1ecsel = true;
+      id1ecsel *= TMath::Abs(eleta[idx]) < 1.479;
+      id1ecsel *= elsieie[idx] < 0.0278;
+      if(id1ecsel) id1ecelidx.push_back(idx);
+      
+      bool id2ecsel = true;
+      id2ecsel *= TMath::Abs(eleta[idx]) < 1.479;
+      id2ecsel *= elsieie[idx] < 0.0278;
+      id2ecsel *= elhoe[idx] < (0.0274+2.08/energy+0.292*eventRho/energy);
+      if(id2ecsel) id2ecelidx.push_back(idx);
+      
       bool midecsel = true;
       midecsel *= TMath::Abs(eleta[idx]) > 1.479;
-      midecsel *= elsieie[idx] < 0.0103;
-      midecsel *= eldetasc[idx] < 0.00481;
-      midecsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
-      midecsel *= elooemoop[idx] < 0.0966;
-      midecsel *= elconvveto[idx];
+      midecsel *= elsieie[idx] < 0.0278;
+      //midecsel *= eldetasc[idx] < 0.00847;
+      midecsel *= elhoe[idx] < (0.0274+2.08/energy+0.292*eventRho/energy);
+      midecsel *= elooemoop[idx] < 0.0769;
+      //midecsel *= elconvveto[idx];
       if(midecsel) midecelidx.push_back(idx);
       
     } // End of loop on electrons
@@ -245,6 +260,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
     if(sminlt0p12trig && mettrigs && midbarelidx.size()>=2) fillhistinevent("sm12_met_mid_gt2_bar_el", midbarelidx);
     fillhistinevent("ec_el", ecelidx);
     if(ecelidx.size()>=2) fillhistinevent("gt2_ec_el", ecelidx);
+    if(id1ecelidx.size()>=2) fillhistinevent("id1_gt2_ec_el", id1ecelidx);
+    if(id2ecelidx.size()>=2) fillhistinevent("id2_gt2_ec_el", id2ecelidx);
     if(midecelidx.size()>=2) fillhistinevent("mid_gt2_ec_el", midecelidx);
     if(mettrigs && midecelidx.size()>=2) fillhistinevent("met_mid_gt2_ec_el", midecelidx);
     if(t1p4nstrig && midecelidx.size()>=2) fillhistinevent("t1p4_mid_gt2_ec_el", midecelidx);
@@ -261,6 +278,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
     id2barelidx.clear();
     midbarelidx.clear();
     ecelidx.clear();
+    id1ecelidx.clear();
+    id2ecelidx.clear();
     midecelidx.clear();
     //nosellowptelidx.clear();
     //noselphidx.clear();
