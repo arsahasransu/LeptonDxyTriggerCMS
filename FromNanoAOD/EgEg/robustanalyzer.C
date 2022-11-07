@@ -338,37 +338,37 @@ void robustanalyzer::fillhistinevent(TString selection, vector<int> elidx) {
   TH1F* evtrho = (TH1F*) outfile->Get(selection+"_event_rho");
   TH1F* evttrig = (TH1F*) outfile->Get(selection+"_event_trigdec");
 
-  TH1F* elmult = (TH1F*) outfile->Get(selection+"_electron_mult");
+  TH1F* elmult = (TH1F*) outfile->Get(selection+"_el_mult");
 
-  TH1F* leadelpt = (TH1F*) outfile->Get(selection+"_electron_lead_pt");
-  TH1F* leadeleta = (TH1F*) outfile->Get(selection+"_electron_lead_eta");
-  TH1F* leadelphi = (TH1F*) outfile->Get(selection+"_electron_lead_phi");
-  TH1F* leadelsieie = (TH1F*) outfile->Get(selection+"_electron_lead_sieie");
-  TH1F* leadelhoe = (TH1F*) outfile->Get(selection+"_electron_lead_hoe");
-  TH1F* leadeldetasc = (TH1F*) outfile->Get(selection+"_electron_lead_detasc");
-  TH1F* leadelooemoop = (TH1F*) outfile->Get(selection+"_electron_lead_ooemoop");
-  TH1F* leadelconvveto = (TH1F*) outfile->Get(selection+"_electron_lead_convveto");
-  TH1F* leadellog10d0 = (TH1F*) outfile->Get(selection+"_electron_lead_log10d0");
-  TH1F* leadeld0 = (TH1F*) outfile->Get(selection+"_electron_lead_d0");
-  TH1F* leadeld0Err = (TH1F*) outfile->Get(selection+"_electron_lead_d0Err");
-  TH1F* leadellog10dz = (TH1F*) outfile->Get(selection+"_electron_lead_log10dz");
-  TH1F* leadeldz = (TH1F*) outfile->Get(selection+"_electron_lead_dz");
-  TH1F* leadeldzErr = (TH1F*) outfile->Get(selection+"_electron_lead_dzErr");
+  TH1F* leadelpt = (TH1F*) outfile->Get(selection+"_el_lead_pt");
+  TH1F* leadeleta = (TH1F*) outfile->Get(selection+"_el_lead_eta");
+  TH1F* leadelphi = (TH1F*) outfile->Get(selection+"_el_lead_phi");
+  TH1F* leadelsieie = (TH1F*) outfile->Get(selection+"_el_lead_sieie");
+  TH1F* leadelhoe = (TH1F*) outfile->Get(selection+"_el_lead_hoe");
+  TH1F* leadeldetasc = (TH1F*) outfile->Get(selection+"_el_lead_detasc");
+  TH1F* leadelooemoop = (TH1F*) outfile->Get(selection+"_el_lead_ooemoop");
+  TH1F* leadelconvveto = (TH1F*) outfile->Get(selection+"_el_lead_convveto");
+  TH1F* leadellog10d0 = (TH1F*) outfile->Get(selection+"_el_lead_log10d0");
+  TH1F* leadeld0 = (TH1F*) outfile->Get(selection+"_el_lead_d0");
+  TH1F* leadeld0Err = (TH1F*) outfile->Get(selection+"_el_lead_d0Err");
+  TH1F* leadellog10dz = (TH1F*) outfile->Get(selection+"_el_lead_log10dz");
+  TH1F* leadeldz = (TH1F*) outfile->Get(selection+"_el_lead_dz");
+  TH1F* leadeldzErr = (TH1F*) outfile->Get(selection+"_el_lead_dzErr");
 
-  TH1F* subleadelpt = (TH1F*) outfile->Get(selection+"_electron_sublead_pt");
-  TH1F* subleadeleta = (TH1F*) outfile->Get(selection+"_electron_sublead_eta");
-  TH1F* subleadelphi = (TH1F*) outfile->Get(selection+"_electron_sublead_phi");
-  TH1F* subleadelsieie = (TH1F*) outfile->Get(selection+"_electron_sublead_sieie");
-  TH1F* subleadelhoe = (TH1F*) outfile->Get(selection+"_electron_sublead_hoe");
-  TH1F* subleadeldetasc = (TH1F*) outfile->Get(selection+"_electron_sublead_detasc");
-  TH1F* subleadelooemoop = (TH1F*) outfile->Get(selection+"_electron_sublead_ooemoop");
-  TH1F* subleadelconvveto = (TH1F*) outfile->Get(selection+"_electron_sublead_convveto");
-  TH1F* subleadellog10d0 = (TH1F*) outfile->Get(selection+"_electron_sublead_log10d0");
-  TH1F* subleadeld0 = (TH1F*) outfile->Get(selection+"_electron_sublead_d0");
-  TH1F* subleadeld0Err = (TH1F*) outfile->Get(selection+"_electron_sublead_d0Err");
-  TH1F* subleadellog10dz = (TH1F*) outfile->Get(selection+"_electron_sublead_log10dz");
-  TH1F* subleadeldz = (TH1F*) outfile->Get(selection+"_electron_sublead_dz");
-  TH1F* subleadeldzErr = (TH1F*) outfile->Get(selection+"_electron_sublead_dzErr");
+  TH1F* subleadelpt = (TH1F*) outfile->Get(selection+"_el_sublead_pt");
+  TH1F* subleadeleta = (TH1F*) outfile->Get(selection+"_el_sublead_eta");
+  TH1F* subleadelphi = (TH1F*) outfile->Get(selection+"_el_sublead_phi");
+  TH1F* subleadelsieie = (TH1F*) outfile->Get(selection+"_el_sublead_sieie");
+  TH1F* subleadelhoe = (TH1F*) outfile->Get(selection+"_el_sublead_hoe");
+  TH1F* subleadeldetasc = (TH1F*) outfile->Get(selection+"_el_sublead_detasc");
+  TH1F* subleadelooemoop = (TH1F*) outfile->Get(selection+"_el_sublead_ooemoop");
+  TH1F* subleadelconvveto = (TH1F*) outfile->Get(selection+"_el_sublead_convveto");
+  TH1F* subleadellog10d0 = (TH1F*) outfile->Get(selection+"_el_sublead_log10d0");
+  TH1F* subleadeld0 = (TH1F*) outfile->Get(selection+"_el_sublead_d0");
+  TH1F* subleadeld0Err = (TH1F*) outfile->Get(selection+"_el_sublead_d0Err");
+  TH1F* subleadellog10dz = (TH1F*) outfile->Get(selection+"_el_sublead_log10dz");
+  TH1F* subleadeldz = (TH1F*) outfile->Get(selection+"_el_sublead_dz");
+  TH1F* subleadeldzErr = (TH1F*) outfile->Get(selection+"_el_sublead_dzErr");
 
   if(elidx.size()>0) {
 
