@@ -112,22 +112,22 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
   // Count events passing certain selections
   int nosel=0;
 
-  addhist("nosel_electron");
-  addhist("bar_electron");
-  addhist("gt2_bar_electron");
-  addhist("metTrig_MediumID_gt2_bar_electron");
-  addhist("time1p4ns_MediumID_gt2_bar_electron");
-  addhist("sminlt0p12_MediumID_gt2_bar_electron");
-  addhist("time1p4ns_metTrig_MediumID_gt2_bar_electron");
-  addhist("sminlt0p12_metTrig_MediumID_gt2_bar_electron");
-  addhist("ec_electron");
-  addhist("gt2_ec_electron");
-  addhist("metTrig_MediumID_gt2_ec_electron");
-  addhist("time1p4ns_MediumID_gt2_ec_electron");
-  addhist("sminlt0p12_MediumID_gt2_ec_electron");
-  addhist("time1p4ns_metTrig_MediumID_gt2_ec_electron");
-  addhist("sminlt0p12_metTrig_MediumID_gt2_ec_electron");
-  addhist("nosel_lowptelectron");
+  addhist("nosel_el");
+  addhist("bar_el");
+  addhist("gt2_bar_el");
+  addhist("met_mid_gt2_bar_el");
+  addhist("t1p4_mid_gt2_bar_el");
+  addhist("sm12_mid_gt2_bar_el");
+  addhist("t1p4_met_mid_gt2_bar_el");
+  addhist("sm12_met_mid_gt2_bar_el");
+  addhist("ec_el");
+  addhist("gt2_ec_el");
+  addhist("met_mid_gt2_ec_el");
+  addhist("t1p4_mid_gt2_ec_el");
+  addhist("sm12_mid_gt2_ec_el");
+  addhist("t1p4_met_mid_gt2_ec_el");
+  addhist("sm12_met_mid_gt2_ec_el");
+  addhist("nosel_lowptel");
 
   //addhist("nosel_photon");
   
@@ -138,17 +138,17 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
     vector<int> barelidx;
     vector<int> gt2barelidx;
     vector<int> mettrigmediumidgt2barelidx;
-    vector<int> time1p4nsmediumidgt2barelidx;
-    vector<int> sminlt0p12mediumidgt2barelidx;
-    vector<int> time1p4nsmettrigmediumidgt2barelidx;
-    vector<int> sminlt0p12mettrigmediumidgt2barelidx;
+    vector<int> t1p4mediumidgt2barelidx;
+    vector<int> sm12mediumidgt2barelidx;
+    vector<int> t1p4mettrigmediumidgt2barelidx;
+    vector<int> sm12mettrigmediumidgt2barelidx;
     vector<int> ecelidx;
     vector<int> gt2ecelidx;
     vector<int> mettrigmediumidgt2ecelidx;
-    vector<int> time1p4nsmediumidgt2ecelidx;
-    vector<int> sminlt0p12mediumidgt2ecelidx;
-    vector<int> time1p4nsmettrigmediumidgt2ecelidx;
-    vector<int> sminlt0p12mettrigmediumidgt2ecelidx;
+    vector<int> t1p4mediumidgt2ecelidx;
+    vector<int> sm12mediumidgt2ecelidx;
+    vector<int> t1p4mettrigmediumidgt2ecelidx;
+    vector<int> sm12mettrigmediumidgt2ecelidx;
     vector<int> nosellowptelidx;
     vector<int> noselphidx;
   
@@ -191,35 +191,35 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
       mettrigmediumidgt2barsel *= elconvveto[idx];
       if(mettrigmediumidgt2barsel) mettrigmediumidgt2barelidx.push_back(idx);
       
-      bool time1p4nsmediumidgt2barsel = true;
-      time1p4nsmediumidgt2barsel *= TMath::Abs(eleta[idx]) < 1.479;
-      time1p4nsmediumidgt2barsel *= HLT_DiPhoton10Time1p4ns;
-      time1p4nsmediumidgt2barsel *= elsieie[idx] < 0.0103;
-      time1p4nsmediumidgt2barsel *= eldetasc[idx] < 0.00481;
-      time1p4nsmediumidgt2barsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
-      time1p4nsmediumidgt2barsel *= elooemoop[idx] < 0.0966;
-      time1p4nsmediumidgt2barsel *= elconvveto[idx];
-      if(time1p4nsmediumidgt2barsel) time1p4nsmediumidgt2barelidx.push_back(idx);
+      bool t1p4mediumidgt2barsel = true;
+      t1p4mediumidgt2barsel *= TMath::Abs(eleta[idx]) < 1.479;
+      t1p4mediumidgt2barsel *= HLT_DiPhoton10Time1p4ns;
+      t1p4mediumidgt2barsel *= elsieie[idx] < 0.0103;
+      t1p4mediumidgt2barsel *= eldetasc[idx] < 0.00481;
+      t1p4mediumidgt2barsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
+      t1p4mediumidgt2barsel *= elooemoop[idx] < 0.0966;
+      t1p4mediumidgt2barsel *= elconvveto[idx];
+      if(t1p4mediumidgt2barsel) t1p4mediumidgt2barelidx.push_back(idx);
       
-      bool sminlt0p12mediumidgt2barsel = true;
-      sminlt0p12mediumidgt2barsel *= TMath::Abs(eleta[idx]) < 1.479;
-      sminlt0p12mediumidgt2barsel *= HLT_DiPhoton10sminlt0p12;
-      sminlt0p12mediumidgt2barsel *= elsieie[idx] < 0.0103;
-      sminlt0p12mediumidgt2barsel *= eldetasc[idx] < 0.00481;
-      sminlt0p12mediumidgt2barsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
-      sminlt0p12mediumidgt2barsel *= elooemoop[idx] < 0.0966;
-      sminlt0p12mediumidgt2barsel *= elconvveto[idx];
-      if(sminlt0p12mediumidgt2barsel) sminlt0p12mediumidgt2barelidx.push_back(idx);
+      bool sm12mediumidgt2barsel = true;
+      sm12mediumidgt2barsel *= TMath::Abs(eleta[idx]) < 1.479;
+      sm12mediumidgt2barsel *= HLT_DiPhoton10sminlt0p12;
+      sm12mediumidgt2barsel *= elsieie[idx] < 0.0103;
+      sm12mediumidgt2barsel *= eldetasc[idx] < 0.00481;
+      sm12mediumidgt2barsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
+      sm12mediumidgt2barsel *= elooemoop[idx] < 0.0966;
+      sm12mediumidgt2barsel *= elconvveto[idx];
+      if(sm12mediumidgt2barsel) sm12mediumidgt2barelidx.push_back(idx);
       
-      bool time1p4nsmettrigmediumidgt2barsel = true;
-      time1p4nsmettrigmediumidgt2barsel *= mettrigmediumidgt2barsel;
-      time1p4nsmettrigmediumidgt2barsel *= HLT_DiPhoton10Time1p4ns;
-      if(time1p4nsmettrigmediumidgt2barsel) time1p4nsmettrigmediumidgt2barelidx.push_back(idx);
+      bool t1p4mettrigmediumidgt2barsel = true;
+      t1p4mettrigmediumidgt2barsel *= mettrigmediumidgt2barsel;
+      t1p4mettrigmediumidgt2barsel *= HLT_DiPhoton10Time1p4ns;
+      if(t1p4mettrigmediumidgt2barsel) t1p4mettrigmediumidgt2barelidx.push_back(idx);
       
-      bool sminlt0p12mettrigmediumidgt2barsel = true;
-      sminlt0p12mettrigmediumidgt2barsel *= mettrigmediumidgt2barsel;
-      sminlt0p12mettrigmediumidgt2barsel *= HLT_DiPhoton10sminlt0p12;
-      if(sminlt0p12mettrigmediumidgt2barsel) sminlt0p12mettrigmediumidgt2barelidx.push_back(idx);
+      bool sm12mettrigmediumidgt2barsel = true;
+      sm12mettrigmediumidgt2barsel *= mettrigmediumidgt2barsel;
+      sm12mettrigmediumidgt2barsel *= HLT_DiPhoton10sminlt0p12;
+      if(sm12mettrigmediumidgt2barsel) sm12mettrigmediumidgt2barelidx.push_back(idx);
 
       bool ecelsel = true;
       ecelsel *= TMath::Abs(eleta[idx]) > 1.479;
@@ -241,35 +241,35 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
       mettrigmediumidgt2ecsel *= elconvveto[idx];
       if(mettrigmediumidgt2ecsel) mettrigmediumidgt2ecelidx.push_back(idx);
       
-      bool time1p4nsmediumidgt2ecsel = true;
-      time1p4nsmediumidgt2ecsel *= TMath::Abs(eleta[idx]) > 1.479;
-      time1p4nsmediumidgt2ecsel *= HLT_DiPhoton10Time1p4ns;
-      time1p4nsmediumidgt2ecsel *= elsieie[idx] < 0.0103;
-      time1p4nsmediumidgt2ecsel *= eldetasc[idx] < 0.00481;
-      time1p4nsmediumidgt2ecsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
-      time1p4nsmediumidgt2ecsel *= elooemoop[idx] < 0.0966;
-      time1p4nsmediumidgt2ecsel *= elconvveto[idx];
-      if(time1p4nsmediumidgt2ecsel) time1p4nsmediumidgt2ecelidx.push_back(idx);
+      bool t1p4mediumidgt2ecsel = true;
+      t1p4mediumidgt2ecsel *= TMath::Abs(eleta[idx]) > 1.479;
+      t1p4mediumidgt2ecsel *= HLT_DiPhoton10Time1p4ns;
+      t1p4mediumidgt2ecsel *= elsieie[idx] < 0.0103;
+      t1p4mediumidgt2ecsel *= eldetasc[idx] < 0.00481;
+      t1p4mediumidgt2ecsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
+      t1p4mediumidgt2ecsel *= elooemoop[idx] < 0.0966;
+      t1p4mediumidgt2ecsel *= elconvveto[idx];
+      if(t1p4mediumidgt2ecsel) t1p4mediumidgt2ecelidx.push_back(idx);
       
-      bool sminlt0p12mediumidgt2ecsel = true;
-      sminlt0p12mediumidgt2ecsel *= TMath::Abs(eleta[idx]) > 1.479;
-      sminlt0p12mediumidgt2ecsel *= HLT_DiPhoton10sminlt0p12;
-      sminlt0p12mediumidgt2ecsel *= elsieie[idx] < 0.0103;
-      sminlt0p12mediumidgt2ecsel *= eldetasc[idx] < 0.00481;
-      sminlt0p12mediumidgt2ecsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
-      sminlt0p12mediumidgt2ecsel *= elooemoop[idx] < 0.0966;
-      sminlt0p12mediumidgt2ecsel *= elconvveto[idx];
-      if(sminlt0p12mediumidgt2ecsel) sminlt0p12mediumidgt2ecelidx.push_back(idx);
+      bool sm12mediumidgt2ecsel = true;
+      sm12mediumidgt2ecsel *= TMath::Abs(eleta[idx]) > 1.479;
+      sm12mediumidgt2ecsel *= HLT_DiPhoton10sminlt0p12;
+      sm12mediumidgt2ecsel *= elsieie[idx] < 0.0103;
+      sm12mediumidgt2ecsel *= eldetasc[idx] < 0.00481;
+      sm12mediumidgt2ecsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*eventRho/energy);
+      sm12mediumidgt2ecsel *= elooemoop[idx] < 0.0966;
+      sm12mediumidgt2ecsel *= elconvveto[idx];
+      if(sm12mediumidgt2ecsel) sm12mediumidgt2ecelidx.push_back(idx);
       
-      bool time1p4nsmettrigmediumidgt2ecsel = true;
-      time1p4nsmettrigmediumidgt2ecsel *= mettrigmediumidgt2ecsel;
-      time1p4nsmettrigmediumidgt2ecsel *= HLT_DiPhoton10Time1p4ns;
-      if(time1p4nsmettrigmediumidgt2ecsel) time1p4nsmettrigmediumidgt2ecelidx.push_back(idx);
+      bool t1p4mettrigmediumidgt2ecsel = true;
+      t1p4mettrigmediumidgt2ecsel *= mettrigmediumidgt2ecsel;
+      t1p4mettrigmediumidgt2ecsel *= HLT_DiPhoton10Time1p4ns;
+      if(t1p4mettrigmediumidgt2ecsel) t1p4mettrigmediumidgt2ecelidx.push_back(idx);
 
-      bool sminlt0p12mettrigmediumidgt2ecsel = true;
-      sminlt0p12mettrigmediumidgt2ecsel *= mettrigmediumidgt2ecsel;
-      sminlt0p12mettrigmediumidgt2ecsel *= HLT_DiPhoton10sminlt0p12;
-      if(sminlt0p12mettrigmediumidgt2ecsel) sminlt0p12mettrigmediumidgt2ecelidx.push_back(idx);
+      bool sm12mettrigmediumidgt2ecsel = true;
+      sm12mettrigmediumidgt2ecsel *= mettrigmediumidgt2ecsel;
+      sm12mettrigmediumidgt2ecsel *= HLT_DiPhoton10sminlt0p12;
+      if(sm12mettrigmediumidgt2ecsel) sm12mettrigmediumidgt2ecelidx.push_back(idx);
 
     } // End of loop on electrons
        
@@ -290,22 +290,22 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
     if(barelidx.size()>=2) gt2barelidx = barelidx;
     if(ecelidx.size()>=2) gt2ecelidx = ecelidx;
     
-    fillhistinevent("nosel_electron", noselelidx);
-    fillhistinevent("bar_electron", barelidx);
-    fillhistinevent("gt2_bar_electron", gt2barelidx);
-    if(mettrigmediumidgt2barelidx.size()>=2) fillhistinevent("metTrig_MediumID_gt2_bar_electron", mettrigmediumidgt2barelidx);
-    if(time1p4nsmediumidgt2barelidx.size()>=2) fillhistinevent("time1p4ns_MediumID_gt2_bar_electron", time1p4nsmediumidgt2barelidx);
-    if(sminlt0p12mediumidgt2barelidx.size()>=2) fillhistinevent("sminlt0p12_MediumID_gt2_bar_electron", sminlt0p12mediumidgt2barelidx);
-    if(time1p4nsmettrigmediumidgt2barelidx.size()>=2) fillhistinevent("time1p4ns_metTrig_MediumID_gt2_bar_electron", time1p4nsmettrigmediumidgt2barelidx);
-    if(sminlt0p12mettrigmediumidgt2barelidx.size()>=2) fillhistinevent("sminlt0p12_metTrig_MediumID_gt2_bar_electron", sminlt0p12mettrigmediumidgt2barelidx);
-    fillhistinevent("ec_electron", ecelidx);
-    fillhistinevent("gt2_ec_electron", gt2ecelidx);
-    if(mettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("metTrig_MediumID_gt2_ec_electron", mettrigmediumidgt2ecelidx);
-    if(time1p4nsmediumidgt2ecelidx.size()>=2) fillhistinevent("time1p4ns_MediumID_gt2_ec_electron", time1p4nsmediumidgt2ecelidx);
-    if(sminlt0p12mediumidgt2ecelidx.size()>=2) fillhistinevent("sminlt0p12_MediumID_gt2_ec_electron", sminlt0p12mediumidgt2ecelidx);
-    if(time1p4nsmettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("time1p4ns_metTrig_MediumID_gt2_ec_electron", time1p4nsmettrigmediumidgt2ecelidx);
-    if(sminlt0p12mettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("sminlt0p12_metTrig_MediumID_gt2_ec_electron", sminlt0p12mettrigmediumidgt2ecelidx);
-    fillhistinevent("nosel_lowptelectron", nosellowptelidx);
+    fillhistinevent("nosel_el", noselelidx);
+    fillhistinevent("bar_el", barelidx);
+    fillhistinevent("gt2_bar_el", gt2barelidx);
+    if(mettrigmediumidgt2barelidx.size()>=2) fillhistinevent("met_mid_gt2_bar_el", mettrigmediumidgt2barelidx);
+    if(t1p4mediumidgt2barelidx.size()>=2) fillhistinevent("t1p4_mid_gt2_bar_el", t1p4mediumidgt2barelidx);
+    if(sm12mediumidgt2barelidx.size()>=2) fillhistinevent("sm12_mid_gt2_bar_el", sm12mediumidgt2barelidx);
+    if(t1p4mettrigmediumidgt2barelidx.size()>=2) fillhistinevent("t1p4_met_mid_gt2_bar_el", t1p4mettrigmediumidgt2barelidx);
+    if(sm12mettrigmediumidgt2barelidx.size()>=2) fillhistinevent("sm12_met_mid_gt2_bar_el", sm12mettrigmediumidgt2barelidx);
+    fillhistinevent("ec_el", ecelidx);
+    fillhistinevent("gt2_ec_el", gt2ecelidx);
+    if(mettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("met_mid_gt2_ec_el", mettrigmediumidgt2ecelidx);
+    if(t1p4mediumidgt2ecelidx.size()>=2) fillhistinevent("t1p4_mid_gt2_ec_el", t1p4mediumidgt2ecelidx);
+    if(sm12mediumidgt2ecelidx.size()>=2) fillhistinevent("sm12_mid_gt2_ec_el", sm12mediumidgt2ecelidx);
+    if(t1p4mettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("t1p4_met_mid_gt2_ec_el", t1p4mettrigmediumidgt2ecelidx);
+    if(sm12mettrigmediumidgt2ecelidx.size()>=2) fillhistinevent("sm12_met_mid_gt2_ec_el", sm12mettrigmediumidgt2ecelidx);
+    fillhistinevent("nosel_lowptel", nosellowptelidx);
     //fillhistinevent("noselphoton", noselphidx);
 
     // Clear all the vectors
@@ -313,17 +313,17 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
     barelidx.clear();
     gt2barelidx.clear();
     mettrigmediumidgt2barelidx.clear();
-    time1p4nsmediumidgt2barelidx.clear();
-    sminlt0p12mediumidgt2barelidx.clear();
-    time1p4nsmettrigmediumidgt2barelidx.clear();
-    sminlt0p12mettrigmediumidgt2barelidx.clear();
+    t1p4mediumidgt2barelidx.clear();
+    sm12mediumidgt2barelidx.clear();
+    t1p4mettrigmediumidgt2barelidx.clear();
+    sm12mettrigmediumidgt2barelidx.clear();
     ecelidx.clear();
     gt2ecelidx.clear();
     mettrigmediumidgt2ecelidx.clear();
-    time1p4nsmediumidgt2ecelidx.clear();
-    sminlt0p12mediumidgt2ecelidx.clear();
-    time1p4nsmettrigmediumidgt2ecelidx.clear();
-    sminlt0p12mettrigmediumidgt2ecelidx.clear();
+    t1p4mediumidgt2ecelidx.clear();
+    sm12mediumidgt2ecelidx.clear();
+    t1p4mettrigmediumidgt2ecelidx.clear();
+    sm12mettrigmediumidgt2ecelidx.clear();
     nosellowptelidx.clear();
     noselphidx.clear();
 
