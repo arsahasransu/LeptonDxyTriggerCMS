@@ -14,7 +14,7 @@ class robustanalyzer {
   robustanalyzer(TString, TString, bool);
   ~robustanalyzer();
   
-  void analyzersinglefile(int);
+  void analyzersinglefile(int, int);
   void addhist(TString);
   void fillhistinevent(TString, vector<int>);
   void sort(int*, double*, int);

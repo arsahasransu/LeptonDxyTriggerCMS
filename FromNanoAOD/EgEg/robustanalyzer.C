@@ -98,15 +98,16 @@ robustanalyzer::~robustanalyzer() {
 }
 
 // Analyzer for a single file
-void robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt to range from 0 to nCores
+void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume splitCnt to range from 0 to nCores
 
   int totEntries = inputChain->GetEntries();
   cout<<"Total number of entries: "<<totEntries<<endl;
-  int nCores = 6; // Assume parallel processing over 7 cores where
+  int nCores = numCores; // Assume parallel processing over numCores cores where
   // there is a lesser no.of events in the last core
   int beginevent = splitCnt*(totEntries/nCores);
   int endevent = (splitCnt+1)*(totEntries/nCores);
   endevent = endevent<totEntries?endevent:totEntries; // Verfied that this logic to parallelize works
+  cout<<"Runing "<<splitCnt<<" process from "<<beginevent<<" to "<<endevent<<endl; 
 
   // Count events passing certain selections
   int nosel=0;
