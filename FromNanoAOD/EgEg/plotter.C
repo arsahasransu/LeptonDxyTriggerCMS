@@ -5,7 +5,7 @@
 #include "enhance_plotter.C"
 
 TString cutdeets = "Cut details";
-TFile* metdatafile = TFile::Open("hists_metdata.root","READ");
+TFile* metdatafile = TFile::Open("hists_metdata_55608.root","READ");
 
 TString seltext[2] = {"line1", "line2"};
 
@@ -150,10 +150,31 @@ int plotter() {
   coloropt.push_back(kBlue);
 
   legendEntries = legend;  
-  comparesamevariable(file, name, "event_trigdec", 40, 55, 1, true, true, true, (float []){8e-1,1e5}, (float []){0.5,0.8,0.75,0.99}, false, "Trigger Decisions");
+  //comparesamevariable(file, name, "event_trigdec", 40, 55, 1, true, true, true, (float []){8e-1,1e5}, (float []){0.5,0.8,0.75,0.99}, false, "Trigger Decisions");
   //comparesamevariable(file, name, "pt", 50, 100, 1, true, true, true, (float []){0.8,1e4}, (float []){0.6,0.6,0.89,0.95}, false, "photon filter p_{T} / GeV");
   //comparesamevariable(file, name, "eta", -1, -1, 2, false, true, true, (float []){0,700}, (float []){0.11,0.7,0.36,0.99}, false, "photon filter #eta");
   //comparesamevariable(file, name, "phi", -1, -1, 2, false, true, true, (float []){0,350}, (float []){0.25,0.3,0.49,0.55}, false, "photon filter #phi");
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+
+  file.push_back(metdatafile);
+  name.push_back("met_mid_gt2_bar_el_el_sublead_pt");
+  name.push_back("sm12_mid_gt2_bar_el_el_sublead_pt");
+  legend.push_back("bla");
+  legendEntries = legend;
+  vector<double> binspt{2,3,4,7,10,12,14,16,18,20};
+  efficiency(file, name, (double []){11,0.7}, binspt.size()-1, &binspt[0], "p_{T} [GeV]");
+  name.clear();
+  legend.clear();
+  name.push_back("met_mid_gt2_bar_el_el_lead_log10d0");
+  name.push_back("sm12_mid_gt2_bar_el_el_lead_log10d0");
+  legend.push_back("bla");
+  legendEntries = legend;
+  vector<double> binslog10d0{-3,-2,-1,0,1,2};
+  efficiency(file, name, (double []){0,0.7}, binslog10d0.size()-1, &binslog10d0[0], "log_{10}d_{0} [log_{10}cm]");
   
   return -1;
 }
