@@ -5,7 +5,7 @@
 #include "enhance_plotter.C"
 
 TString cutdeets = "Cut details";
-TFile* metdatafile = TFile::Open("hists_metdata_55608.root","READ");
+TFile* metdatafile = TFile::Open("hists_metdata_56065.root","READ");
 
 TString seltext[2] = {"line1", "line2"};
 
@@ -45,7 +45,7 @@ int efficiency(std::vector<TFile*> file, std::vector<TString> cutnames, double l
   std::vector<TH1F*> allhists;
   demo->SetTitle("");
   demo->GetXaxis()->SetTitle(xaxistitle);
-  demo->GetYaxis()->SetTitle("RECO eff.");
+  demo->GetYaxis()->SetTitle("RECO+ID eff.");
   demo->SetLineColorAlpha(kWhite,1);
   demo->SetFillColorAlpha(kWhite,1);
   allhists.push_back(demo);
@@ -159,22 +159,62 @@ int plotter() {
   name.clear();
   legend.clear();
   coloropt.clear();
+  file.push_back(metdatafile);
+  name.push_back("met_mid_gt2_bar_el_el");
+  legend.push_back("base");
+  coloropt.push_back(kRed);
+  file.push_back(metdatafile);
+  name.push_back("sm12_mid_gt2_bar_el_el");
+  legend.push_back("base+smin<0.12");
+  coloropt.push_back(kBlue);
+  legendEntries = legend;  
+  //comparesamevariable(file, name, "sublead_pt", 50, 100, 1, true, true, true, (float []){0.8,1e4}, (float []){0.6,0.6,0.89,0.95}, false, "e_{2} p_{T} / GeV");
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
 
   file.push_back(metdatafile);
   name.push_back("met_mid_gt2_bar_el_el_sublead_pt");
   name.push_back("sm12_mid_gt2_bar_el_el_sublead_pt");
-  legend.push_back("bla");
+  legend.push_back("");
   legendEntries = legend;
-  vector<double> binspt{2,3,4,7,10,12,14,16,18,20};
-  efficiency(file, name, (double []){11,0.7}, binspt.size()-1, &binspt[0], "p_{T} [GeV]");
+  vector<double> binspt{2,4,6,8,10,12,14,16,18,20};
+  seltext[0] = "HLT_DiPhoton10sminlt0p12";
+  seltext[1] = "MET triggers, 2 medium ID el";
+  efficiency(file, name, (double []){8,0.7}, binspt.size()-1, &binspt[0], "e_{2} p_{T} [GeV]");
   name.clear();
   legend.clear();
-  name.push_back("met_mid_gt2_bar_el_el_lead_log10d0");
-  name.push_back("sm12_mid_gt2_bar_el_el_lead_log10d0");
-  legend.push_back("bla");
+  name.push_back("met_mid_gt2_bar_el_el_sublead_log10d0");
+  name.push_back("sm12_mid_gt2_bar_el_el_sublead_log10d0");
+  legend.push_back("");
   legendEntries = legend;
-  vector<double> binslog10d0{-3,-2,-1,0,1,2};
-  efficiency(file, name, (double []){0,0.7}, binslog10d0.size()-1, &binslog10d0[0], "log_{10}d_{0} [log_{10}cm]");
+  vector<double> binslog10d0{-4,-3.5,-3,-2.5,-2,-1,0,1,2};
+  efficiency(file, name, (double []){-3,0.7}, binslog10d0.size()-1, &binslog10d0[0], "e_{2} log_{10}d_{0} [log_{10}cm]");
+  name.clear();
+  legend.clear();
+  name.push_back("met_mid_gt2_bar_lowptel_lowptel_sublead_pt");
+  name.push_back("sm12_mid_gt2_bar_lowptel_lowptel_sublead_pt");
+  legend.push_back("");
+  legendEntries = legend;
+  vector<double> binslowptelpt{2,4,6,8,10,12,14,16,18,20};
+  efficiency(file, name, (double []){8,0.7}, binslowptelpt.size()-1, &binslowptelpt[0], "lowp_{T} e_{2} p_{T} [GeV]");
+  name.clear();
+  legend.clear();
+  name.push_back("met_mid_gt2_bar_pho_pho_sublead_pt");
+  name.push_back("sm12_mid_gt2_bar_pho_pho_sublead_pt");
+  legend.push_back("");
+  legendEntries = legend;
+  vector<double> binsphopt{2,4,6,8,10,12,14,16,18,20};
+  efficiency(file, name, (double []){11,0.7}, binsphopt.size()-1, &binsphopt[0], "photon_{2} p_{T} [GeV]");
+  name.clear();
+  legend.clear();
+  name.push_back("met_mid_gt2_bar_lowptel_lowptel_sublead_log10d0");
+  name.push_back("sm12_mid_gt2_bar_lowptel_lowptel_sublead_log10d0");
+  legend.push_back("");
+  legendEntries = legend;
+  efficiency(file, name, (double []){-3,0.7}, binslog10d0.size()-1, &binslog10d0[0], "lowp_{T} e_{2} log_{10}d_{0} [log_{10}cm]");
   
   return -1;
 }

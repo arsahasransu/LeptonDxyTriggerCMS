@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
     
     stringstream ss1;
     ss1<<"hists_data_"<<cnt<<".root";
-    robustanalyzer rana_data("./data/DiPhoton10_trigNtuples_31.root", ss1.str(), numCores);
+    robustanalyzer rana_data("./data/DiPhoton10_trigNtuples_221107.root", ss1.str(), numCores);
     rana_data.analyzersinglefile(cnt);
     
   }

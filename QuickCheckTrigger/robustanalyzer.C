@@ -33,6 +33,8 @@ robustanalyzer::robustanalyzer(TString filename, TString outfilename, int numCor
   pho_eta = new vector<double>(0);
   pho_phi = new vector<double>(0);
   pho_seedtime = new vector<double>(0);
+  pho_sieie = new vector<double>(0);
+  pho_hoe = new vector<double>(0);
   pho_smin = new vector<double>(0);
   pho_smax = new vector<double>(0);
   
@@ -72,6 +74,8 @@ robustanalyzer::robustanalyzer(TString filename, TString outfilename, int numCor
   inputChain->SetBranchAddress("pho_eta", &pho_eta);
   inputChain->SetBranchAddress("pho_phi", &pho_phi);
   inputChain->SetBranchAddress("pho_seedtime", &pho_seedtime);
+  inputChain->SetBranchAddress("pho_sinin_noiseclnd", &pho_sieie);
+  inputChain->SetBranchAddress("pho_hoe", &pho_hoe);
   inputChain->SetBranchAddress("pho_smin", &pho_smin);
   inputChain->SetBranchAddress("pho_smax", &pho_smax);
 
@@ -134,7 +138,7 @@ void robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt to ra
     inputChain->GetEntry(event);
     //if(event>10) break;
     //if(event!=283991 && event!=326114) continue;
-    if(event%1000==0) std::cout<<"Processed event: "<<event+1<<std::endl;
+    if(event%100000==0) std::cout<<"Processed event: "<<event+1<<std::endl;
 
     // Cross-checks
     if(dieg10sminlt0p12_usfinfilt_pt->size() != dieg10sminlt0p12_usfinfilt_n) throw "Error!!! Number of entries in vector \"dieg10sminlt0p12_usfinfilt_pt\" unequal entries comapred to \"dieg10sminlt0p12_usfinfilt_n\".";
@@ -236,6 +240,8 @@ void robustanalyzer::fillPhotonCollectionhist(TString selection, vector<int> idx
   TH1F* heta = (TH1F*) outfile->Get(selection+"_pho_eta");
   TH1F* hphi = (TH1F*) outfile->Get(selection+"_pho_phi");
   TH1F* hseedtime = (TH1F*) outfile->Get(selection+"_pho_seedtime");
+  TH1F* hsieie = (TH1F*) outfile->Get(selection+"_pho_sieie");
+  TH1F* hhoe = (TH1F*) outfile->Get(selection+"_pho_hoe");
   TH1F* hsmin = (TH1F*) outfile->Get(selection+"_pho_smin");
   TH1F* hsmax = (TH1F*) outfile->Get(selection+"_pho_smax");
 
@@ -245,6 +251,8 @@ void robustanalyzer::fillPhotonCollectionhist(TString selection, vector<int> idx
     heta->Fill(pho_eta->at(index));
     hphi->Fill(pho_phi->at(index));
     hseedtime->Fill(pho_seedtime->at(index));
+    hsieie->Fill(pho_sieie->at(index));
+    hhoe->Fill(pho_hoe->at(index));
     hsmin->Fill(pho_smin->at(index));
     hsmax->Fill(pho_smax->at(index));
   }
@@ -388,6 +396,8 @@ void robustanalyzer::addPhotonCollectionhist(TString selection) {
   all1dhists.push_back(new TH1F(selection+"_pho_eta","#eta",1000,-5,5));
   all1dhists.push_back(new TH1F(selection+"_pho_phi","#phi",66,-3.3,3.3));
   all1dhists.push_back(new TH1F(selection+"_pho_seedtime","seed time / ns",500000,-25,25));
+  all1dhists.push_back(new TH1F(selection+"_pho_sieie","#sigmai#etai#eta",10000,0,0.1));
+  all1dhists.push_back(new TH1F(selection+"_pho_hoe","H/E",10000,0,1));
   all1dhists.push_back(new TH1F(selection+"_pho_smin","smin",10000,0,10));
   all1dhists.push_back(new TH1F(selection+"_pho_smax","smax",10000,0,10));
 }

@@ -38,7 +38,7 @@ private:
   int run, lumi, dieg10sminlt0p12_usfinfilt_n, dieg10time1p4ns_usfinfilt_n, dieg10caloidl_usfinfilt_n, pho_n, pv_n;
   double bs_x, bs_y, bs_z;
   vector<double> *dieg10sminlt0p12_usfinfilt_pt, *dieg10sminlt0p12_usfinfilt_eta, *dieg10sminlt0p12_usfinfilt_phi, *dieg10time1p4ns_usfinfilt_pt, *dieg10time1p4ns_usfinfilt_eta, *dieg10time1p4ns_usfinfilt_phi, *dieg10caloidl_usfinfilt_pt, *dieg10caloidl_usfinfilt_eta, *dieg10caloidl_usfinfilt_phi;
-  vector<double> *pho_pt, *pho_eta, *pho_phi, *pho_seedtime, *pho_smin, *pho_smax;
+  vector<double> *pho_pt, *pho_eta, *pho_phi, *pho_seedtime, *pho_sieie, *pho_hoe, *pho_smin, *pho_smax;
   vector<double> *pv_x, *pv_xerr, *pv_y, *pv_yerr, *pv_z, *pv_zerr;
   vector<bool> *pv_isvalid;
 };

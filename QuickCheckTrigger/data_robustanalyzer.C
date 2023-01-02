@@ -79,17 +79,17 @@ data_robustanalyzer::data_robustanalyzer(TString filename, TString outfilename, 
   inputChain->SetBranchAddress("egushltEgammaGsfTrackVars_ValidHitsarr", &egushltEgammaGsfTrackVars_ValidHits);
   inputChain->SetBranchAddress("egusEcalSeedClusterTimearr", &egushltEcalSeedClusterTime);
   inputChain->SetBranchAddress("egushltEgammaSuperClusterEnergyarr", &egushltEgammaSuperClusterEnergy);
-  //inputChain->SetBranchAddress("eguspxlmch22hltEgammaPixelMatchVars_s2arr", &eguspxlmch22hltEgammaPixelMatchVars_s2);
-  //inputChain->SetBranchAddress("eguspxlmch22hltEgammaEleGsfTrackIsoarr", &eguspxlmch22hltEgammaEleGsfTrackIso);
-  //inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_Chi2arr", &eguspxlmch22hltEgammaGsfTrackVars_Chi2);
-  //inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_Detaarr", &eguspxlmch22hltEgammaGsfTrackVars_Deta);
-  //inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_DetaSeedarr", &eguspxlmch22hltEgammaGsfTrackVars_DetaSeed);
-  //inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_Dphiarr", &eguspxlmch22hltEgammaGsfTrackVars_Dphi);
-  //inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_MissingHitsarr", &eguspxlmch22hltEgammaGsfTrackVars_MissingHits);
-  //inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_NLayerITarr", &eguspxlmch22hltEgammaGsfTrackVars_NLayerIT);
-  //inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_OneOESeedMinusOneOParr", &eguspxlmch22hltEgammaGsfTrackVars_OneOESeedMinusOneOP);
-  //inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_OneOESuperMinusOneOParr", &eguspxlmch22hltEgammaGsfTrackVars_OneOESuperMinusOneOP);
-  //inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_ValidHitsarr", &eguspxlmch22hltEgammaGsfTrackVars_ValidHits);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaPixelMatchVars_s2arr", &eguspxlmch22hltEgammaPixelMatchVars_s2);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaEleGsfTrackIsoarr", &eguspxlmch22hltEgammaEleGsfTrackIso);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_Chi2arr", &eguspxlmch22hltEgammaGsfTrackVars_Chi2);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_Detaarr", &eguspxlmch22hltEgammaGsfTrackVars_Deta);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_DetaSeedarr", &eguspxlmch22hltEgammaGsfTrackVars_DetaSeed);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_Dphiarr", &eguspxlmch22hltEgammaGsfTrackVars_Dphi);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_MissingHitsarr", &eguspxlmch22hltEgammaGsfTrackVars_MissingHits);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_NLayerITarr", &eguspxlmch22hltEgammaGsfTrackVars_NLayerIT);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_OneOESeedMinusOneOParr", &eguspxlmch22hltEgammaGsfTrackVars_OneOESeedMinusOneOP);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_OneOESuperMinusOneOParr", &eguspxlmch22hltEgammaGsfTrackVars_OneOESuperMinusOneOP);
+  inputChain->SetBranchAddress("eguspxlmch22hltEgammaGsfTrackVars_ValidHitsarr", &eguspxlmch22hltEgammaGsfTrackVars_ValidHits);
 
   if(isMC) {
     inputChain->SetBranchAddress("genLepn",&genLepN);
@@ -163,7 +163,6 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   addhistunseeded("selelevetozoppoidus");
   addhist("seleletightid");
   addhistunseeded("seleletightidus");
-  addhistunseeded("elptgt10caloidus");
   
   // Loop beginning on events
   for(unsigned int event=beginevent; event<endevent; event++) {
@@ -190,7 +189,6 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     vector<int> selelevetozoppoidegusidx;
     vector<int> seleletightidegidx;
     vector<int> seleletightidegusidx;
-    vector<int> elptgt10caloidegusidx;
   
     inputChain->GetEntry(event);
     //if(event>1000) break;
@@ -338,7 +336,6 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       bool selelevetoidegus = false;
       bool seleletightideg = false;
       bool seleletightidegus = false;
-      bool elptgt10caloidegus = false;
     
       // Loop beginning on egamma reco objects
       for(unsigned int egidx=0; egidx<egRecoN; egidx++) {
@@ -404,12 +401,6 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	seleletightidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.159:abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.0197);
 	if(seleletightidegus) seleletightidegusidx.push_back(idx);
 
-	elptgt10caloidegus = true;
-	elptgt10caloidegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
-	elptgt10caloidegus *= (egusRecoPt[idx]>=15);
-	elptgt10caloidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0104:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0353);
-	if(elptgt10caloidegus) elptgt10caloidegusidx.push_back(idx);
-
       } // End of loop on unseeded egamma objects
 
       selelevetozwindidegusidx = selelevetoidegusidx;
@@ -437,7 +428,6 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       }
       fillhistinevent("seleletightid", seleletightidegidx);
       fillhistineventunseeded("seleletightidus", seleletightidegusidx);
-      fillhistineventunseeded("elptgt10caloidus", elptgt10caloidegusidx);
       
     } // End of condition requiring atleast one egReco object
 
@@ -498,7 +488,6 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     selelevetozoppoidegusidx.clear();
     seleletightidegidx.clear();
     seleletightidegusidx.clear();
-    elptgt10caloidegusidx.clear();
 
   } // End of loop on events
 
@@ -979,10 +968,10 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
   // Both lead and sub-lead electrons
   TH1F* recoeb_egseedclustime = (TH1F*) outfile->Get(selection+"recoebus_egseedclustime");  
   TH1F* recoeb_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoebus_egpixelmchvar_s2");
-  //TH1F* recoeb_pxlmch22_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_egpixelmchvar_s2");
+  TH1F* recoeb_pxlmch22_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_egpixelmchvar_s2");
   TH1F* recoee_egseedclustime = (TH1F*) outfile->Get(selection+"recoeeus_egseedclustime");  
   TH1F* recoee_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoeeus_egpixelmchvar_s2");
-  //TH1F* recoee_pxlmch22_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_egpixelmchvar_s2");
+  TH1F* recoee_pxlmch22_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_egpixelmchvar_s2");
 
   // Get barrel variables - lead pt unseeded e/gamma
   TH1F* recoeb_leadegclustershape = (TH1F*) outfile->Get(selection+"recoebus_leadegclustershape");
@@ -1007,17 +996,17 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
   TH1F* recoeb_leadegooesclsoop = (TH1F*) outfile->Get(selection+"recoebus_leadegooesclsoop");
   TH1F* recoeb_leadegvalhits = (TH1F*) outfile->Get(selection+"recoebus_leadegvalhits");  
   TH1F* recoeb_leadegseedclustime = (TH1F*) outfile->Get(selection+"recoebus_leadegseedclustime");  
-  //TH1F* recoeb_pxlmch22_leadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegpixelmchvar_s2");
-  //TH1F* recoeb_pxlmch22_leadegtrkiso = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegtrkiso");
-  //TH1F* recoeb_pxlmch22_leadegchi2 = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegchi2");
-  //TH1F* recoeb_pxlmch22_leadegdeta = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegdeta");
-  //TH1F* recoeb_pxlmch22_leadegdetaseed = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegdetaseed");
-  //TH1F* recoeb_pxlmch22_leadegdphi = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegdphi");
-  //TH1F* recoeb_pxlmch22_leadegmhits = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegmhits");
-  //TH1F* recoeb_pxlmch22_leadegnlayerit = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegnlayerit");
-  //TH1F* recoeb_pxlmch22_leadegooeseedoop = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegooeseedoop");
-  //TH1F* recoeb_pxlmch22_leadegooesclsoop = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegooesclsoop");
-  //TH1F* recoeb_pxlmch22_leadegvalhits = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegvalhits");  
+  TH1F* recoeb_pxlmch22_leadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegpixelmchvar_s2");
+  TH1F* recoeb_pxlmch22_leadegtrkiso = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegtrkiso");
+  TH1F* recoeb_pxlmch22_leadegchi2 = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegchi2");
+  TH1F* recoeb_pxlmch22_leadegdeta = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegdeta");
+  TH1F* recoeb_pxlmch22_leadegdetaseed = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegdetaseed");
+  TH1F* recoeb_pxlmch22_leadegdphi = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegdphi");
+  TH1F* recoeb_pxlmch22_leadegmhits = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegmhits");
+  TH1F* recoeb_pxlmch22_leadegnlayerit = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegnlayerit");
+  TH1F* recoeb_pxlmch22_leadegooeseedoop = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegooeseedoop");
+  TH1F* recoeb_pxlmch22_leadegooesclsoop = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegooesclsoop");
+  TH1F* recoeb_pxlmch22_leadegvalhits = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_leadegvalhits");  
   
   // Get barrel variables - sublead pt unseeded e/gamma
   TH1F* recoeb_subleadegclustershape = (TH1F*) outfile->Get(selection+"recoebus_subleadegclustershape");
@@ -1042,17 +1031,17 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
   TH1F* recoeb_subleadegooesclsoop = (TH1F*) outfile->Get(selection+"recoebus_subleadegooesclsoop");
   TH1F* recoeb_subleadegvalhits = (TH1F*) outfile->Get(selection+"recoebus_subleadegvalhits");  
   TH1F* recoeb_subleadegseedclustime = (TH1F*) outfile->Get(selection+"recoebus_subleadegseedclustime");  
-  //TH1F* recoeb_pxlmch22_subleadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegpixelmchvar_s2");
-  //TH1F* recoeb_pxlmch22_subleadegtrkiso = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegtrkiso");
-  //TH1F* recoeb_pxlmch22_subleadegchi2 = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegchi2");
-  //TH1F* recoeb_pxlmch22_subleadegdeta = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegdeta");
-  //TH1F* recoeb_pxlmch22_subleadegdetaseed = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegdetaseed");
-  //TH1F* recoeb_pxlmch22_subleadegdphi = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegdphi");
-  //TH1F* recoeb_pxlmch22_subleadegmhits = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegmhits");
-  //TH1F* recoeb_pxlmch22_subleadegnlayerit = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegnlayerit");
-  //TH1F* recoeb_pxlmch22_subleadegooeseedoop = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegooeseedoop");
-  //TH1F* recoeb_pxlmch22_subleadegooesclsoop = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegooesclsoop");
-  //TH1F* recoeb_pxlmch22_subleadegvalhits = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegvalhits");  
+  TH1F* recoeb_pxlmch22_subleadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegpixelmchvar_s2");
+  TH1F* recoeb_pxlmch22_subleadegtrkiso = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegtrkiso");
+  TH1F* recoeb_pxlmch22_subleadegchi2 = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegchi2");
+  TH1F* recoeb_pxlmch22_subleadegdeta = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegdeta");
+  TH1F* recoeb_pxlmch22_subleadegdetaseed = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegdetaseed");
+  TH1F* recoeb_pxlmch22_subleadegdphi = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegdphi");
+  TH1F* recoeb_pxlmch22_subleadegmhits = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegmhits");
+  TH1F* recoeb_pxlmch22_subleadegnlayerit = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegnlayerit");
+  TH1F* recoeb_pxlmch22_subleadegooeseedoop = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegooeseedoop");
+  TH1F* recoeb_pxlmch22_subleadegooesclsoop = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegooesclsoop");
+  TH1F* recoeb_pxlmch22_subleadegvalhits = (TH1F*) outfile->Get(selection+"recoebus_pxlmch22_subleadegvalhits");  
 
   // invariant mass - barrel
   TH1F* recoeb_leadsubleadM = (TH1F*) outfile->Get(selection+"recoebus_leadsubleadM");
@@ -1080,17 +1069,17 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
   TH1F* recoee_leadegooesclsoop = (TH1F*) outfile->Get(selection+"recoeeus_leadegooesclsoop");
   TH1F* recoee_leadegvalhits = (TH1F*) outfile->Get(selection+"recoeeus_leadegvalhits");
   TH1F* recoee_leadegseedclustime = (TH1F*) outfile->Get(selection+"recoeeus_leadegseedclustime");  
-  //TH1F* recoee_pxlmch22_leadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegpixelmchvar_s2");
-  //TH1F* recoee_pxlmch22_leadegtrkiso = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegtrkiso");
-  //TH1F* recoee_pxlmch22_leadegchi2 = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegchi2");
-  //TH1F* recoee_pxlmch22_leadegdeta = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegdeta");
-  //TH1F* recoee_pxlmch22_leadegdetaseed = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegdetaseed");
-  //TH1F* recoee_pxlmch22_leadegdphi = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegdphi");
-  //TH1F* recoee_pxlmch22_leadegmhits = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegmhits");
-  //TH1F* recoee_pxlmch22_leadegnlayerit = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegnlayerit");
-  //TH1F* recoee_pxlmch22_leadegooeseedoop = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegooeseedoop");
-  //TH1F* recoee_pxlmch22_leadegooesclsoop = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegooesclsoop");
-  //TH1F* recoee_pxlmch22_leadegvalhits = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegvalhits");  
+  TH1F* recoee_pxlmch22_leadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegpixelmchvar_s2");
+  TH1F* recoee_pxlmch22_leadegtrkiso = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegtrkiso");
+  TH1F* recoee_pxlmch22_leadegchi2 = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegchi2");
+  TH1F* recoee_pxlmch22_leadegdeta = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegdeta");
+  TH1F* recoee_pxlmch22_leadegdetaseed = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegdetaseed");
+  TH1F* recoee_pxlmch22_leadegdphi = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegdphi");
+  TH1F* recoee_pxlmch22_leadegmhits = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegmhits");
+  TH1F* recoee_pxlmch22_leadegnlayerit = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegnlayerit");
+  TH1F* recoee_pxlmch22_leadegooeseedoop = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegooeseedoop");
+  TH1F* recoee_pxlmch22_leadegooesclsoop = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegooesclsoop");
+  TH1F* recoee_pxlmch22_leadegvalhits = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_leadegvalhits");  
   
   // Get end-cap variables - sublead pt unseeded e/gamma
   TH1F* recoee_subleadegclustershape = (TH1F*) outfile->Get(selection+"recoeeus_subleadegclustershape");
@@ -1115,17 +1104,17 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
   TH1F* recoee_subleadegooesclsoop = (TH1F*) outfile->Get(selection+"recoeeus_subleadegooesclsoop");
   TH1F* recoee_subleadegvalhits = (TH1F*) outfile->Get(selection+"recoeeus_subleadegvalhits");
   TH1F* recoee_subleadegseedclustime = (TH1F*) outfile->Get(selection+"recoeeus_subleadegseedclustime");  
-  //TH1F* recoee_pxlmch22_subleadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegpixelmchvar_s2");
-  //TH1F* recoee_pxlmch22_subleadegtrkiso = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegtrkiso");
-  //TH1F* recoee_pxlmch22_subleadegchi2 = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegchi2");
-  //TH1F* recoee_pxlmch22_subleadegdeta = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegdeta");
-  //TH1F* recoee_pxlmch22_subleadegdetaseed = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegdetaseed");
-  //TH1F* recoee_pxlmch22_subleadegdphi = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegdphi");
-  //TH1F* recoee_pxlmch22_subleadegmhits = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegmhits");
-  //TH1F* recoee_pxlmch22_subleadegnlayerit = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegnlayerit");
-  //TH1F* recoee_pxlmch22_subleadegooeseedoop = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegooeseedoop");
-  //TH1F* recoee_pxlmch22_subleadegooesclsoop = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegooesclsoop");
-  //TH1F* recoee_pxlmch22_subleadegvalhits = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegvalhits");  
+  TH1F* recoee_pxlmch22_subleadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegpixelmchvar_s2");
+  TH1F* recoee_pxlmch22_subleadegtrkiso = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegtrkiso");
+  TH1F* recoee_pxlmch22_subleadegchi2 = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegchi2");
+  TH1F* recoee_pxlmch22_subleadegdeta = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegdeta");
+  TH1F* recoee_pxlmch22_subleadegdetaseed = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegdetaseed");
+  TH1F* recoee_pxlmch22_subleadegdphi = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegdphi");
+  TH1F* recoee_pxlmch22_subleadegmhits = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegmhits");
+  TH1F* recoee_pxlmch22_subleadegnlayerit = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegnlayerit");
+  TH1F* recoee_pxlmch22_subleadegooeseedoop = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegooeseedoop");
+  TH1F* recoee_pxlmch22_subleadegooesclsoop = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegooesclsoop");
+  TH1F* recoee_pxlmch22_subleadegvalhits = (TH1F*) outfile->Get(selection+"recoeeus_pxlmch22_subleadegvalhits");  
   
   // invariant mass - end-cap
   TH1F* recoee_leadsubleadM = (TH1F*) outfile->Get(selection+"recoeeus_leadsubleadM");
@@ -1182,7 +1171,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
 	recoeb_leadegooesclsoop->Fill(-50);
 	//recoeb_leadegvalhits->Fill(-15);
       }
-      /*if(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[0]]<TMath::Power(10,36)) {
+      if(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[0]]<TMath::Power(10,36)) {
 	recoeb_pxlmch22_leadegpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[0]]);
 	recoeb_pxlmch22_egpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[0]]);
       }
@@ -1213,7 +1202,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
 	recoeb_pxlmch22_leadegooeseedoop->Fill(-50);
 	recoeb_pxlmch22_leadegooesclsoop->Fill(-50);
 	//recoeb_pxlmch22_leadegvalhits->Fill(-15);
-	}*/
+      }
     } // End of filling barrel variables
     
     else { // Fill end-cap variables
@@ -1261,7 +1250,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
 	recoee_leadegooesclsoop->Fill(-50);
 	//recoee_leadegvalhits->Fill(-15);
       }
-      /*if(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[0]]<TMath::Power(10,36)) {
+      if(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[0]]<TMath::Power(10,36)) {
 	recoee_pxlmch22_leadegpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[0]]);
 	recoee_pxlmch22_egpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[0]]);
       }
@@ -1292,7 +1281,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
 	recoee_pxlmch22_leadegooeseedoop->Fill(-50);
 	recoee_pxlmch22_leadegooesclsoop->Fill(-50);
 	//recoee_pxlmch22_leadegvalhits->Fill(-15);
-	}*/
+      }
     } // End of filling end-cap variables
     
   } // End of condition requiring atleast one eg object
@@ -1352,7 +1341,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
 	recoeb_subleadegooesclsoop->Fill(-50);
 	recoeb_subleadegvalhits->Fill(-15);
       }
-      /*if(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[1]]<TMath::Power(10,36)) {
+      if(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[1]]<TMath::Power(10,36)) {
 	recoeb_pxlmch22_subleadegpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[1]]);
 	recoeb_pxlmch22_egpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[1]]);
       }
@@ -1383,7 +1372,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
 	recoeb_pxlmch22_subleadegooeseedoop->Fill(-50);
 	recoeb_pxlmch22_subleadegooesclsoop->Fill(-50);
 	recoeb_pxlmch22_subleadegvalhits->Fill(-15);
-	}*/
+      }
     } // End of filling barrel variables
     else { // Fill end-cap variables
       recoee_subleadegclustershape->Fill(egushltEgammaClusterShape[egidx[1]]);
@@ -1430,7 +1419,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
 	recoee_subleadegooesclsoop->Fill(-50);
 	recoee_subleadegvalhits->Fill(-15);
       }
-      /*if(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[1]]<TMath::Power(10,36)) {
+      if(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[1]]<TMath::Power(10,36)) {
 	recoee_pxlmch22_subleadegpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[1]]);
 	recoee_pxlmch22_egpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[egidx[1]]);
       }
@@ -1461,7 +1450,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
 	recoee_pxlmch22_subleadegooeseedoop->Fill(-50);
 	recoee_pxlmch22_subleadegooesclsoop->Fill(-50);
 	recoee_pxlmch22_subleadegvalhits->Fill(-15);
-	}*/
+      }
     } // End of filling end-cap variables
 
     // Fill invariant mass
@@ -1522,10 +1511,10 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
   // Both lead and sub-lead electrons
   TH1F* recoeb_egseedclustime = (TH1F*) outfile->Get(selection+"genmchrecoebus_egseedclustime");  
   TH1F* recoeb_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoebus_egpixelmchvar_s2");
-  //TH1F* recoeb_pxlmch22_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_egpixelmchvar_s2");
+  TH1F* recoeb_pxlmch22_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_egpixelmchvar_s2");
   TH1F* recoee_egseedclustime = (TH1F*) outfile->Get(selection+"genmchrecoeeus_egseedclustime");  
   TH1F* recoee_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoeeus_egpixelmchvar_s2");
-  //TH1F* recoee_pxlmch22_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_egpixelmchvar_s2");
+  TH1F* recoee_pxlmch22_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_egpixelmchvar_s2");
 
   // Get barrel variables - lead pt unseeded e/gamma
   TH1F* recoeb_leadegclustershape = (TH1F*) outfile->Get(selection+"genmchrecoebus_leadegclustershape");
@@ -1550,17 +1539,17 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
   TH1F* recoeb_leadegooesclsoop = (TH1F*) outfile->Get(selection+"genmchrecoebus_leadegooesclsoop");
   TH1F* recoeb_leadegvalhits = (TH1F*) outfile->Get(selection+"genmchrecoebus_leadegvalhits");  
   TH1F* recoeb_leadegseedclustime = (TH1F*) outfile->Get(selection+"genmchrecoebus_leadegseedclustime");  
-  //TH1F* recoeb_pxlmch22_leadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegpixelmchvar_s2");
-  //TH1F* recoeb_pxlmch22_leadegtrkiso = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegtrkiso");
-  //TH1F* recoeb_pxlmch22_leadegchi2 = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegchi2");
-  //TH1F* recoeb_pxlmch22_leadegdeta = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegdeta");
-  //TH1F* recoeb_pxlmch22_leadegdetaseed = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegdetaseed");
-  //TH1F* recoeb_pxlmch22_leadegdphi = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegdphi");
-  //TH1F* recoeb_pxlmch22_leadegmhits = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegmhits");
-  //TH1F* recoeb_pxlmch22_leadegnlayerit = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegnlayerit");
-  //TH1F* recoeb_pxlmch22_leadegooeseedoop = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegooeseedoop");
-  //TH1F* recoeb_pxlmch22_leadegooesclsoop = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegooesclsoop");
-  //TH1F* recoeb_pxlmch22_leadegvalhits = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegvalhits");  
+  TH1F* recoeb_pxlmch22_leadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegpixelmchvar_s2");
+  TH1F* recoeb_pxlmch22_leadegtrkiso = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegtrkiso");
+  TH1F* recoeb_pxlmch22_leadegchi2 = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegchi2");
+  TH1F* recoeb_pxlmch22_leadegdeta = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegdeta");
+  TH1F* recoeb_pxlmch22_leadegdetaseed = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegdetaseed");
+  TH1F* recoeb_pxlmch22_leadegdphi = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegdphi");
+  TH1F* recoeb_pxlmch22_leadegmhits = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegmhits");
+  TH1F* recoeb_pxlmch22_leadegnlayerit = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegnlayerit");
+  TH1F* recoeb_pxlmch22_leadegooeseedoop = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegooeseedoop");
+  TH1F* recoeb_pxlmch22_leadegooesclsoop = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegooesclsoop");
+  TH1F* recoeb_pxlmch22_leadegvalhits = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_leadegvalhits");  
   
   // Get barrel variables - sublead pt unseeded e/gamma
   TH1F* recoeb_subleadegclustershape = (TH1F*) outfile->Get(selection+"genmchrecoebus_subleadegclustershape");
@@ -1585,17 +1574,17 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
   TH1F* recoeb_subleadegooesclsoop = (TH1F*) outfile->Get(selection+"genmchrecoebus_subleadegooesclsoop");
   TH1F* recoeb_subleadegvalhits = (TH1F*) outfile->Get(selection+"genmchrecoebus_subleadegvalhits");  
   TH1F* recoeb_subleadegseedclustime = (TH1F*) outfile->Get(selection+"genmchrecoebus_subleadegseedclustime");  
-  //TH1F* recoeb_pxlmch22_subleadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegpixelmchvar_s2");
-  //TH1F* recoeb_pxlmch22_subleadegtrkiso = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegtrkiso");
-  //TH1F* recoeb_pxlmch22_subleadegchi2 = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegchi2");
-  //TH1F* recoeb_pxlmch22_subleadegdeta = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegdeta");
-  //TH1F* recoeb_pxlmch22_subleadegdetaseed = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegdetaseed");
-  //TH1F* recoeb_pxlmch22_subleadegdphi = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegdphi");
-  //TH1F* recoeb_pxlmch22_subleadegmhits = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegmhits");
-  //TH1F* recoeb_pxlmch22_subleadegnlayerit = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegnlayerit");
-  //TH1F* recoeb_pxlmch22_subleadegooeseedoop = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegooeseedoop");
-  //TH1F* recoeb_pxlmch22_subleadegooesclsoop = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegooesclsoop");
-  //TH1F* recoeb_pxlmch22_subleadegvalhits = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegvalhits");  
+  TH1F* recoeb_pxlmch22_subleadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegpixelmchvar_s2");
+  TH1F* recoeb_pxlmch22_subleadegtrkiso = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegtrkiso");
+  TH1F* recoeb_pxlmch22_subleadegchi2 = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegchi2");
+  TH1F* recoeb_pxlmch22_subleadegdeta = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegdeta");
+  TH1F* recoeb_pxlmch22_subleadegdetaseed = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegdetaseed");
+  TH1F* recoeb_pxlmch22_subleadegdphi = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegdphi");
+  TH1F* recoeb_pxlmch22_subleadegmhits = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegmhits");
+  TH1F* recoeb_pxlmch22_subleadegnlayerit = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegnlayerit");
+  TH1F* recoeb_pxlmch22_subleadegooeseedoop = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegooeseedoop");
+  TH1F* recoeb_pxlmch22_subleadegooesclsoop = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegooesclsoop");
+  TH1F* recoeb_pxlmch22_subleadegvalhits = (TH1F*) outfile->Get(selection+"genmchrecoebus_pxlmch22_subleadegvalhits");  
 
   // invariant mass - barrel
   TH1F* recoeb_leadsubleadM = (TH1F*) outfile->Get(selection+"genmchrecoebus_leadsubleadM");
@@ -1625,17 +1614,17 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
   TH1F* recoee_leadegooesclsoop = (TH1F*) outfile->Get(selection+"genmchrecoeeus_leadegooesclsoop");
   TH1F* recoee_leadegvalhits = (TH1F*) outfile->Get(selection+"genmchrecoeeus_leadegvalhits");
   TH1F* recoee_leadegseedclustime = (TH1F*) outfile->Get(selection+"genmchrecoeeus_leadegseedclustime");  
-  //TH1F* recoee_pxlmch22_leadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegpixelmchvar_s2");
-  //TH1F* recoee_pxlmch22_leadegtrkiso = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegtrkiso");
-  //TH1F* recoee_pxlmch22_leadegchi2 = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegchi2");
-  //TH1F* recoee_pxlmch22_leadegdeta = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegdeta");
-  //TH1F* recoee_pxlmch22_leadegdetaseed = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegdetaseed");
-  //TH1F* recoee_pxlmch22_leadegdphi = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegdphi");
-  //TH1F* recoee_pxlmch22_leadegmhits = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegmhits");
-  //TH1F* recoee_pxlmch22_leadegnlayerit = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegnlayerit");
-  //TH1F* recoee_pxlmch22_leadegooeseedoop = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegooeseedoop");
-  //TH1F* recoee_pxlmch22_leadegooesclsoop = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegooesclsoop");
-  //TH1F* recoee_pxlmch22_leadegvalhits = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegvalhits");  
+  TH1F* recoee_pxlmch22_leadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegpixelmchvar_s2");
+  TH1F* recoee_pxlmch22_leadegtrkiso = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegtrkiso");
+  TH1F* recoee_pxlmch22_leadegchi2 = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegchi2");
+  TH1F* recoee_pxlmch22_leadegdeta = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegdeta");
+  TH1F* recoee_pxlmch22_leadegdetaseed = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegdetaseed");
+  TH1F* recoee_pxlmch22_leadegdphi = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegdphi");
+  TH1F* recoee_pxlmch22_leadegmhits = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegmhits");
+  TH1F* recoee_pxlmch22_leadegnlayerit = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegnlayerit");
+  TH1F* recoee_pxlmch22_leadegooeseedoop = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegooeseedoop");
+  TH1F* recoee_pxlmch22_leadegooesclsoop = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegooesclsoop");
+  TH1F* recoee_pxlmch22_leadegvalhits = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_leadegvalhits");  
   
   // Get end-cap variables - sublead pt unseeded e/gamma
   TH1F* recoee_subleadegclustershape = (TH1F*) outfile->Get(selection+"genmchrecoeeus_subleadegclustershape");
@@ -1660,17 +1649,17 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
   TH1F* recoee_subleadegooesclsoop = (TH1F*) outfile->Get(selection+"genmchrecoeeus_subleadegooesclsoop");
   TH1F* recoee_subleadegvalhits = (TH1F*) outfile->Get(selection+"genmchrecoeeus_subleadegvalhits");
   TH1F* recoee_subleadegseedclustime = (TH1F*) outfile->Get(selection+"genmchrecoeeus_subleadegseedclustime");  
-  //TH1F* recoee_pxlmch22_subleadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegpixelmchvar_s2");
-  //TH1F* recoee_pxlmch22_subleadegtrkiso = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegtrkiso");
-  //TH1F* recoee_pxlmch22_subleadegchi2 = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegchi2");
-  //TH1F* recoee_pxlmch22_subleadegdeta = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegdeta");
-  //TH1F* recoee_pxlmch22_subleadegdetaseed = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegdetaseed");
-  //TH1F* recoee_pxlmch22_subleadegdphi = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegdphi");
-  //TH1F* recoee_pxlmch22_subleadegmhits = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegmhits");
-  //TH1F* recoee_pxlmch22_subleadegnlayerit = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegnlayerit");
-  //TH1F* recoee_pxlmch22_subleadegooeseedoop = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegooeseedoop");
-  //TH1F* recoee_pxlmch22_subleadegooesclsoop = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegooesclsoop");
-  //TH1F* recoee_pxlmch22_subleadegvalhits = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegvalhits");  
+  TH1F* recoee_pxlmch22_subleadegpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegpixelmchvar_s2");
+  TH1F* recoee_pxlmch22_subleadegtrkiso = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegtrkiso");
+  TH1F* recoee_pxlmch22_subleadegchi2 = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegchi2");
+  TH1F* recoee_pxlmch22_subleadegdeta = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegdeta");
+  TH1F* recoee_pxlmch22_subleadegdetaseed = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegdetaseed");
+  TH1F* recoee_pxlmch22_subleadegdphi = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegdphi");
+  TH1F* recoee_pxlmch22_subleadegmhits = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegmhits");
+  TH1F* recoee_pxlmch22_subleadegnlayerit = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegnlayerit");
+  TH1F* recoee_pxlmch22_subleadegooeseedoop = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegooeseedoop");
+  TH1F* recoee_pxlmch22_subleadegooesclsoop = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegooesclsoop");
+  TH1F* recoee_pxlmch22_subleadegvalhits = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_subleadegvalhits");  
   
   // invariant mass - end-cap
   TH1F* recoee_leadsubleadM = (TH1F*) outfile->Get(selection+"genmchrecoeeus_leadsubleadM");
@@ -1852,7 +1841,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	recoeb_leadegooesclsoop->Fill(-50);
 	//recoeb_leadegvalhits->Fill(-15);
       }
-      /*if(eguspxlmch22hltEgammaPixelMatchVars_s2[leadidx]<TMath::Power(10,36)) {
+      if(eguspxlmch22hltEgammaPixelMatchVars_s2[leadidx]<TMath::Power(10,36)) {
 	recoeb_pxlmch22_leadegpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[leadidx]);
 	recoeb_pxlmch22_egpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[leadidx]);
       }
@@ -1883,7 +1872,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	recoeb_pxlmch22_leadegooeseedoop->Fill(-50);
 	recoeb_pxlmch22_leadegooesclsoop->Fill(-50);
 	//recoeb_pxlmch22_leadegvalhits->Fill(-15);
-	}*/
+      }
     } // End of filling barrel variables
     
     else { // Fill end-cap variables
@@ -1931,7 +1920,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	recoee_leadegooesclsoop->Fill(-50);
 	//recoee_leadegvalhits->Fill(-15);
       }
-      /*if(eguspxlmch22hltEgammaPixelMatchVars_s2[leadidx]<TMath::Power(10,36)) {
+      if(eguspxlmch22hltEgammaPixelMatchVars_s2[leadidx]<TMath::Power(10,36)) {
 	recoee_pxlmch22_leadegpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[leadidx]);
 	recoee_pxlmch22_egpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[leadidx]);
       }
@@ -1962,7 +1951,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	recoee_pxlmch22_leadegooeseedoop->Fill(-50);
 	recoee_pxlmch22_leadegooesclsoop->Fill(-50);
 	//recoee_pxlmch22_leadegvalhits->Fill(-15);
-	}*/
+      }
     } // End of filling end-cap variables
     
     if(subleadidx!=-1) { // Require second eg object
@@ -2020,7 +2009,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	  recoeb_subleadegooesclsoop->Fill(-50);
 	  recoeb_subleadegvalhits->Fill(-15);
 	}
-	/*if(eguspxlmch22hltEgammaPixelMatchVars_s2[subleadidx]<TMath::Power(10,36)) {
+	if(eguspxlmch22hltEgammaPixelMatchVars_s2[subleadidx]<TMath::Power(10,36)) {
 	  recoeb_pxlmch22_subleadegpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[subleadidx]);
 	  recoeb_pxlmch22_egpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[subleadidx]);
 	}
@@ -2051,7 +2040,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	  recoeb_pxlmch22_subleadegooeseedoop->Fill(-50);
 	  recoeb_pxlmch22_subleadegooesclsoop->Fill(-50);
 	  recoeb_pxlmch22_subleadegvalhits->Fill(-15);
-	  }*/
+	}
       } // End of filling barrel variables
 
       else { // Fill end-cap variables
@@ -2099,7 +2088,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	  recoee_subleadegooesclsoop->Fill(-50);
 	  recoee_subleadegvalhits->Fill(-15);
 	}
-	/*if(eguspxlmch22hltEgammaPixelMatchVars_s2[subleadidx]<TMath::Power(10,36)) {
+	if(eguspxlmch22hltEgammaPixelMatchVars_s2[subleadidx]<TMath::Power(10,36)) {
 	  recoee_pxlmch22_subleadegpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[subleadidx]);
 	  recoee_pxlmch22_egpixelmchvar_s2->Fill(eguspxlmch22hltEgammaPixelMatchVars_s2[subleadidx]);
 	}
@@ -2130,7 +2119,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	  recoee_pxlmch22_subleadegooeseedoop->Fill(-50);
 	  recoee_pxlmch22_subleadegooesclsoop->Fill(-50);
 	  recoee_pxlmch22_subleadegvalhits->Fill(-15);
-	  }*/
+	}
       } // End of filling end-cap variables
       
       // Fill invariant mass
@@ -2306,8 +2295,8 @@ void data_robustanalyzer::addhistunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoeeus_egseedclustime","end-cap e/#gamma_{seed} time / ns",20000,-10,10));
   all1dhists.push_back(new TH1F(selection+"recoebus_egpixelmchvar_s2","barrel e/#gamma pixelmachvar",1000,-50,950));
   all1dhists.push_back(new TH1F(selection+"recoeeus_egpixelmchvar_s2","end-cap e/#gamma pixelmachvar",1000,-50,950));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_egpixelmchvar_s2","barrel e/#gamma pixelmachvar",1000,-50,950));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_egpixelmchvar_s2","end-cap e/#gamma pixelmachvar",1000,-50,950));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_egpixelmchvar_s2","barrel e/#gamma pixelmachvar",1000,-50,950));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_egpixelmchvar_s2","end-cap e/#gamma pixelmachvar",1000,-50,950));
 
   // barrel variables - lead pT unseeded e/gamma
   all1dhists.push_back(new TH1F(selection+"recoebus_leadegclustershape","barrel e/#gamma clus.shape",1000,0,0.1));
@@ -2332,17 +2321,17 @@ void data_robustanalyzer::addhistunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoebus_leadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
   all1dhists.push_back(new TH1F(selection+"recoebus_leadeghovereoversupcluse","barrel e/#gamma H/E",1000,0,10));
   all1dhists.push_back(new TH1F(selection+"recoebus_leadegseedclustime","barrel e/#gamma_{seed} time / ns",20000,-10,10));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegpixelmchvar_s2","barrel e/#gamma pixelmachvar",1000,-50,950));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegchi2","barrel e/#gamma #chi^{2}",1000,-10,90));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegdeta","barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegdetaseed","barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegdphi","barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegmhits","barrel e/#gamma missing hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegnlayerit","barrel e/#gamma num IT layer",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegooeseedoop","barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegooesclsoop","barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegvalhits","barrel e/#gamma valid hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegpixelmchvar_s2","barrel e/#gamma pixelmachvar",1000,-50,950));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegchi2","barrel e/#gamma #chi^{2}",1000,-10,90));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegdeta","barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegdetaseed","barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegdphi","barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegmhits","barrel e/#gamma missing hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegnlayerit","barrel e/#gamma num IT layer",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegooeseedoop","barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegooesclsoop","barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegvalhits","barrel e/#gamma valid hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_leadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
 
   // barrel variables - sub-lead pT unseeded e/gamma
   all1dhists.push_back(new TH1F(selection+"recoebus_subleadegclustershape","barrel e/#gamma clus.shape",1000,0,0.1));
@@ -2367,17 +2356,17 @@ void data_robustanalyzer::addhistunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoebus_subleadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
   all1dhists.push_back(new TH1F(selection+"recoebus_subleadeghovereoversupcluse","barrel e/#gamma H/E",1000,0,10));
   all1dhists.push_back(new TH1F(selection+"recoebus_subleadegseedclustime","barrel e/#gamma_{seed} time / ns",20000,-10,10));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegpixelmchvar_s2","barrel e/#gamma pixelmachvar",1000,-50,950));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegchi2","barrel e/#gamma #chi^{2}",1000,-10,90));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegdeta","barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegdetaseed","barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegdphi","barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegmhits","barrel e/#gamma missing hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegnlayerit","barrel e/#gamma num IT layer",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegooeseedoop","barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegooesclsoop","barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegvalhits","barrel e/#gamma valid hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegpixelmchvar_s2","barrel e/#gamma pixelmachvar",1000,-50,950));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegchi2","barrel e/#gamma #chi^{2}",1000,-10,90));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegdeta","barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegdetaseed","barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegdphi","barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegmhits","barrel e/#gamma missing hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegnlayerit","barrel e/#gamma num IT layer",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegooeseedoop","barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegooesclsoop","barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegvalhits","barrel e/#gamma valid hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"recoebus_pxlmch22_subleadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
 
   // barrel variables - invariant mass unseeded
   all1dhists.push_back(new TH1F(selection+"recoebus_leadsubleadM","barrel M(e/#gamma_{1},e/#gamma_{2}) / GeV",500,0,500));
@@ -2405,17 +2394,17 @@ void data_robustanalyzer::addhistunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoeeus_leadegtrkiso","end-cap e/#gamma track Iso.",1000,-5,95));
   all1dhists.push_back(new TH1F(selection+"recoeeus_leadeghovereoversupcluse","end-cap e/#gamma H/E",1000,0,10));
   all1dhists.push_back(new TH1F(selection+"recoeeus_leadegseedclustime","end-cap e/#gamma_{seed} time / ns",20000,-10,10));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegpixelmchvar_s2","barrel e/#gamma pixelmachvar",1000,-50,950));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegchi2","barrel e/#gamma #chi^{2}",1000,-10,90));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegdeta","barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegdetaseed","barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegdphi","barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegmhits","barrel e/#gamma missing hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegnlayerit","barrel e/#gamma num IT layer",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegooeseedoop","barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegooesclsoop","barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegvalhits","barrel e/#gamma valid hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegpixelmchvar_s2","barrel e/#gamma pixelmachvar",1000,-50,950));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegchi2","barrel e/#gamma #chi^{2}",1000,-10,90));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegdeta","barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegdetaseed","barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegdphi","barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegmhits","barrel e/#gamma missing hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegnlayerit","barrel e/#gamma num IT layer",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegooeseedoop","barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegooesclsoop","barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegvalhits","barrel e/#gamma valid hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_leadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
 
   // end-cap variables - sub-lead pT unseeded e/gamma
   all1dhists.push_back(new TH1F(selection+"recoeeus_subleadegclustershape","end-cap e/#gamma clus.shape",1000,0,0.1));
@@ -2440,17 +2429,17 @@ void data_robustanalyzer::addhistunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoeeus_subleadegtrkiso","end-cap e/#gamma track Iso.",1000,-5,95));
   all1dhists.push_back(new TH1F(selection+"recoeeus_subleadeghovereoversupcluse","end-cap e/#gamma H/E",1000,0,10));
   all1dhists.push_back(new TH1F(selection+"recoeeus_subleadegseedclustime","end-cap e/#gamma_{seed} time / ns",20000,-10,10));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegpixelmchvar_s2","barrel e/#gamma pixelmachvar",1000,-50,950));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegchi2","barrel e/#gamma #chi^{2}",1000,-10,90));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegdeta","barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegdetaseed","barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegdphi","barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegmhits","barrel e/#gamma missing hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegnlayerit","barrel e/#gamma num IT layer",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegooeseedoop","barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegooesclsoop","barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegvalhits","barrel e/#gamma valid hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegpixelmchvar_s2","barrel e/#gamma pixelmachvar",1000,-50,950));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegchi2","barrel e/#gamma #chi^{2}",1000,-10,90));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegdeta","barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegdetaseed","barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegdphi","barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegmhits","barrel e/#gamma missing hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegnlayerit","barrel e/#gamma num IT layer",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegooeseedoop","barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegooesclsoop","barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegvalhits","barrel e/#gamma valid hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_pxlmch22_subleadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
 
   // end-cap variables - invariant mass unseeded
   all1dhists.push_back(new TH1F(selection+"recoeeus_leadsubleadM","end-cap M(e/#gamma_{1},e/#gamma_{2}) / GeV",500,0,500));
@@ -2530,17 +2519,17 @@ void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_leadegtrkiso","gen matched barrel e/#gamma track Iso.",1000,-5,95));
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_leadeghovereoversupcluse","gen matched barrel e/#gamma H/E",1000,0,10));
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_leadegseedclustime","gen matched barrel e/#gamma_{seed} time / ns",20000,-10,10));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegpixelmchvar_s2","gen matched barrel e/#gamma pixelmachvar",1000,-50,950));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegchi2","gen matched barrel e/#gamma #chi^{2}",1000,-10,90));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegdeta","gen matched barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegdetaseed","gen matched barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegdphi","gen matched barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegmhits","gen matched barrel e/#gamma missing hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegnlayerit","gen matched barrel e/#gamma num IT layer",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegooeseedoop","gen matched barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegooesclsoop","gen matched barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegvalhits","gen matched barrel e/#gamma valid hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegtrkiso","gen matched barrel e/#gamma track Iso.",1000,-5,95));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegpixelmchvar_s2","gen matched barrel e/#gamma pixelmachvar",1000,-50,950));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegchi2","gen matched barrel e/#gamma #chi^{2}",1000,-10,90));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegdeta","gen matched barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegdetaseed","gen matched barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegdphi","gen matched barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegmhits","gen matched barrel e/#gamma missing hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegnlayerit","gen matched barrel e/#gamma num IT layer",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegooeseedoop","gen matched barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegooesclsoop","gen matched barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegvalhits","gen matched barrel e/#gamma valid hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_leadegtrkiso","gen matched barrel e/#gamma track Iso.",1000,-5,95));
 
   // barrel variables - sub-lead pT unseeded e/gamma
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_subleadegclustershape","gen matched barrel e/#gamma clus.shape",1000,0,0.1));
@@ -2565,17 +2554,17 @@ void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_subleadegtrkiso","gen matched barrel e/#gamma track Iso.",1000,-5,95));
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_subleadeghovereoversupcluse","gen matched barrel e/#gamma H/E",1000,0,10));
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_subleadegseedclustime","gen matched barrel e/#gamma_{seed} time / ns",20000,-10,10));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegpixelmchvar_s2","gen matched barrel e/#gamma pixelmachvar",1000,-50,950));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegchi2","gen matched barrel e/#gamma #chi^{2}",1000,-10,90));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegdeta","gen matched barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegdetaseed","gen matched barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegdphi","gen matched barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegmhits","gen matched barrel e/#gamma missing hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegnlayerit","gen matched barrel e/#gamma num IT layer",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegooeseedoop","gen matched barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegooesclsoop","gen matched barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegvalhits","gen matched barrel e/#gamma valid hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegtrkiso","gen matched barrel e/#gamma track Iso.",1000,-5,95));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegpixelmchvar_s2","gen matched barrel e/#gamma pixelmachvar",1000,-50,950));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegchi2","gen matched barrel e/#gamma #chi^{2}",1000,-10,90));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegdeta","gen matched barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegdetaseed","gen matched barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegdphi","gen matched barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegmhits","gen matched barrel e/#gamma missing hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegnlayerit","gen matched barrel e/#gamma num IT layer",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegooeseedoop","gen matched barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegooesclsoop","gen matched barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegvalhits","gen matched barrel e/#gamma valid hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_pxlmch22_subleadegtrkiso","gen matched barrel e/#gamma track Iso.",1000,-5,95));
 
   // barrel variables - invariant mass unseeded
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_leadsubleadM","gen matched barrel M(e/#gamma_{1},e/#gamma_{2}) / GeV",500,0,500));
@@ -2605,17 +2594,17 @@ void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_leadegtrkiso","gen matched end-cap e/#gamma track Iso.",1000,-5,95));
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_leadeghovereoversupcluse","gen matched end-cap e/#gamma H/E",1000,0,10));
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_leadegseedclustime","gen matched end-cap e/#gamma_{seed} time / ns",20000,-10,10));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegpixelmchvar_s2","gen matched barrel e/#gamma pixelmachvar",1000,-50,950));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegchi2","gen matched barrel e/#gamma #chi^{2}",1000,-10,90));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegdeta","gen matched barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegdetaseed","gen matched barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegdphi","gen matched barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegmhits","gen matched barrel e/#gamma missing hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegnlayerit","gen matched barrel e/#gamma num IT layer",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegooeseedoop","gen matched barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegooesclsoop","gen matched barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegvalhits","gen matched barrel e/#gamma valid hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegtrkiso","gen matched barrel e/#gamma track Iso.",1000,-5,95));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegpixelmchvar_s2","gen matched barrel e/#gamma pixelmachvar",1000,-50,950));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegchi2","gen matched barrel e/#gamma #chi^{2}",1000,-10,90));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegdeta","gen matched barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegdetaseed","gen matched barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegdphi","gen matched barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegmhits","gen matched barrel e/#gamma missing hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegnlayerit","gen matched barrel e/#gamma num IT layer",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegooeseedoop","gen matched barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegooesclsoop","gen matched barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegvalhits","gen matched barrel e/#gamma valid hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_leadegtrkiso","gen matched barrel e/#gamma track Iso.",1000,-5,95));
 
   // end-cap variables - sub-lead pT unseeded e/gamma
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_subleadegclustershape","gen matched end-cap e/#gamma clus.shape",1000,0,0.1));
@@ -2640,17 +2629,17 @@ void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_subleadegtrkiso","gen matched end-cap e/#gamma track Iso.",1000,-5,95));
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_subleadeghovereoversupcluse","gen matched end-cap e/#gamma H/E",1000,0,10));
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_subleadegseedclustime","gen matched end-cap e/#gamma_{seed} time / ns",20000,-10,10));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegpixelmchvar_s2","gen matched barrel e/#gamma pixelmachvar",1000,-50,950));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegchi2","gen matched barrel e/#gamma #chi^{2}",1000,-10,90));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegdeta","gen matched barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegdetaseed","gen matched barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegdphi","gen matched barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegmhits","gen matched barrel e/#gamma missing hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegnlayerit","gen matched barrel e/#gamma num IT layer",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegooeseedoop","gen matched barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegooesclsoop","gen matched barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegvalhits","gen matched barrel e/#gamma valid hits",40,-5,35));
-  //all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegtrkiso","gen matched barrel e/#gamma track Iso.",1000,-5,95));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegpixelmchvar_s2","gen matched barrel e/#gamma pixelmachvar",1000,-50,950));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegchi2","gen matched barrel e/#gamma #chi^{2}",1000,-10,90));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegdeta","gen matched barrel e/#gamma #Delta#eta",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegdetaseed","gen matched barrel e/#gamma #Delta#eta seed",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegdphi","gen matched barrel e/#gamma #Delta#phi",1000,-0.3,0.7));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegmhits","gen matched barrel e/#gamma missing hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegnlayerit","gen matched barrel e/#gamma num IT layer",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegooeseedoop","gen matched barrel e/#gamma 1/E_seed-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegooesclsoop","gen matched barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegvalhits","gen matched barrel e/#gamma valid hits",40,-5,35));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_pxlmch22_subleadegtrkiso","gen matched barrel e/#gamma track Iso.",1000,-5,95));
 
   // end-cap variables - invariant mass unseeded
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_leadsubleadM","gen matched end-cap M(e/#gamma_{1},e/#gamma_{2}) / GeV",500,0,500));

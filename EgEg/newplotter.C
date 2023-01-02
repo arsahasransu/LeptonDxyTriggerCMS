@@ -304,28 +304,28 @@ int newplotter() {
   //coloropt.push_back(kBlue);
   file.push_back(datafile);
   name.push_back("selelevetozwindidusrecoebus");
-  legend.push_back("Z#rightarrowee");
+  legend.push_back("2018 data, Z#rightarrowee");
   coloropt.push_back(kBlack);
   file.push_back(datafile);
   name.push_back("elptgt10caloidusrecoebus");
   legend.push_back("2e, p_{T}>10 GeV, caloid");
   coloropt.push_back(kGray+1);
-  /*file.push_back(sig3cmfile);
+  file.push_back(sig3cmfile);
   name.push_back("genptgt10Abasicselusgenmchrecoebus");
   legend.push_back("3 cm gen mch");
-  coloropt.push_back(kRed+3);
+  coloropt.push_back(kRed);
   file.push_back(sig30cmfile);
   name.push_back("genptgt10Abasicselusgenmchrecoebus");
   legend.push_back("30 cm gen mch");
-  coloropt.push_back(kRed-2);
+  coloropt.push_back(kGreen+2);
   file.push_back(sig1mfile);
   name.push_back("genptgt10Abasicselusgenmchrecoebus");
   legend.push_back("1 m gen mch");
-  coloropt.push_back(kRed-6);
+  coloropt.push_back(kYellow+2);
   file.push_back(sig3mfile);
   name.push_back("genptgt10Abasicselusgenmchrecoebus");
   legend.push_back("3 m gen mch");
-  coloropt.push_back(kRed-9);*/
+  coloropt.push_back(kMagenta);
   /*
   coloropt.push_back(kBlue);
   file.push_back(datafile);
