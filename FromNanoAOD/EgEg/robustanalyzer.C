@@ -16,76 +16,42 @@
 using namespace std;
 
 // Initialize and open the root file in the constructor
-robustanalyzer::robustanalyzer(TString filename, TString outfilename, bool issimu) {
+robustanalyzer::robustanalyzer(TString filename, TString outfilename, int numCores) {
 
-  inputChain = new TChain("Events");
+  nC = numCores;
+
+  auto inputChain = new TChain("demo/tree");
   cout<<"Initializing for file: "<<filename<<endl;
   inputChain->Add(filename);
 
-  inputChain->SetBranchAddress("run", &run);
-  inputChain->SetBranchAddress("luminosityBlock", &lumi);
-  inputChain->SetBranchAddress("event", &event);
-  inputChain->SetBranchAddress("Rho_fixedGridRhoFastjetAll", &eventRho);  
-  inputChain->SetBranchAddress("bunchCrossing", &bunch);
+  tree = new TTreeReader(inputChain);
 
-  inputChain->SetBranchAddress("HLT_DiPhoton10Time1p4ns", &HLT_DiPhoton10Time1p4ns);
-  inputChain->SetBranchAddress("HLT_DiPhoton10sminlt0p12", &HLT_DiPhoton10sminlt0p12);
-  inputChain->SetBranchAddress("HLT_PFMET120_PFMHT120_IDTight", &HLT_PFMET120_PFMHT120_IDTight);
-  inputChain->SetBranchAddress("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF", &HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF);
-  inputChain->SetBranchAddress("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight", &HLT_PFMETNoMu120_PFMHTNoMu120_IDTight);
-  inputChain->SetBranchAddress("HLT_CaloMET80_NotCleaned", &HLT_CaloMET80_NotCleaned);
-  inputChain->SetBranchAddress("HLT_PFMET200_NotCleaned", &HLT_PFMET200_NotCleaned);
-  inputChain->SetBranchAddress("HLT_PFMET200_BeamHaloCleaned", &HLT_PFMET200_BeamHaloCleaned);
-  inputChain->SetBranchAddress("HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight", &HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight);
+  run = new TTreeReaderValue<int>((*tree), "run");
+  lumi = new TTreeReaderValue<int>((*tree), "lumSec");
+  HLT_DiPhoton10sminlt0p12 = new TTreeReaderValue<bool>((*tree), "HLT_DiPhoton10sminlt0p12");
+  HLT_DiPhoton10Time1p4ns = new TTreeReaderValue<bool>((*tree), "HLT_DiPhoton10Time1p4ns");
+  HLTOR_METTrig = new TTreeReaderValue<bool>((*tree), "HLTOR_METTrig");
 
-  inputChain->SetBranchAddress("nElectron", &eln);
-  inputChain->SetBranchAddress("Electron_deltaEtaSC", &eldetasc);
-  inputChain->SetBranchAddress("Electron_dxy", &eldxy);
-  inputChain->SetBranchAddress("Electron_dxyErr", &eldxyerr);
-  inputChain->SetBranchAddress("Electron_dz", &eldz);
-  inputChain->SetBranchAddress("Electron_dzErr", &eldzerr);
-  inputChain->SetBranchAddress("Electron_eInvMinusPInv", &elooemoop);
-  //inputChain->SetBranchAddress("Electron_energyErr", &elenergyerr);
-  inputChain->SetBranchAddress("Electron_eta", &eleta);
-  inputChain->SetBranchAddress("Electron_hoe", &elhoe);
-  inputChain->SetBranchAddress("Electron_phi", &elphi);
-  inputChain->SetBranchAddress("Electron_pt", &elpt);
-  //inputChain->SetBranchAddress("Electron_r9", &elr9);
-  //inputChain->SetBranchAddress("Electron_scEtOverPt", &elscetoverpt);
-  inputChain->SetBranchAddress("Electron_sieie", &elsieie);
-  inputChain->SetBranchAddress("Electron_convVeto", &elconvveto);
-  //inputChain->SetBranchAddress("Electron_charge", &elcharge);
-  //inputChain->SetBranchAddress("Electron_cutBased", &elcutbasedid);
-  //inputChain->SetBranchAddress("Electron_pdgId", &elpdgid);
-  //inputChain->SetBranchAddress("Electron_photonIdx", &elphotonIdx);
-
-  inputChain->SetBranchAddress("nLowPtElectron", &lowpteln);
-  //inputChain->SetBranchAddress("LowPtElectron_ID", &lowptelid);
-  //inputChain->SetBranchAddress("LowPtElectron_deltaEtaSC", &lowpteldetasc);
-  inputChain->SetBranchAddress("LowPtElectron_dxy", &lowpteldxy);
-  inputChain->SetBranchAddress("LowPtElectron_dxyErr", &lowpteldxyerr);
-  inputChain->SetBranchAddress("LowPtElectron_dz", &lowpteldz);
-  inputChain->SetBranchAddress("LowPtElectron_dzErr", &lowpteldzerr);
-  inputChain->SetBranchAddress("LowPtElectron_eInvMinusPInv", &lowptelooemoop);
-  //inputChain->SetBranchAddress("LowPtElectron_energyErr", &lowptelenergyerr);
-  inputChain->SetBranchAddress("LowPtElectron_eta", &lowpteleta);
-  inputChain->SetBranchAddress("LowPtElectron_hoe", &lowptelhoe);
-  inputChain->SetBranchAddress("LowPtElectron_phi", &lowptelphi);
-  inputChain->SetBranchAddress("LowPtElectron_pt", &lowptelpt);
-  //inputChain->SetBranchAddress("LowPtElectron_ptbiased", &lowptelptbias);
-  //inputChain->SetBranchAddress("LowPtElectron_scEtOverPt", &lowptelscetoverpt);
-  inputChain->SetBranchAddress("LowPtElectron_sieie", &lowptelsieie);
-  //inputChain->SetBranchAddress("LowPtElectron_unbiased", &lowptelunbias);
-  //inputChain->SetBranchAddress("LowPtElectron_charge", &lowptelcharge);
-  //inputChain->SetBranchAddress("LowPtElectron_electronIdx", &lowptelid);
-  //inputChain->SetBranchAddress("LowPtElectron_pdgId", &lowptelpdgid);
-
-  inputChain->SetBranchAddress("nPhoton", &phn);
-  inputChain->SetBranchAddress("Photon_pt", &phopt);
-  inputChain->SetBranchAddress("Photon_eta", &phoeta);
-  inputChain->SetBranchAddress("Photon_phi", &phophi);
-  inputChain->SetBranchAddress("Photon_sieie", &phosieie);
-  inputChain->SetBranchAddress("Photon_hoe", &phohoe);
+  eln = new TTreeReaderValue<int>((*tree), "ele_n");
+  ele = new TTreeReaderValue<vector<double>>((*tree), "ele_e");
+  elpt = new TTreeReaderValue<vector<double>>((*tree), "ele_pt");
+  eleta = new TTreeReaderValue<vector<double>>((*tree), "ele_eta");
+  elphi = new TTreeReaderValue<vector<double>>((*tree), "ele_phi");
+  eld0 = new TTreeReaderValue<vector<double>>((*tree), "ele_d0");
+  eldz = new TTreeReaderValue<vector<double>>((*tree), "ele_dz");
+  elseedtime = new TTreeReaderValue<vector<double>>((*tree), "ele_seedtime");
+  elsmin = new TTreeReaderValue<vector<double>>((*tree), "ele_smin");
+  elsmaj = new TTreeReaderValue<vector<double>>((*tree), "ele_smaj");
+  elsieie = new TTreeReaderValue<vector<double>>((*tree), "ele_sinin_coiseclnd");
+  eldeta = new TTreeReaderValue<vector<double>>((*tree), "ele_detaseed");
+  eldphi = new TTreeReaderValue<vector<double>>((*tree), "ele_dphiin");
+  elhoe = new TTreeReaderValue<vector<double>>((*tree), "ele_hoe");
+  elchhadiso = new TTreeReaderValue<vector<double>>((*tree), "ele_chargedhadroniso");
+  elneuthadiso = new TTreeReaderValue<vector<double>>((*tree), "ele_neutralhadroniso");
+  elphiso = new TTreeReaderValue<vector<double>>((*tree), "ele_photoniso");
+  elooemoop = new TTreeReaderValue<vector<double>>((*tree), "ele_ooemoop");
+  elinnerhits = new TTreeReaderValue<vector<double>>((*tree), "ele_innerhits");
+  elconvveto = new TTreeReaderValue<vector<bool>>((*tree), "ele_convveto");
   
   outfile = new TFile(outfilename,"RECREATE");
 
@@ -94,26 +60,25 @@ robustanalyzer::robustanalyzer(TString filename, TString outfilename, bool issim
 // Fill the root file, close the root file, and handle deletions
 robustanalyzer::~robustanalyzer() {
 
-  inputChain->Delete();
   outfile->Write();
   outfile->Close();
 }
 
 // Analyzer for a single file
-void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume splitCnt to range from 0 to nCores
+void robustanalyzer::analyzersinglefile(int splitCnt) {
 
-  int totEntries = inputChain->GetEntries();
+  int totEntries = tree->GetEntries(true);
   cout<<"Total number of entries: "<<totEntries<<endl;
-  int nCores = numCores-1; // Assume parallel processing over numCores cores where
+  int nCores = nC; // Assume parallel processing over numCores cores where
   // there is a lesser no.of events in the last core
   int beginevent = splitCnt*(totEntries/nCores);
   int endevent = (splitCnt+1)*(totEntries/nCores);
   endevent = endevent<totEntries?endevent:totEntries; // Verfied that this logic to parallelize works
   cout<<"Runing "<<splitCnt<<" process from "<<beginevent<<" to "<<endevent<<endl; 
-
+  
   // Count events passing certain selections
   int nosel=0;
-
+  /*
   addhist("nosel_el");
   addhist("bar_el");
   addhist("gt2_bar_el");
@@ -495,8 +460,57 @@ void robustanalyzer::analyzersinglefile(int splitCnt, int numCores) { // Assume 
     midecphoidx.clear();
 
   } // End of loop on events
-
+  */
   cout<<totEntries<<"\t"<<nosel<<endl;
+}
+
+// Function to add a set of histograms for a selection
+void robustanalyzer::addhist(TString selection) {
+
+  all1dhists.push_back(new TH1F(selection+"_event_rho","rho",1000,-10,90));
+  all1dhists.push_back(new TH1F(selection+"_event_trigdec","Trigger Decisions",100,-50,50));
+
+  all1dhists.push_back(new TH1F(selection+"_el_mult","N electron",50,-5,45));
+
+  all1dhists.push_back(new TH1F(selection+"_el_lead_energy","electron_{1} E / GeV",550,-50,500));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_pt","electron_{1} p_{T} / GeV",550,-50,500));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_eta","electron_{1} #eta",100,-5,5));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_phi","electron_{1} #phi",66,-3.3,3.3));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_d0","electron_{1} d_{0} / cm",10000,-50,50));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_log10d0","electron_{1} log_{10}d_{0} / log_{10}cm",10000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_dz","electron_{1} d_{z} / cm",10000,-50,50));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_log10dz","electron_{1} log_{10}d_{z} / log_{10}cm",10000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_seedtime","electron_{1} time_{SC} / ns",10000,-2,8));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_smin","electron_{1} s_{min}",20000,-2,8));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_smaj","electron_{1} s_{maj}",15000,-2,13));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_sieie","electron_{1} #sigmai#etai#eta",1000,0,0.1));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_detasc","electron_{1} #Delta#eta(SC, trk seed)",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_dphi","electron_{1} #Delta#phi(SC, trk seed)",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_hoe","electron_{1} H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_relisowithea","electron_{1} rel.iso.",10000,0,10));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_ooemoop","electron_{1} E^{-1}-p^{-1} / GeV^{-1}",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_innerhits","electron_{1} inner hits",50,-1,49));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_convveto","electron_{1} conversion veto",5,-2,3));
+
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_energy","electron_{2} E / GeV",550,-50,500));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_pt","electron_{2} p_{T} / GeV",550,-50,500));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_eta","electron_{2} #eta",100,-5,5));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_phi","electron_{2} #phi",66,-3.3,3.3));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_d0","electron_{2} d_{0} / cm",10000,-50,50));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_log10d0","electron_{2} log_{10}d_{0} / log_{10}cm",10000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_dz","electron_{2} d_{z} / cm",10000,-50,50));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_log10dz","electron_{2} log_{10}d_{z} / log_{10}cm",10000,-5,5));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_seedtime","electron_{2} time_{SC} / ns",10000,-2,8));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_smin","electron_{2} s_{min}",20000,-2,8));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_smaj","electron_{2} s_{maj}",15000,-2,13));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_sieie","electron_{2} #sigmai#etai#eta",1000,0,0.1));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_detasc","electron_{2} #Delta#eta(SC, trk seed)",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_dphi","electron_{2} #Delta#phi(SC, trk seed)",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_hoe","electron_{2} H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_relisowithea","electron_{2} rel.iso.",10000,0,10));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_ooemoop","electron_{2} E^{-1}-p^{-1} / GeV^{-1}",1000,-0.1,0.9));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_innerhits","electron_{2} inner hits",50,-1,49));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_convveto","electron_{2} conversion veto",5,-2,3));
 }
 
 // Function to fill a set of histograms in the event
@@ -589,249 +603,6 @@ void robustanalyzer::fillhistinevent(TString selection, vector<int> elidx) {
     subleadeldzErr->Fill(eldzerr[elidx[1]]);
   } // End of condition requiring atleast two eg object
 
-}
-
-// Function to fill a set of histograms in the event
-void robustanalyzer::fillhistinevent4LowPtElectron(TString selection, vector<int> elidx) {
-
-  TH1F* evtrho = (TH1F*) outfile->Get(selection+"_event_rho");
-  TH1F* evttrig = (TH1F*) outfile->Get(selection+"_event_trigdec");
-
-  TH1F* elmult = (TH1F*) outfile->Get(selection+"_lowptel_mult");
-
-  TH1F* leadelpt = (TH1F*) outfile->Get(selection+"_lowptel_lead_pt");
-  TH1F* leadeleta = (TH1F*) outfile->Get(selection+"_lowptel_lead_eta");
-  TH1F* leadelphi = (TH1F*) outfile->Get(selection+"_lowptel_lead_phi");
-  TH1F* leadelsieie = (TH1F*) outfile->Get(selection+"_lowptel_lead_sieie");
-  TH1F* leadelhoe = (TH1F*) outfile->Get(selection+"_lowptel_lead_hoe");
-  TH1F* leadeldetasc = (TH1F*) outfile->Get(selection+"_lowptel_lead_detasc");
-  TH1F* leadelooemoop = (TH1F*) outfile->Get(selection+"_lowptel_lead_ooemoop");
-  TH1F* leadelconvveto = (TH1F*) outfile->Get(selection+"_lowptel_lead_convveto");
-  TH1F* leadellog10d0 = (TH1F*) outfile->Get(selection+"_lowptel_lead_log10d0");
-  TH1F* leadeld0 = (TH1F*) outfile->Get(selection+"_lowptel_lead_d0");
-  TH1F* leadeld0Err = (TH1F*) outfile->Get(selection+"_lowptel_lead_d0Err");
-  TH1F* leadellog10dz = (TH1F*) outfile->Get(selection+"_lowptel_lead_log10dz");
-  TH1F* leadeldz = (TH1F*) outfile->Get(selection+"_lowptel_lead_dz");
-  TH1F* leadeldzErr = (TH1F*) outfile->Get(selection+"_lowptel_lead_dzErr");
-
-  TH1F* subleadelpt = (TH1F*) outfile->Get(selection+"_lowptel_sublead_pt");
-  TH1F* subleadeleta = (TH1F*) outfile->Get(selection+"_lowptel_sublead_eta");
-  TH1F* subleadelphi = (TH1F*) outfile->Get(selection+"_lowptel_sublead_phi");
-  TH1F* subleadelsieie = (TH1F*) outfile->Get(selection+"_lowptel_sublead_sieie");
-  TH1F* subleadelhoe = (TH1F*) outfile->Get(selection+"_lowptel_sublead_hoe");
-  TH1F* subleadeldetasc = (TH1F*) outfile->Get(selection+"_lowptel_sublead_detasc");
-  TH1F* subleadelooemoop = (TH1F*) outfile->Get(selection+"_lowptel_sublead_ooemoop");
-  TH1F* subleadelconvveto = (TH1F*) outfile->Get(selection+"_lowptel_sublead_convveto");
-  TH1F* subleadellog10d0 = (TH1F*) outfile->Get(selection+"_lowptel_sublead_log10d0");
-  TH1F* subleadeld0 = (TH1F*) outfile->Get(selection+"_lowptel_sublead_d0");
-  TH1F* subleadeld0Err = (TH1F*) outfile->Get(selection+"_lowptel_sublead_d0Err");
-  TH1F* subleadellog10dz = (TH1F*) outfile->Get(selection+"_lowptel_sublead_log10dz");
-  TH1F* subleadeldz = (TH1F*) outfile->Get(selection+"_lowptel_sublead_dz");
-  TH1F* subleadeldzErr = (TH1F*) outfile->Get(selection+"_lowptel_sublead_dzErr");
-
-  if(elidx.size()>0) {
-
-    // Fill the event trigger decisions
-    if(HLT_DiPhoton10sminlt0p12) evttrig->Fill(2);
-    if(HLT_DiPhoton10Time1p4ns) evttrig->Fill(1);
-    if(HLT_PFMET120_PFMHT120_IDTight) evttrig->Fill(-1);
-    if(HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF) evttrig->Fill(-2);
-    if(HLT_PFMETNoMu120_PFMHTNoMu120_IDTight) evttrig->Fill(-3);
-    if(HLT_CaloMET80_NotCleaned) evttrig->Fill(-4);
-    if(HLT_PFMET200_NotCleaned) evttrig->Fill(-5);
-    if(HLT_PFMET200_BeamHaloCleaned) evttrig->Fill(-6);
-    if(HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight) evttrig->Fill(-7);
-    
-    evtrho->Fill(eventRho);
-    elmult->Fill(elidx.size());
-    leadelpt->Fill(lowptelpt[elidx[0]]);
-    leadeleta->Fill(lowpteleta[elidx[0]]);
-    leadelphi->Fill(lowptelphi[elidx[0]]);
-    leadelsieie->Fill(lowptelsieie[elidx[0]]);
-    leadelhoe->Fill(lowptelhoe[elidx[0]]);
-    leadelooemoop->Fill(lowptelooemoop[elidx[0]]);
-    leadellog10d0->Fill(TMath::Log10(TMath::Abs(lowpteldxy[elidx[0]])));
-    leadeld0->Fill(lowpteldxy[elidx[0]]);
-    leadeld0Err->Fill(lowpteldxyerr[elidx[0]]);
-    leadellog10dz->Fill(TMath::Log10(TMath::Abs(lowpteldz[elidx[0]])));
-    leadeldz->Fill(lowpteldz[elidx[0]]);
-    leadeldzErr->Fill(lowpteldzerr[elidx[0]]);
-  } // End of condition requiring atleast one eg object
-  
-  if(elidx.size()>=2) { // Condition requiring atleast two eg object
-    //TLorentzVector leadeg, subleadeg;
-    //leadeg.SetPtEtaPhiM(egRecoPt[egidx[0]],egRecoEta[egidx[0]],egRecoPhi[egidx[0]],0.106);
-    //subleadeg.SetPtEtaPhiM(egRecoPt[egidx[1]],egRecoEta[egidx[1]],egRecoPhi[egidx[1]],0.106);
-
-    subleadelpt->Fill(lowptelpt[elidx[1]]);
-    subleadeleta->Fill(lowpteleta[elidx[1]]);
-    subleadelphi->Fill(lowptelphi[elidx[1]]);
-    subleadelsieie->Fill(lowptelsieie[elidx[1]]);
-    subleadelhoe->Fill(lowptelhoe[elidx[1]]);
-    subleadelooemoop->Fill(lowptelooemoop[elidx[1]]);
-    subleadellog10d0->Fill(TMath::Log10(TMath::Abs(lowpteldxy[elidx[1]])));
-    subleadeld0->Fill(lowpteldxy[elidx[1]]);
-    subleadeld0Err->Fill(lowpteldxyerr[elidx[1]]);
-    subleadellog10dz->Fill(TMath::Log10(TMath::Abs(lowpteldz[elidx[1]])));
-    subleadeldz->Fill(lowpteldz[elidx[1]]);
-    subleadeldzErr->Fill(lowpteldzerr[elidx[1]]);
-  } // End of condition requiring atleast two eg object
-
-}
-
-// Function to fill a set of histograms in the event
-void robustanalyzer::fillhistinevent4Photon(TString selection, vector<int> phoidx) {
-
-  TH1F* evtrho = (TH1F*) outfile->Get(selection+"_event_rho");
-  TH1F* evttrig = (TH1F*) outfile->Get(selection+"_event_trigdec");
-
-  TH1F* phomult = (TH1F*) outfile->Get(selection+"_pho_mult");
-
-  TH1F* leadphopt = (TH1F*) outfile->Get(selection+"_pho_lead_pt");
-  TH1F* leadphoeta = (TH1F*) outfile->Get(selection+"_pho_lead_eta");
-  TH1F* leadphophi = (TH1F*) outfile->Get(selection+"_pho_lead_phi");
-  TH1F* leadphosieie = (TH1F*) outfile->Get(selection+"_pho_lead_sieie");
-  TH1F* leadphohoe = (TH1F*) outfile->Get(selection+"_pho_lead_hoe");
-
-  TH1F* subleadphopt = (TH1F*) outfile->Get(selection+"_pho_sublead_pt");
-  TH1F* subleadphoeta = (TH1F*) outfile->Get(selection+"_pho_sublead_eta");
-  TH1F* subleadphophi = (TH1F*) outfile->Get(selection+"_pho_sublead_phi");
-  TH1F* subleadphosieie = (TH1F*) outfile->Get(selection+"_pho_sublead_sieie");
-  TH1F* subleadphohoe = (TH1F*) outfile->Get(selection+"_pho_sublead_hoe");
-
-  if(phoidx.size()>0) {
-
-    // Fill the event trigger decisions
-    if(HLT_DiPhoton10sminlt0p12) evttrig->Fill(2);
-    if(HLT_DiPhoton10Time1p4ns) evttrig->Fill(1);
-    if(HLT_PFMET120_PFMHT120_IDTight) evttrig->Fill(-1);
-    if(HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF) evttrig->Fill(-2);
-    if(HLT_PFMETNoMu120_PFMHTNoMu120_IDTight) evttrig->Fill(-3);
-    if(HLT_CaloMET80_NotCleaned) evttrig->Fill(-4);
-    if(HLT_PFMET200_NotCleaned) evttrig->Fill(-5);
-    if(HLT_PFMET200_BeamHaloCleaned) evttrig->Fill(-6);
-    if(HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight) evttrig->Fill(-7);
-    
-    evtrho->Fill(eventRho);
-    phomult->Fill(phoidx.size());
-    leadphopt->Fill(phopt[phoidx[0]]);
-    leadphoeta->Fill(phoeta[phoidx[0]]);
-    leadphophi->Fill(phophi[phoidx[0]]);
-    leadphosieie->Fill(phosieie[phoidx[0]]);
-    leadphohoe->Fill(phohoe[phoidx[0]]);
-  } // End of condition requiring atleast one eg object
-  
-  if(phoidx.size()>=2) { // Condition requiring atleast two eg object
-    //TLorentzVector leadeg, subleadeg;
-    //leadeg.SetPtEtaPhiM(egRecoPt[egidx[0]],egRecoEta[egidx[0]],egRecoPhi[egidx[0]],0.106);
-    //subleadeg.SetPtEtaPhiM(egRecoPt[egidx[1]],egRecoEta[egidx[1]],egRecoPhi[egidx[1]],0.106);
-
-    subleadphopt->Fill(phopt[phoidx[1]]);
-    subleadphoeta->Fill(phoeta[phoidx[1]]);
-    subleadphophi->Fill(phophi[phoidx[1]]);
-    subleadphosieie->Fill(phosieie[phoidx[1]]);
-    subleadphohoe->Fill(phohoe[phoidx[1]]);
-  } // End of condition requiring atleast two eg object
-
-}
-
-// Function to add a set of histograms for a selection
-void robustanalyzer::addhist(TString selection) {
-
-  all1dhists.push_back(new TH1F(selection+"_event_rho","rho",1000,-10,90));
-  all1dhists.push_back(new TH1F(selection+"_event_trigdec","Trigger Decisions",100,-50,50));
-
-  all1dhists.push_back(new TH1F(selection+"_el_mult","N electron",50,-5,45));
-
-  all1dhists.push_back(new TH1F(selection+"_el_lead_pt","electron_{1} p_{T} / GeV",550,-50,500));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_eta","electron_{1} #eta",100,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_phi","electron_{1} #phi",66,-3.3,3.3));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_sieie","electron_{1} #sigmai#etai#eta",1000,0,0.1));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_hoe","electron_{1} H/E",1000,0,10));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_detasc","electron_{1} #Delta#eta(SC, trk seed)",1000,-0.03,0.07));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_ooemoop","electron_{1} E^{-1}-p^{-1} / GeV^{-1}",1000,-0.1,0.9));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_convveto","electron_{1} conversion veto",5,-2,3));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_log10d0","electron_{1} log_{10}d_{0} / log_{10}cm",10000,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_d0","electron_{1} d_{0} / cm",10000,-50,50));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_d0Err","electron_{1} #sigmad_{0}",5,-2,3));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_log10dz","electron_{1} log_{10}d_{z} / log_{10}cm",10000,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_dz","electron_{1} d_{z} / cm",10000,-50,50));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_dzErr","electron_{1} #sigmad_{z}",5,-2,3));
-
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_pt","electron_{2} p_{T} / GeV",550,-50,500));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_eta","electron_{2} #eta",100,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_phi","electron_{2} #phi",66,-3.3,3.3));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_sieie","electron_{2} #sigmai#etai#eta",1000,0,0.1));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_hoe","electron_{2} H/E",1000,0,10));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_detasc","electron_{2} #Delta#eta(SC, trk seed)",1000,-0.03,0.07));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_ooemoop","electron_{2} E^{-1}-p^{-1} / GeV^{-1}",1000,-0.1,0.9));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_convveto","electron_{2} conversion veto",5,-2,3));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_log10d0","electron_{2} log_{10}d_{0} / log_{10}cm",10000,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_d0","electron_{2} d_{0} / cm",10000,-50,50));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_d0Err","electron_{2} #sigmad_{0}",5,-2,3));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_log10dz","electron_{2} log_{10}d_{z} / log_{10}cm",10000,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_dz","electron_{2} d_{z} / cm",10000,-50,50));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_dzErr","electron_{2} #sigmad_{z}",5,-2,3));
-}
-
-// Function to add a set of histograms for a selection
-void robustanalyzer::addhist4LowPtElectron(TString selection) {
-
-  all1dhists.push_back(new TH1F(selection+"_event_rho","rho",1000,-10,90));
-  all1dhists.push_back(new TH1F(selection+"_event_trigdec","Trigger Decisions",100,-50,50));
-
-  all1dhists.push_back(new TH1F(selection+"_lowptel_mult","N low p_{T} elec",50,-5,45));
-
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_pt","low p_{T} elec_{1} p_{T} / GeV",550,-50,500));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_eta","low p_{T} elec_{1} #eta",100,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_phi","low p_{T} elec_{1} #phi",66,-3.3,3.3));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_sieie","low p_{T} elec_{1} #sigmai#etai#eta",1000,0,0.1));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_hoe","low p_{T} elec_{1} H/E",1000,0,10));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_detasc","low p_{T} elec_{1} #Delta#eta(SC, trk seed)",1000,-0.03,0.07));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_ooemoop","low p_{T} elec_{1} E^{-1}-p^{-1} / GeV^{-1}",1000,-0.1,0.9));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_convveto","low p_{T} elec_{1} conversion veto",5,-2,3));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_log10d0","low p_{T} elec_{1} log_{10}d_{0} / log_{10}cm",10000,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_d0","low p_{T} elec_{1} d_{0} / cm",10000,-50,50));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_d0Err","low p_{T} elec_{1} #sigmad_{0}",5,-2,3));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_log10dz","low p_{T} elec_{1} log_{10}d_{z} / log_{10}cm",10000,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_dz","low p_{T} elec_{1} d_{z} / cm",10000,-50,50));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_lead_dzErr","low p_{T} elec_{1} #sigmad_{z}",5,-2,3));
-
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_pt","low p_{T} elec_{2} p_{T} / GeV",550,-50,500));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_eta","low p_{T} elec_{2} #eta",100,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_phi","low p_{T} elec_{2} #phi",66,-3.3,3.3));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_sieie","low p_{T} elec_{2} #sigmai#etai#eta",1000,0,0.1));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_hoe","low p_{T} elec_{2} H/E",1000,0,10));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_detasc","low p_{T} elec_{2} #Delta#eta(SC, trk seed)",1000,-0.03,0.07));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_ooemoop","low p_{T} elec_{2} E^{-1}-p^{-1} / GeV^{-1}",1000,-0.1,0.9));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_convveto","low p_{T} elec_{2} conversion veto",5,-2,3));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_log10d0","low p_{T} elec_{2} log_{10}d_{0} / log_{10}cm",10000,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_d0","low p_{T} elec_{2} d_{0} / cm",10000,-50,50));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_d0Err","low p_{T} elec_{2} #sigmad_{0}",5,-2,3));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_log10dz","low p_{T} elec_{2} log_{10}d_{z} / log_{10}cm",10000,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_dz","low p_{T} elec_{2} d_{z} / cm",10000,-50,50));
-  all1dhists.push_back(new TH1F(selection+"_lowptel_sublead_dzErr","low p_{T} elec_{2} #sigmad_{z}",5,-2,3));
-}
-
-// Function to add a set of histograms for a selection
-void robustanalyzer::addhist4Photon(TString selection) {
-
-  all1dhists.push_back(new TH1F(selection+"_event_rho","rho",1000,-10,90));
-  all1dhists.push_back(new TH1F(selection+"_event_trigdec","Trigger Decisions",100,-50,50));
-
-  all1dhists.push_back(new TH1F(selection+"_pho_mult","N photon",50,-5,45));
-
-  all1dhists.push_back(new TH1F(selection+"_pho_lead_pt","photon_{1} p_{T} / GeV",550,-50,500));
-  all1dhists.push_back(new TH1F(selection+"_pho_lead_eta","photon_{1} #eta",100,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_pho_lead_phi","photon_{1} #phi",66,-3.3,3.3));
-  all1dhists.push_back(new TH1F(selection+"_pho_lead_sieie","photon_{1} #sigmai#etai#eta",1000,0,0.1));
-  all1dhists.push_back(new TH1F(selection+"_pho_lead_hoe","photon_{1} H/E",1000,0,10));
-
-  all1dhists.push_back(new TH1F(selection+"_pho_sublead_pt","photon_{2} p_{T} / GeV",550,-50,500));
-  all1dhists.push_back(new TH1F(selection+"_pho_sublead_eta","photon_{2} #eta",100,-5,5));
-  all1dhists.push_back(new TH1F(selection+"_pho_sublead_phi","photon_{2} #phi",66,-3.3,3.3));
-  all1dhists.push_back(new TH1F(selection+"_pho_sublead_sieie","photon_{2} #sigmai#etai#eta",1000,0,0.1));
-  all1dhists.push_back(new TH1F(selection+"_pho_sublead_hoe","photon_{2} H/E",1000,0,10));
 }
 
 // Function to sort the indices based on a factor (Usually pT)

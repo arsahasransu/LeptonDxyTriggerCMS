@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
   ss >> cnt;
 
   stringstream ss2;
-  ss2 << argv[4];
+  ss2 << argv[2];
   int cnt2;
   ss2 >> cnt2;
 
@@ -21,8 +21,8 @@ int main(int argc, char* argv[]) {
     
     stringstream ssdata;
     ssdata<<argv[3]<<cnt<<".root";
-    robustanalyzer rana_data(argv[2],ssdata.str(), true);
-    rana_data.analyzersinglefile(cnt, cnt2);
+    robustanalyzer rana_data(argv[4], ssdata.str(), cnt2);
+    rana_data.analyzersinglefile(cnt);
     
   }
   catch (char const* exc){
