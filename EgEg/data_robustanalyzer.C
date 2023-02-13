@@ -171,6 +171,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   if(isMC)addhistgenmchunseeded("gennoselAnoselus");
   if(isMC)addhistgenmchunseeded("genbasicselbarAnoselus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAnoselus");
+  if(isMC)addhistgenmchunseeded("genbasicptgt10selecAnoselus");
   if(isMC)addhistgenmchunseeded("genetabin14_16_24Anoselus");
   if(isMC)addhistgenmchunseeded("genptgt10Anoselus");
   if(isMC)addhistgenmchunseeded("genptgt10etalt12Anoselus");
@@ -323,22 +324,26 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 
 	gennoselegidx.push_back(genCtr);
 
+	// Separate the EB and EE signal by the prompt equivalent for a displaced electron
+	// The default prompt eta and phi value for a bad gen electron is 1000. Check for that.
+	// Apply constraints for the fiducial region of ECAL
+
         genbasicselbareg = true;
-	genbasicselbareg = abs(genLepVz[genCtr])<320 || TMath::Sqrt(genLepVx[genCtr]*genLepVx[genCtr]+genLepVy[genCtr]*genLepVy[genCtr])<130;
-        genbasicselbareg *= abs(genLepPromptEta[genCtr])<1.479;
+	genbasicselbareg *= (abs(genLepVz[genCtr])<310 && TMath::Sqrt(genLepVx[genCtr]*genLepVx[genCtr]+genLepVy[genCtr]*genLepVy[genCtr])<130);
+        genbasicselbareg *= (abs(genLepPromptEta[genCtr])<1.479 && abs(genLepPromptEta[genCtr])!=1000);
 	if(genbasicselbareg) genbasicselbaregidx.push_back(genCtr);
 	else genbasicselbaregidx.push_back(-1);
 
         genbasicptgt10selbareg = true;
-	genbasicptgt10selbareg = abs(genLepVz[genCtr])<320 || TMath::Sqrt(genLepVx[genCtr]*genLepVx[genCtr]+genLepVy[genCtr]*genLepVy[genCtr])<130;
-        genbasicptgt10selbareg *= abs(genLepPromptEta[genCtr])<1.479;
+	genbasicptgt10selbareg *= (abs(genLepVz[genCtr])<310 && TMath::Sqrt(genLepVx[genCtr]*genLepVx[genCtr]+genLepVy[genCtr]*genLepVy[genCtr])<130);
+        genbasicptgt10selbareg *= (abs(genLepPromptEta[genCtr])<1.479 && abs(genLepPromptEta[genCtr])!=1000);
         genbasicptgt10selbareg *= genLepPt[genCtr]>10;
 	if(genbasicptgt10selbareg) genbasicptgt10selbaregidx.push_back(genCtr);
 	else genbasicptgt10selbaregidx.push_back(-1);
 
         genbasicptgt10seleceg = true;
-	genbasicptgt10seleceg = abs(genLepVz[genCtr])<320 || TMath::Sqrt(genLepVx[genCtr]*genLepVx[genCtr]+genLepVy[genCtr]*genLepVy[genCtr])<130;
-        genbasicptgt10seleceg *= abs(genLepPromptEta[genCtr])>1.479;
+	genbasicptgt10seleceg *= (abs(genLepVz[genCtr])<310 && TMath::Sqrt(genLepVx[genCtr]*genLepVx[genCtr]+genLepVy[genCtr]*genLepVy[genCtr])<130);
+        genbasicptgt10seleceg *= (abs(genLepPromptEta[genCtr])>1.479 && abs(genLepPromptEta[genCtr])!=1000);
         genbasicptgt10seleceg *= genLepPt[genCtr]>10;
 	if(genbasicptgt10seleceg) genbasicptgt10selecegidx.push_back(genCtr);
 	else genbasicptgt10selecegidx.push_back(-1);
@@ -350,6 +355,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 
 	genptgt10eg = true;
 	genptgt10eg *= genLepPt[genCtr]>10;
+	genptgt10eg *= (abs(genLepVz[genCtr])<310 && TMath::Sqrt(genLepVx[genCtr]*genLepVx[genCtr]+genLepVy[genCtr]*genLepVy[genCtr])<130);
+        genptgt10eg *= (abs(genLepPromptEta[genCtr])<2.4 && abs(genLepPromptEta[genCtr])!=1000);
 	if(genptgt10eg) genptgt10egidx.push_back(genCtr);
 	else genptgt10egidx.push_back(-1);
 
@@ -651,16 +658,16 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 
     // Cross-check with known triggers
     dipho70trig = false;
-    if(!comparecutonobjtofilt(dieg70HeusFiltPt, dieg70HeusFiltN, egusRecoPt, dieg70idegusidx)) cout<<event<<"Mismatching objects: HLT_DoublePhoton70"<<endl;;
+    if(!comparecutonobjtofilt(dieg70HeusFiltPt, dieg70HeusFiltN, egusRecoPt, dieg70idegusidx)) cout<<event<<"Error: Mismatching objects in HLT_DoublePhoton70"<<endl;;
     if(dieg70idegidx.size()>=1 && dieg70idegusidx.size()>=2) dipho70trig = true;
-    if(HLT_DoublePhoton70==true && dipho70trig==false) cout<<event<<": Type 1 - too many cuts on obj - trigger cross-check failed for: HLT_DoublePhoton70"<<endl;
-    if(HLT_DoublePhoton70==false && dipho70trig==true) cout<<event<<": Type 2(accep) - not enough cuts on obj - trigger cross-check failed for: HLT_DoublePhoton70"<<endl;
+    if(HLT_DoublePhoton70==true && dipho70trig==false) cout<<event<<"Error: Type 1 - too many cuts on obj - trigger cross-check failed for: HLT_DoublePhoton70"<<endl;
+    if(HLT_DoublePhoton70==false && dipho70trig==true) cout<<event<<"Error: Type 2(accep) - not enough cuts on obj - trigger cross-check failed for: HLT_DoublePhoton70"<<endl;
 
     dipho33caloidltrig = false;
-    if(!comparecutonobjtofilt(dieg33CsusFiltPt, dieg33CsusFiltN, egusRecoPt, dieg33caloidlidegusidx)) cout<<event<<"Mismatching objects: HLT_DoublePhoton70"<<endl;;
+    if(!comparecutonobjtofilt(dieg33CsusFiltPt, dieg33CsusFiltN, egusRecoPt, dieg33caloidlidegusidx)) cout<<event<<"Error: Mismatching objects in HLT_DoublePhoton33"<<endl;;
     if(dieg33caloidlidegidx.size()>=1 && dieg33caloidlidegusidx.size()>=2) dipho33caloidltrig = true;
-    if(HLT_DoublePhoton33_CaloIdL==true && dipho33caloidltrig==false) cout<<event<<": Type 1 - too many cuts on obj - trigger cross-check failed for: HLT_DoublePhoton33"<<endl;
-    if(HLT_DoublePhoton33_CaloIdL==false && dipho33caloidltrig==true) cout<<event<<": Type 2(accep) - not enough cuts on obj - trigger cross-check failed for: HLT_DoublePhoton33"<<endl;
+    if(HLT_DoublePhoton33_CaloIdL==true && dipho33caloidltrig==false) cout<<event<<"Error: Type 1 - too many cuts on obj - trigger cross-check failed for: HLT_DoublePhoton33"<<endl;
+    if(HLT_DoublePhoton33_CaloIdL==false && dipho33caloidltrig==true) cout<<event<<"Error: Type 2(accep) - not enough cuts on obj - trigger cross-check failed for: HLT_DoublePhoton33"<<endl;
 
     if(HLT_DoublePhoton70==true) dieg70idus++;
     if(HLT_DoublePhoton33_CaloIdL==true) dieg33caloidl++;
@@ -695,6 +702,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("gennoselAnoselus", gennoselegidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicselbarAnoselus", genbasicselbaregidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAnoselus", genbasicptgt10selbaregidx, noselegusidx);
+    if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAnoselus", genbasicptgt10selecegidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genetabin14_16_24Anoselus", genetabin14_16_24egidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10Anoselus", genptgt10egidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10etalt12Anoselus", genptgt10etalt12egidx, noselegusidx);
@@ -1627,6 +1635,8 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
   if(genidx.size()!=2) throw "Error! Code always has 2 indices for gen electrons";
   
   // Variables before gen matching
+  TH1F* geneltrigegus_dEta = (TH1F*) outfile->Get(selection+"geneltrigegus_dEta");
+  TH1F* geneltrigegus_qdPhi = (TH1F*) outfile->Get(selection+"geneltrigegus_qdPhi");
   TH1F* geneltrigebus_dE = (TH1F*) outfile->Get(selection+"geneltrigebus_dE");
   TH1F* geneltrigebus_dPt = (TH1F*) outfile->Get(selection+"geneltrigebus_dPt");
   TH1F* geneltrigebus_dEta = (TH1F*) outfile->Get(selection+"geneltrigebus_dEta");
@@ -1637,6 +1647,8 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
   TH1F* geneltrigeeus_dPt = (TH1F*) outfile->Get(selection+"geneltrigeeus_dPt");
   TH1F* geneltrigeeus_dEta = (TH1F*) outfile->Get(selection+"geneltrigeeus_dEta");
   TH1F* geneltrigeeus_qdPhi = (TH1F*) outfile->Get(selection+"geneltrigeeus_qdPhi");
+  TH1F* geneltrigeeus_dPromptEta = (TH1F*) outfile->Get(selection+"geneltrigeeus_dPromptEta");
+  TH1F* geneltrigeeus_qdPromptPhi = (TH1F*) outfile->Get(selection+"geneltrigeeus_qdPromptPhi");
 
   // Variables after gen matching
   TH1F* genegmult = (TH1F*) outfile->Get(selection+"recomchgenel_egmult");
@@ -1800,6 +1812,10 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
   TH1F* genmchgeneltrigeeus_dPt = (TH1F*) outfile->Get(selection+"genmchgeneltrigeeus_dPt");
   TH1F* genmchgeneltrigeeus_dEta = (TH1F*) outfile->Get(selection+"genmchgeneltrigeeus_dEta");
   TH1F* genmchgeneltrigeeus_qdPhi = (TH1F*) outfile->Get(selection+"genmchgeneltrigeeus_qdPhi");
+  TH1F* genmchgeneltrigeeus_dPromptE = (TH1F*) outfile->Get(selection+"genmchgeneltrigeeus_dPromptE");
+  TH1F* genmchgeneltrigeeus_dPromptPt = (TH1F*) outfile->Get(selection+"genmchgeneltrigeeus_dPromptPt");
+  TH1F* genmchgeneltrigeeus_dPromptEta = (TH1F*) outfile->Get(selection+"genmchgeneltrigeeus_dPromptEta");
+  TH1F* genmchgeneltrigeeus_qdPromptPhi = (TH1F*) outfile->Get(selection+"genmchgeneltrigeeus_qdPromptPhi");
 
   // Minimum dEta and min. qdPhi for each gen electron
   for(int gene : genidx) {
@@ -1848,7 +1864,9 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
       }
     }
     
-    if(abs(genLepEta[gene])<1.479) {
+    geneltrigegus_dEta->Fill(dEtamin);
+    geneltrigegus_qdPhi->Fill(qdPhimin);
+    if(abs(genLepPromptEta[gene])<1.479) {
       geneltrigebus_dE->Fill(dEmin);
       geneltrigebus_dPt->Fill(dPtmin);
       geneltrigebus_dEta->Fill(dEtamin);
@@ -1861,6 +1879,8 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
       geneltrigeeus_dPt->Fill(dPtmin);
       geneltrigeeus_dEta->Fill(dEtamin);
       geneltrigeeus_qdPhi->Fill(qdPhimin);
+      geneltrigeeus_dPromptEta->Fill(dPromptEtamin);
+      geneltrigeeus_qdPromptPhi->Fill(qdPromptPhimin);
     }
   }
 
@@ -1893,7 +1913,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
     genlog10d0->Fill(TMath::Log10(TMath::Abs(genLepDxy[gen1])));
     genlxy->Fill(genLepLxy[gen1]);
     genlog10lxy->Fill(TMath::Log10(TMath::Abs(genLepLxy[gen1])));
-    if(abs(genLepEta[gen1])<1.479) {
+    if(abs(genLepPromptEta[gen1])<1.479) {
       genmchgeneltrigebus_dE->Fill(el.E()-vecegus.E());
       genmchgeneltrigebus_dPt->Fill(genLepPt[gen1]-egusRecoPt[egus1]);
       genmchgeneltrigebus_dEta->Fill(genLepEta[gen1]-egusRecoEta[egus1]);
@@ -1908,6 +1928,10 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
       genmchgeneltrigeeus_dPt->Fill(genLepPt[gen1]-egusRecoPt[egus1]);
       genmchgeneltrigeeus_dEta->Fill(genLepEta[gen1]-egusRecoEta[egus1]);
       genmchgeneltrigeeus_qdPhi->Fill(qdPhi);
+      genmchgeneltrigeeus_dPromptE->Fill(promptel.E()-vecegus.E());
+      genmchgeneltrigeeus_dPromptPt->Fill(promptel.Pt()-egusRecoPt[egus1]);
+      genmchgeneltrigeeus_dPromptEta->Fill(genLepPromptEta[gen1]-egusRecoEta[egus1]);
+      genmchgeneltrigeeus_qdPromptPhi->Fill(qdPromptPhi);
     }
     genleadpt->Fill(genLepPt[gen1]);
     genleadeta->Fill(genLepEta[gen1]);
@@ -1933,7 +1957,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
     genlog10d0->Fill(TMath::Log10(TMath::Abs(genLepDxy[gen2])));
     genlxy->Fill(genLepLxy[gen2]);
     genlog10lxy->Fill(TMath::Log10(TMath::Abs(genLepLxy[gen2])));
-    if(abs(genLepEta[gen2])<1.479) {
+    if(abs(genLepPromptEta[gen2])<1.479) {
       genmchgeneltrigebus_dE->Fill(el.E()-vecegus.E());
       genmchgeneltrigebus_dPt->Fill(genLepPt[gen2]-egusRecoPt[egus2]);
       genmchgeneltrigebus_dEta->Fill(genLepEta[gen2]-egusRecoEta[egus2]);
@@ -1948,6 +1972,10 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
       genmchgeneltrigeeus_dPt->Fill(genLepPt[gen2]-egusRecoPt[egus2]);
       genmchgeneltrigeeus_dEta->Fill(genLepEta[gen2]-egusRecoEta[egus2]);
       genmchgeneltrigeeus_qdPhi->Fill(qdPhi);
+      genmchgeneltrigeeus_dPromptE->Fill(promptel.E()-vecegus.E());
+      genmchgeneltrigeeus_dPromptPt->Fill(promptel.Pt()-egusRecoPt[egus2]);
+      genmchgeneltrigeeus_dPromptEta->Fill(genLepPromptEta[gen2]-egusRecoEta[egus2]);
+      genmchgeneltrigeeus_qdPromptPhi->Fill(qdPromptPhi);
     }
     gensubleadpt->Fill(genLepPt[gen2]);
     gensubleadeta->Fill(genLepEta[gen2]);
@@ -2491,6 +2519,8 @@ void data_robustanalyzer::addhistunseeded(TString selection) {
 void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
 
   // Variables before gen match
+  all1dhists.push_back(new TH1F(selection+"geneltrigegus_dEta","#Delta#eta(gen e, trig. e/#gamma)",8000,-4,4));
+  all1dhists.push_back(new TH1F(selection+"geneltrigegus_qdPhi","q#Delta#phi(gen e, trig. e/#gamma)",8000,-4,4));
   all1dhists.push_back(new TH1F(selection+"geneltrigebus_dE","#Delta E(gen e, trig. e/#gamma)",10000,-50,50));
   all1dhists.push_back(new TH1F(selection+"geneltrigebus_dPt","#Delta p_{T}(gen e, trig. e/#gamma)",10000,-50,50));
   all1dhists.push_back(new TH1F(selection+"geneltrigebus_dEta","#Delta#eta(gen e, trig. e/#gamma)",8000,-4,4));
@@ -2501,6 +2531,8 @@ void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"geneltrigeeus_dPt","#Delta p_{T}(gen e, trig. e/#gamma)",10000,-50,50));
   all1dhists.push_back(new TH1F(selection+"geneltrigeeus_dEta","#Delta#eta(gen e, trig. e/#gamma)",8000,-4,4));
   all1dhists.push_back(new TH1F(selection+"geneltrigeeus_qdPhi","q#Delta#phi(gen e, trig. e/#gamma)",8000,-4,4));
+  all1dhists.push_back(new TH1F(selection+"geneltrigeeus_dPromptEta","#Delta#eta(gen prompt e, trig. e/#gamma)",8000,-4,4));
+  all1dhists.push_back(new TH1F(selection+"geneltrigeeus_qdPromptPhi","q#Delta#phi(gen prompt e, trig. e/#gamma)",8000,-4,4));
   
   // Variables after gen match
   all1dhists.push_back(new TH1F(selection+"recomchgenel_egmult","gen N e/#gamma",50,-5,45));
@@ -2662,6 +2694,10 @@ void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"genmchgeneltrigeeus_dPt","gen matched #Delta p_{T}(gen e, trig. e/#gamma)",10000,-50,50));
   all1dhists.push_back(new TH1F(selection+"genmchgeneltrigeeus_dEta","gen matched #Delta#eta(gen e, trig. e/#gamma)",8000,-4,4));
   all1dhists.push_back(new TH1F(selection+"genmchgeneltrigeeus_qdPhi","gen matched q#Delta#phi(gen e, trig. e/#gamma)",8000,-4,4));
+  all1dhists.push_back(new TH1F(selection+"genmchgeneltrigeeus_dPromptE","gen matched #Delta E(gen prompt e, trig. e/#gamma)",10000,-50,50));
+  all1dhists.push_back(new TH1F(selection+"genmchgeneltrigeeus_dPromptPt","gen matched #Delta p_{T}(gen prompt e, trig. e/#gamma)",10000,-50,50));
+  all1dhists.push_back(new TH1F(selection+"genmchgeneltrigeeus_dPromptEta","gen matched #Delta#eta(gen prompt e, trig. e/#gamma)",8000,-4,4));
+  all1dhists.push_back(new TH1F(selection+"genmchgeneltrigeeus_qdPromptPhi","gen matched q#Delta#phi(gen prompt e, trig. e/#gamma)",8000,-4,4));
 }
 
 // Function to sort the indices based on a factor (Usually pT)
@@ -2722,34 +2758,3 @@ bool data_robustanalyzer::comparecutonobjtofilt(double filt[], unsigned int filt
 
   return true;
 }
-
-/*
-      cout<<"L1 Eg obj: ";
-      for(unsigned int ctr=0; ctr<l1egObjN; ctr++) {
-	cout<<l1egObjPt[ctr]<<"\t";
-      }
-      cout<<endl;
-      cout<<"L1 Filter: ";
-      for(unsigned int ctr=0; ctr<l1FiltN; ctr++) {
-	cout<<l1FiltPt[ctr]<<"\t"<<l1FiltEta[ctr]<<"\t"<<l1FiltPhi[ctr]<<endl;
-      }
-      cout<<"Reco before cut: ";
-      for(unsigned int eg=0; eg<egRecoN; eg++) {
-	cout<<egRecoPt[eg]<<"\t"<<egRecoEta[eg]<<"\t"<<egRecoPhi[eg]<<"\t"<<eghltEgammaHoverE[eg]/egushltEgammaSuperClusterEnergy[eg]<<"\t"<<isL1EgSeeded(eg)<<endl;
-      }
-      cout<<"Reco: ";
-      for(unsigned int eg : dieg70idegidx) {
-	cout<<egRecoPt[eg]<<"\t";
-      }
-      cout<<endl;
-      cout<<"UnseededFilter: ";
-      for(unsigned int ctr=0; ctr<dieg70HeusFiltN; ctr++) {
-	cout<<dieg33CsusFiltPt[ctr]<<"\t";
-      }
-      cout<<endl;
-      cout<<"Unseeded Reco: ";
-      for(unsigned int eg : dieg70idegusidx) {
-	cout<<egusRecoPt[eg]<<"\t";
-      }
-      cout<<endl;
-*/
