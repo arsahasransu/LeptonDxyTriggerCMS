@@ -17,8 +17,9 @@ class robustanalyzer {
   ~robustanalyzer();
   
   void analyzersinglefile(int);
-  //void addhist(TString);
-  //void fillhistinevent(TString, vector<int>);
+  void addhist(TString);
+  void fillhistinevent(TString, vector<int>);
+  double effectivearea(double);
   void sort(int*, double*, int);
   
  private:
@@ -27,7 +28,9 @@ class robustanalyzer {
 
   TTreeReader* tree;
 
-  TTreeReaderValue<int> *run, *lumi;
+  TTreeReaderValue<unsigned int> *run, *lumi;
+  //TTreeReaderValue<double> *rho;
+  double rho;
   TTreeReaderValue<bool> *HLT_DiPhoton10sminlt0p12, *HLT_DiPhoton10Time1p4ns, *HLTOR_METTrig;
 
   TTreeReaderValue<int> *eln;
