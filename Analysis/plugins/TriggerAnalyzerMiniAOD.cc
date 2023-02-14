@@ -119,20 +119,20 @@ TriggerAnalyzerMiniAOD::TriggerAnalyzerMiniAOD(const edm::ParameterSet& iConfig)
 
   tree = fs->make<TTree>("tree", "tree");
 
-  tree->Branch("run", &run, "run/i");
-  tree->Branch("lumSec", &lumSec, "lumSec/i");
+  tree->Branch("run", &run, "run/I");
+  tree->Branch("lumSec", &lumSec, "lumSec/I");
 
-  tree->Branch("HLT_DiPhoton10sminlt0p12", &HLT_DiPhoton10sminlt0p12, "HLT_DiPhoton10sminlt0p12/b");
-  tree->Branch("HLT_DiPhoton10Time1p4ns", &HLT_DiPhoton10Time1p4ns, "HLT_DiPhoton10Time1p4ns/b");
-  tree->Branch("HLT_DiPhoton10_CaloIdL", &HLT_DiPhoton10_CaloIdL, "HLT_DiPhoton10_CaloIdL/b");
-  tree->Branch("HLTOR_METTrig", &HLTOR_METTrig, "HLTOR_METTrig/b");
+  tree->Branch("HLT_DiPhoton10sminlt0p12", &HLT_DiPhoton10sminlt0p12, "HLT_DiPhoton10sminlt0p12/O");
+  tree->Branch("HLT_DiPhoton10Time1p4ns", &HLT_DiPhoton10Time1p4ns, "HLT_DiPhoton10Time1p4ns/O");
+  tree->Branch("HLT_DiPhoton10_CaloIdL", &HLT_DiPhoton10_CaloIdL, "HLT_DiPhoton10_CaloIdL/O");
+  tree->Branch("HLTOR_METTrig", &HLTOR_METTrig, "HLTOR_METTrig/O");
 
-  tree->Branch("bs_x", &bs_x, "bs_x/d");
-  tree->Branch("bs_y", &bs_y, "bs_y/d");
-  tree->Branch("bs_z", &bs_z, "bs_z/d");
-  tree->Branch("rho", &rho, "rho/d");
+  tree->Branch("bs_x", &bs_x, "bs_x/D");
+  tree->Branch("bs_y", &bs_y, "bs_y/D");
+  tree->Branch("bs_z", &bs_z, "bs_z/D");
+  tree->Branch("rho", &rho, "rho/D");
 
-  tree->Branch("ele_n", &ele_n, "ele_n/i");
+  tree->Branch("ele_n", &ele_n, "ele_n/I");
   tree->Branch("ele_e", &ele_e);
   tree->Branch("ele_pt", &ele_pt);
   tree->Branch("ele_eta", &ele_eta);
@@ -153,7 +153,7 @@ TriggerAnalyzerMiniAOD::TriggerAnalyzerMiniAOD(const edm::ParameterSet& iConfig)
   tree->Branch("ele_innerhits", &ele_innerhits);
   tree->Branch("ele_convveto", &ele_convveto);
 
-  tree->Branch("pv_n", &pv_n, "pv_n/i");
+  tree->Branch("pv_n", &pv_n, "pv_n/I");
   tree->Branch("pv_x", &pv_x);
   tree->Branch("pv_xerr", &pv_xerr);
   tree->Branch("pv_y", &pv_y);
