@@ -26,9 +26,9 @@ robustanalyzer::robustanalyzer(TString filename, TString outfilename, int numCor
 
   tree = new TTreeReader(inputChain);
 
-  run = new TTreeReaderValue<unsigned int>((*tree), "run");
-  lumi = new TTreeReaderValue<unsigned int>((*tree), "lumSec");
-  rho = 0.0;/*new TTreeReaderValue<double>((*tree), "rho");*/
+  run = new TTreeReaderValue<int>((*tree), "run");
+  lumi = new TTreeReaderValue<int>((*tree), "lumSec");
+  rho = new TTreeReaderValue<double>((*tree), "rho");
   HLT_DiPhoton10sminlt0p12 = new TTreeReaderValue<bool>((*tree), "HLT_DiPhoton10sminlt0p12");
   HLT_DiPhoton10Time1p4ns = new TTreeReaderValue<bool>((*tree), "HLT_DiPhoton10Time1p4ns");
   HLTOR_METTrig = new TTreeReaderValue<bool>((*tree), "HLTOR_METTrig");
@@ -43,7 +43,7 @@ robustanalyzer::robustanalyzer(TString filename, TString outfilename, int numCor
   elseedtime = new TTreeReaderValue<vector<double>>((*tree), "ele_seedtime");
   elsmin = new TTreeReaderValue<vector<double>>((*tree), "ele_smin");
   elsmaj = new TTreeReaderValue<vector<double>>((*tree), "ele_smaj");
-  elsieie = new TTreeReaderValue<vector<double>>((*tree), "ele_sinin_coiseclnd");
+  elsieie = new TTreeReaderValue<vector<double>>((*tree), "ele_sinin_noiseclnd");
   eldeta = new TTreeReaderValue<vector<double>>((*tree), "ele_detaseed");
   eldphi = new TTreeReaderValue<vector<double>>((*tree), "ele_dphiin");
   elhoe = new TTreeReaderValue<vector<double>>((*tree), "ele_hoe");
@@ -87,7 +87,6 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
   addhist("gt2_bar_el");
   addhist("ec_el");
   addhist("gt2_ec_el");
-  /*
   addhist("id1_gt2_bar_el");
   addhist("id2_gt2_bar_el");
   addhist("mid_gt2_bar_el");
@@ -104,19 +103,17 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
   addhist("sm12_mid_gt2_ec_el");
   addhist("t1p4_met_mid_gt2_ec_el");
   addhist("sm12_met_mid_gt2_ec_el");
-  */
+  
   vector<int> noselelidx;
   vector<int> barelidx;
   vector<int> ecelidx;
-  /*
   vector<int> id1barelidx;
   vector<int> id2barelidx;
   vector<int> midbarelidx;
   vector<int> id1ecelidx;
   vector<int> id2ecelidx;
   vector<int> midecelidx;
-  */
-
+  
   // Loop beginning on events
   while(tree->Next()) {
     
@@ -145,58 +142,57 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
       bool barelsel = true;
       barelsel *= TMath::Abs((*eleta)->at(idx))<1.479;
       if(barelsel) barelidx.push_back(idx);
-      /*
+
       bool id1barsel = true;
       id1barsel *= TMath::Abs((*eleta)->at(idx)) < 1.479;
-      id1barsel *= elsieie[idx] < 0.0103;
+      id1barsel *= (*elsieie)->at(idx) < 0.0103;
       if(id1barsel) id1barelidx.push_back(idx);
       
       bool id2barsel = true;
       id2barsel *= TMath::Abs((*eleta)->at(idx)) < 1.479;
-      id2barsel *= elsieie[idx] < 0.0103;
-      id2barsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*rho/energy);
+      id2barsel *= (*elsieie)->at(idx) < 0.0103;
+      id2barsel *= (*elhoe)->at(idx) < (0.0241+1.28/energy+0.042*(*(*rho))/energy);
       if(id2barsel) id2barelidx.push_back(idx);
       
       bool midbarsel = true;
       midbarsel *= TMath::Abs((*eleta)->at(idx)) < 1.479;
-      midbarsel *= elsieie[idx] < 0.0103;
+      midbarsel *= (*elsieie)->at(idx) < 0.0103;
       //midbarsel *= eldetasc[idx] < 0.00481;
-      midbarsel *= elhoe[idx] < (0.0241+1.28/energy+0.042*rho/energy);
-      midbarsel *= elooemoop[idx] < 0.0966;
+      midbarsel *= (*elhoe)->at(idx) < (0.0241+1.28/energy+0.042*(*(*rho))/energy);
+      midbarsel *= (*elooemoop)->at(idx) < 0.0966;
       //midbarsel *= elconvveto[idx];
       if(midbarsel) midbarelidx.push_back(idx);
-      */
+      
       bool ecelsel = true;
       ecelsel *= TMath::Abs((*eleta)->at(idx)) > 1.479;
       if(ecelsel) ecelidx.push_back(idx);
-      /*
+      
       bool id1ecsel = true;
       id1ecsel *= TMath::Abs((*eleta)->at(idx)) > 1.479;
-      id1ecsel *= elsieie[idx] < 0.0278;
+      id1ecsel *= (*elsieie)->at(idx) < 0.0278;
       if(id1ecsel) id1ecelidx.push_back(idx);
       
       bool id2ecsel = true;
       id2ecsel *= TMath::Abs((*eleta)->at(idx)) > 1.479;
-      id2ecsel *= elsieie[idx] < 0.0278;
-      id2ecsel *= elhoe[idx] < (0.0274+2.08/energy+0.292*rho/energy);
+      id2ecsel *= (*elsieie)->at(idx) < 0.0278;
+      id2ecsel *= (*elhoe)->at(idx) < (0.0274+2.08/energy+0.292*(*(*rho))/energy);
       if(id2ecsel) id2ecelidx.push_back(idx);
       
       bool midecsel = true;
       midecsel *= TMath::Abs((*eleta)->at(idx)) > 1.479;
-      midecsel *= elsieie[idx] < 0.0278;
+      midecsel *= (*elsieie)->at(idx) < 0.0278;
       //midecsel *= eldetasc[idx] < 0.00847;
-      midecsel *= elhoe[idx] < (0.0274+2.08/energy+0.292*rho/energy);
-      midecsel *= elooemoop[idx] < 0.0769;
+      midecsel *= (*elhoe)->at(idx) < (0.0274+2.08/energy+0.292*(*(*rho))/energy);
+      midecsel *= (*elooemoop)->at(idx) < 0.0769;
       //midecsel *= elconvveto[idx];
       if(midecsel) midecelidx.push_back(idx);
-      */
+      
     } // End of loop on electrons
                
     fillhistinevent("nosel_el", noselelidx);
     if(noselelidx.size()>=2) fillhistinevent("gt2_el", noselelidx);
     fillhistinevent("bar_el", barelidx);
     if(barelidx.size()>=2) fillhistinevent("gt2_bar_el", barelidx);
-    /*
     if(id1barelidx.size()>=2) fillhistinevent("id1_gt2_bar_el", id1barelidx);
     if(id2barelidx.size()>=2) fillhistinevent("id2_gt2_bar_el", id2barelidx);
     if(midbarelidx.size()>=2) fillhistinevent("mid_gt2_bar_el", midbarelidx);
@@ -205,10 +201,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
     if(sminlt0p12trig && midbarelidx.size()>=2) fillhistinevent("sm12_mid_gt2_bar_el", midbarelidx);
     if(t1p4nstrig && mettrigs && midbarelidx.size()>=2) fillhistinevent("t1p4_met_mid_gt2_bar_el", midbarelidx);
     if(sminlt0p12trig && mettrigs && midbarelidx.size()>=2) fillhistinevent("sm12_met_mid_gt2_bar_el", midbarelidx);
-    */
     fillhistinevent("ec_el", ecelidx);
     if(ecelidx.size()>=2) fillhistinevent("gt2_ec_el", ecelidx);
-    /*
     if(id1ecelidx.size()>=2) fillhistinevent("id1_gt2_ec_el", id1ecelidx);
     if(id2ecelidx.size()>=2) fillhistinevent("id2_gt2_ec_el", id2ecelidx);
     if(midecelidx.size()>=2) fillhistinevent("mid_gt2_ec_el", midecelidx);
@@ -217,21 +211,18 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
     if(sminlt0p12trig && midecelidx.size()>=2) fillhistinevent("sm12_mid_gt2_ec_el", midecelidx);
     if(t1p4nstrig && mettrigs && midecelidx.size()>=2) fillhistinevent("t1p4_met_mid_gt2_ec_el", midecelidx);
     if(sminlt0p12trig && mettrigs && midecelidx.size()>=2) fillhistinevent("sm12_met_mid_gt2_ec_el", midecelidx);
-    */
-
+    
     // Clear all the vectors
     noselelidx.clear();
     barelidx.clear();
     ecelidx.clear();
-    /*
     id1barelidx.clear();
     id2barelidx.clear();
     midbarelidx.clear();
     id1ecelidx.clear();
     id2ecelidx.clear();
     midecelidx.clear();
-    */
-
+    
   } // End of loop on events
   cout<<totEntries<<"\t"<<nosel<<endl;
 }
@@ -339,7 +330,7 @@ void robustanalyzer::fillhistinevent(TString selection, vector<int> elidx) {
   if((*(*HLTOR_METTrig))) evttrig->Fill(-2);
   if(!(*(*HLTOR_METTrig)) && (*(*HLT_DiPhoton10Time1p4ns)) && (*(*HLT_DiPhoton10sminlt0p12))) evttrig->Fill(0);
   
-  evtrho->Fill(rho);
+  evtrho->Fill((*(*rho)));
     
   if(elidx.size()>0) {
     
@@ -362,7 +353,7 @@ void robustanalyzer::fillhistinevent(TString selection, vector<int> elidx) {
     leadeldphi->Fill((*eldphi)->at(leadelidx));
     leadelhoe->Fill((*elhoe)->at(leadelidx));
     double ea = effectivearea((*eleta)->at(leadelidx));
-    double neutiso = ((*elneuthadiso)->at(leadelidx))+((*elphiso)->at(leadelidx))-(rho*ea);
+    double neutiso = ((*elneuthadiso)->at(leadelidx))+((*elphiso)->at(leadelidx))-((*(*rho))*ea);
     double reliso = ((*elchhadiso)->at(leadelidx))+(neutiso>0?neutiso:0);
     leadelrelisowea->Fill(reliso);
     leadelooemooop->Fill((*elooemoop)->at(leadelidx));
@@ -392,7 +383,7 @@ void robustanalyzer::fillhistinevent(TString selection, vector<int> elidx) {
     subleadeldphi->Fill((*eldphi)->at(subleadelidx));
     subleadelhoe->Fill((*elhoe)->at(subleadelidx));
     double ea = effectivearea((*eleta)->at(subleadelidx));
-    double neutiso = ((*elneuthadiso)->at(subleadelidx))+((*elphiso)->at(subleadelidx))-(rho*ea);
+    double neutiso = ((*elneuthadiso)->at(subleadelidx))+((*elphiso)->at(subleadelidx))-((*(*rho))*ea);
     double reliso = ((*elchhadiso)->at(subleadelidx))+(neutiso>0?neutiso:0);
     subleadelrelisowea->Fill(reliso);
     subleadelooemooop->Fill((*elooemoop)->at(subleadelidx));

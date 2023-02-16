@@ -28,9 +28,8 @@ class robustanalyzer {
 
   TTreeReader* tree;
 
-  TTreeReaderValue<unsigned int> *run, *lumi;
-  //TTreeReaderValue<double> *rho;
-  double rho;
+  TTreeReaderValue<int> *run, *lumi;
+  TTreeReaderValue<double> *rho;
   TTreeReaderValue<bool> *HLT_DiPhoton10sminlt0p12, *HLT_DiPhoton10Time1p4ns, *HLTOR_METTrig;
 
   TTreeReaderValue<int> *eln;

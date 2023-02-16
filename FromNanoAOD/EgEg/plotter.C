@@ -5,7 +5,7 @@
 #include "enhance_plotter.C"
 
 TString cutdeets = "Cut details";
-TFile* metdatafile = TFile::Open("hists_metdata_56065.root","READ");
+TFile* metdatafile = TFile::Open("hists_metdata.root","READ");
 
 TString seltext[2] = {"line1", "line2"};
 
@@ -168,7 +168,7 @@ int plotter() {
   legend.push_back("base+smin<0.12");
   coloropt.push_back(kBlue);
   legendEntries = legend;  
-  //comparesamevariable(file, name, "sublead_pt", 50, 100, 1, true, true, true, (float []){0.8,1e4}, (float []){0.6,0.6,0.89,0.95}, false, "e_{2} p_{T} / GeV");
+  comparesamevariable(file, name, "sublead_pt", 50, 100, 1, true, true, true, (float []){0.8,1e4}, (float []){0.6,0.6,0.89,0.95}, false, "e_{2} p_{T} / GeV");
 
   file.clear();
   name.clear();
@@ -192,29 +192,6 @@ int plotter() {
   legendEntries = legend;
   vector<double> binslog10d0{-4,-3.5,-3,-2.5,-2,-1,0,1,2};
   efficiency(file, name, (double []){-3,0.7}, binslog10d0.size()-1, &binslog10d0[0], "e_{2} log_{10}d_{0} [log_{10}cm]");
-  name.clear();
-  legend.clear();
-  name.push_back("met_mid_gt2_bar_lowptel_lowptel_sublead_pt");
-  name.push_back("sm12_mid_gt2_bar_lowptel_lowptel_sublead_pt");
-  legend.push_back("");
-  legendEntries = legend;
-  vector<double> binslowptelpt{2,4,6,8,10,12,14,16,18,20};
-  efficiency(file, name, (double []){8,0.7}, binslowptelpt.size()-1, &binslowptelpt[0], "lowp_{T} e_{2} p_{T} [GeV]");
-  name.clear();
-  legend.clear();
-  name.push_back("met_mid_gt2_bar_pho_pho_sublead_pt");
-  name.push_back("sm12_mid_gt2_bar_pho_pho_sublead_pt");
-  legend.push_back("");
-  legendEntries = legend;
-  vector<double> binsphopt{2,4,6,8,10,12,14,16,18,20};
-  efficiency(file, name, (double []){11,0.7}, binsphopt.size()-1, &binsphopt[0], "photon_{2} p_{T} [GeV]");
-  name.clear();
-  legend.clear();
-  name.push_back("met_mid_gt2_bar_lowptel_lowptel_sublead_log10d0");
-  name.push_back("sm12_mid_gt2_bar_lowptel_lowptel_sublead_log10d0");
-  legend.push_back("");
-  legendEntries = legend;
-  efficiency(file, name, (double []){-3,0.7}, binslog10d0.size()-1, &binslog10d0[0], "lowp_{T} e_{2} log_{10}d_{0} [log_{10}cm]");
   
   return -1;
 }
