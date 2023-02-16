@@ -90,10 +90,13 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
   addhist("id1_gt2_bar_el");
   addhist("id2_gt2_bar_el");
   addhist("mid_gt2_bar_el");
+  addhist("t1p4mid_gt2_bar_el");
   addhist("met_mid_gt2_bar_el");
+  addhist("met_t1p4mid_gt2_bar_el");
   addhist("t1p4_mid_gt2_bar_el");
   addhist("sm12_mid_gt2_bar_el");
   addhist("t1p4_met_mid_gt2_bar_el");
+  addhist("t1p4_met_t1p4mid_gt2_bar_el");
   addhist("sm12_met_mid_gt2_bar_el");
   addhist("id1_gt2_ec_el");
   addhist("id2_gt2_ec_el");
@@ -110,6 +113,7 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
   vector<int> id1barelidx;
   vector<int> id2barelidx;
   vector<int> midbarelidx;
+  vector<int> t1p4midbarelidx;
   vector<int> id1ecelidx;
   vector<int> id2ecelidx;
   vector<int> midecelidx;
@@ -163,6 +167,15 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
       //midbarsel *= elconvveto[idx];
       if(midbarsel) midbarelidx.push_back(idx);
       
+      bool t1p4midbarsel = true;
+      t1p4midbarsel *= TMath::Abs((*eleta)->at(idx)) < 1.479;
+      t1p4midbarsel *= (*elsieie)->at(idx) < 0.0103;
+      //t1p4midbarsel *= eldetasc[idx] < 0.00481;
+      t1p4midbarsel *= (*elhoe)->at(idx) < (0.0241+1.28/energy+0.042*(*(*rho))/energy);
+      t1p4midbarsel *= (*elooemoop)->at(idx) < 0.0966;
+      //t1p4midbarsel *= elconvveto[idx];
+      if(t1p4midbarsel) t1p4midbarelidx.push_back(idx);
+      
       bool ecelsel = true;
       ecelsel *= TMath::Abs((*eleta)->at(idx)) > 1.479;
       if(ecelsel) ecelidx.push_back(idx);
@@ -196,10 +209,13 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
     if(id1barelidx.size()>=2) fillhistinevent("id1_gt2_bar_el", id1barelidx);
     if(id2barelidx.size()>=2) fillhistinevent("id2_gt2_bar_el", id2barelidx);
     if(midbarelidx.size()>=2) fillhistinevent("mid_gt2_bar_el", midbarelidx);
+    if(t1p4midbarelidx.size()>=2) fillhistinevent("t1p4mid_gt2_bar_el", t1p4midbarelidx);
     if(mettrigs && midbarelidx.size()>=2) fillhistinevent("met_mid_gt2_bar_el", midbarelidx);
+    if(mettrigs && t1p4midbarelidx.size()>=2) fillhistinevent("met_t1p4mid_gt2_bar_el", t1p4midbarelidx);
     if(t1p4nstrig && midbarelidx.size()>=2) fillhistinevent("t1p4_mid_gt2_bar_el", midbarelidx);
     if(sminlt0p12trig && midbarelidx.size()>=2) fillhistinevent("sm12_mid_gt2_bar_el", midbarelidx);
     if(t1p4nstrig && mettrigs && midbarelidx.size()>=2) fillhistinevent("t1p4_met_mid_gt2_bar_el", midbarelidx);
+    if(t1p4nstrig && mettrigs && t1p4midbarelidx.size()>=2) fillhistinevent("t1p4_met_t1p4mid_gt2_bar_el", t1p4midbarelidx);
     if(sminlt0p12trig && mettrigs && midbarelidx.size()>=2) fillhistinevent("sm12_met_mid_gt2_bar_el", midbarelidx);
     fillhistinevent("ec_el", ecelidx);
     if(ecelidx.size()>=2) fillhistinevent("gt2_ec_el", ecelidx);
@@ -219,6 +235,7 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
     id1barelidx.clear();
     id2barelidx.clear();
     midbarelidx.clear();
+    t1p4midbarelidx.clear();
     id1ecelidx.clear();
     id2ecelidx.clear();
     midecelidx.clear();
