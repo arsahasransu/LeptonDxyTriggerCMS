@@ -164,8 +164,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
       bool midbarsel = true;
       midbarsel *= TMath::Abs((*eleta)->at(idx)) < 1.479;
       midbarsel *= (*elsieie)->at(idx) < 0.0103;
-      midbarsel *= (*eldeta)->at(idx) < 0.00481;
-      midbarsel *= (*eldphi)->at(idx) < 0.127;
+      midbarsel *= abs((*eldeta)->at(idx)) < 0.00481;
+      midbarsel *= abs((*eldphi)->at(idx)) < 0.127;
       midbarsel *= (*elhoe)->at(idx) < (0.0241+1.28/energy+0.042*(*(*rho))/energy);
       midbarsel *= reliso < (0.0837+(0.535/((*elpt)->at(idx))));
       midbarsel *= (*elooemoop)->at(idx) < 0.0966;
@@ -198,8 +198,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
       bool midecsel = true;
       midecsel *= TMath::Abs((*eleta)->at(idx)) >= 1.479;
       midecsel *= (*elsieie)->at(idx) < 0.0272;
-      midecsel *= (*eldeta)->at(idx) < 0.00951;
-      midecsel *= (*eldphi)->at(idx) < 0.221;
+      midecsel *= abs((*eldeta)->at(idx)) < 0.00951;
+      midecsel *= abs((*eldphi)->at(idx)) < 0.221;
       midecsel *= (*elhoe)->at(idx) < (0.05+2.3/energy+0.262*(*(*rho))/energy);
       midecsel *= reliso < (0.0741+(0.519/((*elpt)->at(idx))));
       midecsel *= (*elooemoop)->at(idx) < 0.111;
