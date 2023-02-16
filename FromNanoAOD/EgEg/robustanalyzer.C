@@ -269,8 +269,8 @@ void robustanalyzer::addhist(TString selection) {
   all1dhists.push_back(new TH1F(selection+"_el_lead_smin","electron_{1} s_{min}",20000,-2,8));
   all1dhists.push_back(new TH1F(selection+"_el_lead_smaj","electron_{1} s_{maj}",15000,-2,13));
   all1dhists.push_back(new TH1F(selection+"_el_lead_sieie","electron_{1} #sigmai#etai#eta",1000,0,0.1));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_detasc","electron_{1} #Delta#eta(SC, trk seed)",1000,-0.03,0.07));
-  all1dhists.push_back(new TH1F(selection+"_el_lead_dphi","electron_{1} #Delta#phi(SC, trk seed)",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_detasc","electron_{1} #Delta#eta(SC, trk seed)",1000,-0.05,0.05));
+  all1dhists.push_back(new TH1F(selection+"_el_lead_dphi","electron_{1} #Delta#phi(SC, trk seed)",1000,-0.5,0.5));
   all1dhists.push_back(new TH1F(selection+"_el_lead_hoe","electron_{1} H/E",1000,0,10));
   all1dhists.push_back(new TH1F(selection+"_el_lead_relisowithea","electron_{1} rel.iso.",10000,0,10));
   all1dhists.push_back(new TH1F(selection+"_el_lead_ooemoop","electron_{1} E^{-1}-p^{-1} / GeV^{-1}",1000,-0.1,0.9));
