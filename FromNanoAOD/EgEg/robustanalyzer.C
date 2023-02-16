@@ -140,6 +140,9 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
       }
 
       double energy = (*ele)->at(idx);
+      double ea = effectivearea((*eleta)->at(idx));
+      double neutiso = ((*elneuthadiso)->at(idx))+((*elphiso)->at(idx))-((*(*rho))*ea);
+      double reliso = ((*elchhadiso)->at(idx))+(neutiso>0?neutiso:0);
       
       noselelidx.push_back(idx);
 
@@ -161,10 +164,11 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
       bool midbarsel = true;
       midbarsel *= TMath::Abs((*eleta)->at(idx)) < 1.479;
       midbarsel *= (*elsieie)->at(idx) < 0.0103;
-      //midbarsel *= eldetasc[idx] < 0.00481;
+      midbarsel *= (*eldeta)->at(idx) < 0.00481;
+      midbarsel *= (*eldphi)->at(idx) < 0.127;
       midbarsel *= (*elhoe)->at(idx) < (0.0241+1.28/energy+0.042*(*(*rho))/energy);
+      midbarsel *= reliso < (0.0837+(0.535/((*elpt)->at(idx))));
       midbarsel *= (*elooemoop)->at(idx) < 0.0966;
-      //midbarsel *= elconvveto[idx];
       if(midbarsel) midbarelidx.push_back(idx);
       
       bool t1p4midbarsel = true;
@@ -192,14 +196,15 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
       if(id2ecsel) id2ecelidx.push_back(idx);
       
       bool midecsel = true;
-      midecsel *= TMath::Abs((*eleta)->at(idx)) > 1.479;
-      midecsel *= (*elsieie)->at(idx) < 0.0278;
-      //midecsel *= eldetasc[idx] < 0.00847;
-      midecsel *= (*elhoe)->at(idx) < (0.0274+2.08/energy+0.292*(*(*rho))/energy);
-      midecsel *= (*elooemoop)->at(idx) < 0.0769;
-      //midecsel *= elconvveto[idx];
+      midecsel *= TMath::Abs((*eleta)->at(idx)) >= 1.479;
+      midecsel *= (*elsieie)->at(idx) < 0.0272;
+      midecsel *= (*eldeta)->at(idx) < 0.00951;
+      midecsel *= (*eldphi)->at(idx) < 0.221;
+      midecsel *= (*elhoe)->at(idx) < (0.05+2.3/energy+0.262*(*(*rho))/energy);
+      midecsel *= reliso < (0.0741+(0.519/((*elpt)->at(idx))));
+      midecsel *= (*elooemoop)->at(idx) < 0.111;
       if(midecsel) midecelidx.push_back(idx);
-      
+            
     } // End of loop on electrons
                
     fillhistinevent("nosel_el", noselelidx);

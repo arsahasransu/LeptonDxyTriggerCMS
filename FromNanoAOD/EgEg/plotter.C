@@ -145,7 +145,7 @@ int plotter() {
   legend.push_back("|#eta|>1.479");
   coloropt.push_back(kRed);
   file.push_back(metdatafile);
-  name.push_back("bar_electron");
+3  name.push_back("bar_electron");
   legend.push_back("|#eta|<1.479");
   coloropt.push_back(kBlue);
 
@@ -183,7 +183,7 @@ int plotter() {
   vector<double> binspt{2,4,6,8,10,12,14,16,18,20};
   seltext[0] = "HLT_DiPhoton10sminlt0p12";
   seltext[1] = "MET triggers, 2 medium ID el";
-  efficiency(file, name, (double []){8,0.7}, binspt.size()-1, &binspt[0], "e_{2} p_{T} [GeV]");
+  //efficiency(file, name, (double []){8,0.7}, binspt.size()-1, &binspt[0], "e_{2} p_{T} [GeV]");
   name.clear();
   legend.clear();
   name.push_back("met_mid_gt2_bar_el_el_sublead_log10d0");
@@ -191,7 +191,28 @@ int plotter() {
   legend.push_back("");
   legendEntries = legend;
   vector<double> binslog10d0{-4,-3.5,-3,-2.5,-2,-1,0,1,2};
-  efficiency(file, name, (double []){-3,0.7}, binslog10d0.size()-1, &binslog10d0[0], "e_{2} log_{10}d_{0} [log_{10}cm]");
+  //efficiency(file, name, (double []){-3,0.7}, binslog10d0.size()-1, &binslog10d0[0], "e_{2} log_{10}d_{0} [log_{10}cm]");
+  
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+
+  file.push_back(metdatafile);
+  name.push_back("met_t1p4mid_gt2_bar_el_el_sublead_pt");
+  name.push_back("t1p4_met_t1p4mid_gt2_bar_el_el_sublead_pt");
+  legend.push_back("");
+  legendEntries = legend;
+  seltext[0] = "HLT_DiPhoton10sminlt0p12";
+  seltext[1] = "MET triggers, 2 medium ID el, t>1.4ns";
+  //efficiency(file, name, (double []){8,0.7}, binspt.size()-1, &binspt[0], "e_{2} p_{T} [GeV]");
+  name.clear();
+  legend.clear();
+  name.push_back("met_t1p4mid_gt2_bar_el_el_sublead_log10d0");
+  name.push_back("t1p4_met_t1p4mid_gt2_bar_el_el_sublead_log10d0");
+  legend.push_back("");
+  legendEntries = legend;
+  //efficiency(file, name, (double []){-3,0.7}, binslog10d0.size()-1, &binslog10d0[0], "e_{2} log_{10}d_{0} [log_{10}cm]");
   
   return -1;
 }
