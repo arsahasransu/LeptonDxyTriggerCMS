@@ -289,8 +289,8 @@ void robustanalyzer::addhist(TString selection) {
   all1dhists.push_back(new TH1F(selection+"_el_sublead_smin","electron_{2} s_{min}",20000,-2,8));
   all1dhists.push_back(new TH1F(selection+"_el_sublead_smaj","electron_{2} s_{maj}",15000,-2,13));
   all1dhists.push_back(new TH1F(selection+"_el_sublead_sieie","electron_{2} #sigmai#etai#eta",1000,0,0.1));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_detasc","electron_{2} #Delta#eta(SC, trk seed)",1000,-0.03,0.07));
-  all1dhists.push_back(new TH1F(selection+"_el_sublead_dphi","electron_{2} #Delta#phi(SC, trk seed)",1000,-0.03,0.07));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_detasc","electron_{2} #Delta#eta(SC, trk seed)",1000,-0.05,0.05));
+  all1dhists.push_back(new TH1F(selection+"_el_sublead_dphi","electron_{2} #Delta#phi(SC, trk seed)",1000,-0.05,0.05));
   all1dhists.push_back(new TH1F(selection+"_el_sublead_hoe","electron_{2} H/E",1000,0,10));
   all1dhists.push_back(new TH1F(selection+"_el_sublead_relisowithea","electron_{2} rel.iso.",10000,0,10));
   all1dhists.push_back(new TH1F(selection+"_el_sublead_ooemoop","electron_{2} E^{-1}-p^{-1} / GeV^{-1}",1000,-0.1,0.9));
