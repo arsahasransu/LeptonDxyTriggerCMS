@@ -5,7 +5,7 @@
 #include "enhance_plotter.C"
 
 TString cutdeets = "Cut details";
-TFile* metdatafile = TFile::Open("hists_metdata.root","READ");
+TFile* metdatafile = TFile::Open("hists_metdata_1417262.root","READ"); //
 
 TString seltext[2] = {"line1", "line2"};
 
@@ -149,23 +149,88 @@ int plotter() {
   legend.push_back("medium ID");
   coloropt.push_back(kRed);
   legendEntries = legend;  
-  comparesamevariable(file, name, "mult", 7, 15, 1, true, true, true, (float []){0.8,1e8}, (float []){0.6,0.8,0.89,0.95}, false, "electron multiplicity");
-  comparesamevariable(file, name, "lead_energy", 50, 100, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} energy [GeV]");
-  comparesamevariable(file, name, "lead_pt", 50, 100, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} p_{T} [GeV]");
-  comparesamevariable(file, name, "lead_eta", 25, 75, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #eta");
-  comparesamevariable(file, name, "lead_phi", -1, -1, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #phi");
-  comparesamevariable(file, name, "lead_d0", 4000, 6000, 40, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} d_{0} [cm]");
-  comparesamevariable(file, name, "lead_log10d0", -1, -1, 80, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} log_{10}d_{0} [log_{10}cm]");
-  comparesamevariable(file, name, "lead_dz", 4500, 5500, 20, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} d_{z} [cm]");
-  comparesamevariable(file, name, "lead_log10dz", -1, -1, 80, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} log_{10}d_{z} [log_{10}cm]");
-  comparesamevariable(file, name, "lead_seedtime", -1, -1, 100, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} time_{SC} [ns]");
-  comparesamevariable(file, name, "lead_smin", 4000, 6000, 40, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} smin");
-  comparesamevariable(file, name, "lead_sieie", -1, 200, 4, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #sigmai#eta#eta");
-  comparesamevariable(file, name, "lead_detasc", 200, 400, 4, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #Delta#eta(SC, trk. pixel seed)");
-  comparesamevariable(file, name, "lead_dphi", 51, 550, 8, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #Delta#phi(SC, pixel trk.)");
-  comparesamevariable(file, name, "lead_hoe", -1, 40, 2, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} H/E");
-  comparesamevariable(file, name, "lead_relisowithea", -1, 500, 20, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} iso.");
-  comparesamevariable(file, name, "lead_ooemoop", -1, 250, 5, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} E^{-1}-p^{-1} [(GeV)^{-1}]");
+  //comparesamevariable(file, name, "mult", 7, 15, 1, true, true, true, (float []){0.8,1e8}, (float []){0.6,0.8,0.89,0.95}, false, "electron multiplicity");
+  //comparesamevariable(file, name, "lead_energy", 50, 100, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} energy [GeV]");
+  //comparesamevariable(file, name, "lead_pt", 50, 100, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} p_{T} [GeV]");
+  //comparesamevariable(file, name, "lead_eta", 25, 75, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #eta");
+  //comparesamevariable(file, name, "lead_phi", -1, -1, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #phi");
+  //comparesamevariable(file, name, "lead_d0", 4000, 6000, 40, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} d_{0} [cm]");
+  //comparesamevariable(file, name, "lead_log10d0", -1, -1, 80, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} log_{10}d_{0} [log_{10}cm]");
+  //comparesamevariable(file, name, "lead_dz", 4500, 5500, 20, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} d_{z} [cm]");
+  //comparesamevariable(file, name, "lead_log10dz", -1, -1, 80, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} log_{10}d_{z} [log_{10}cm]");
+  //comparesamevariable(file, name, "lead_seedtime", -1, -1, 100, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} time_{SC} [ns]");
+  //comparesamevariable(file, name, "lead_smin", 4000, 6000, 40, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} smin");
+  //comparesamevariable(file, name, "lead_sieie", -1, 200, 4, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #sigmai#eta#eta");
+  //comparesamevariable(file, name, "lead_detasc", 400, 600, 4, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #Delta#eta(SC, trk. pixel seed)");
+  //comparesamevariable(file, name, "lead_dphi", 251, 750, 8, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #Delta#phi(SC, pixel trk.)");
+  //comparesamevariable(file, name, "lead_hoe", -1, 40, 2, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} H/E");
+  //comparesamevariable(file, name, "lead_relisowithea", -1, 500, 20, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} iso.");
+  //comparesamevariable(file, name, "lead_ooemoop", -1, 250, 5, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} E^{-1}-p^{-1} [(GeV)^{-1}]");
+
+  //comparesamevariable(file, name, "sublead_energy", 50, 100, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} energy [GeV]");
+  //comparesamevariable(file, name, "sublead_pt", 50, 100, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} p_{T} [GeV]");
+  //comparesamevariable(file, name, "sublead_eta", 25, 75, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} #eta");
+  //comparesamevariable(file, name, "sublead_phi", -1, -1, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} #phi");
+  //comparesamevariable(file, name, "sublead_d0", 4000, 6000, 40, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} d_{0} [cm]");
+  //comparesamevariable(file, name, "sublead_log10d0", -1, -1, 80, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} log_{10}d_{0} [log_{10}cm]");
+  //comparesamevariable(file, name, "sublead_dz", 4500, 5500, 20, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} d_{z} [cm]");
+  //comparesamevariable(file, name, "sublead_log10dz", -1, -1, 80, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} log_{10}d_{z} [log_{10}cm]");
+  //comparesamevariable(file, name, "sublead_seedtime", -1, -1, 100, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} time_{SC} [ns]");
+  //comparesamevariable(file, name, "sublead_smin", 4000, 6000, 40, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} smin");
+  //comparesamevariable(file, name, "sublead_sieie", -1, 200, 4, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} #sigmai#eta#eta");
+  //comparesamevariable(file, name, "sublead_detasc", 400, 600, 4, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} #Delta#eta(SC, trk. pixel seed)");
+  //comparesamevariable(file, name, "sublead_dphi", 251, 750, 8, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} #Delta#phi(SC, pixel trk.)");
+  //comparesamevariable(file, name, "sublead_hoe", -1, 40, 2, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} H/E");
+  //comparesamevariable(file, name, "sublead_relisowithea", -1, 500, 20, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} iso.");
+  //comparesamevariable(file, name, "sublead_ooemoop", -1, 250, 5, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} E^{-1}-p^{-1} [(GeV)^{-1}]");
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  file.push_back(metdatafile);
+  name.push_back("gt2_ec_el_el");
+  legend.push_back("#geq 2e, No ID");
+  coloropt.push_back(kBlack);
+  file.push_back(metdatafile);
+  name.push_back("mid_gt2_ec_el_el");
+  legend.push_back("medium ID");
+  coloropt.push_back(kRed);
+  legendEntries = legend;  
+  //comparesamevariable(file, name, "mult", 7, 15, 1, true, true, true, (float []){0.8,1e8}, (float []){0.6,0.8,0.89,0.95}, false, "electron multiplicity");
+  //comparesamevariable(file, name, "lead_energy", 50, 100, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} energy [GeV]");
+  //comparesamevariable(file, name, "lead_pt", 50, 100, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} p_{T} [GeV]");
+  //comparesamevariable(file, name, "lead_eta", 25, 75, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #eta");
+  //comparesamevariable(file, name, "lead_phi", -1, -1, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #phi");
+  //comparesamevariable(file, name, "lead_d0", 4000, 6000, 40, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} d_{0} [cm]");
+  //comparesamevariable(file, name, "lead_log10d0", -1, -1, 80, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} log_{10}d_{0} [log_{10}cm]");
+  //comparesamevariable(file, name, "lead_dz", 4500, 5500, 20, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} d_{z} [cm]");
+  //comparesamevariable(file, name, "lead_log10dz", -1, -1, 80, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} log_{10}d_{z} [log_{10}cm]");
+  //comparesamevariable(file, name, "lead_seedtime", -1, -1, 100, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} time_{SC} [ns]");
+  //comparesamevariable(file, name, "lead_smin", 4000, 6000, 40, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} smin");
+  //comparesamevariable(file, name, "lead_sieie", -1, 200, 4, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #sigmai#eta#eta");
+  //comparesamevariable(file, name, "lead_detasc", 400, 600, 4, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #Delta#eta(SC, trk. pixel seed)");
+  //comparesamevariable(file, name, "lead_dphi", 251, 750, 8, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} #Delta#phi(SC, pixel trk.)");
+  //comparesamevariable(file, name, "lead_hoe", -1, 40, 2, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} H/E");
+  //comparesamevariable(file, name, "lead_relisowithea", -1, 500, 20, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} iso.");
+  //comparesamevariable(file, name, "lead_ooemoop", -1, 250, 5, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{1} E^{-1}-p^{-1} [(GeV)^{-1}]");
+
+  //comparesamevariable(file, name, "sublead_energy", 50, 100, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} energy [GeV]");
+  //comparesamevariable(file, name, "sublead_pt", 50, 100, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} p_{T} [GeV]");
+  //comparesamevariable(file, name, "sublead_eta", 25, 75, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} #eta");
+  //comparesamevariable(file, name, "sublead_phi", -1, -1, 1, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} #phi");
+  //comparesamevariable(file, name, "sublead_d0", 4000, 6000, 40, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} d_{0} [cm]");
+  //comparesamevariable(file, name, "sublead_log10d0", -1, -1, 80, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} log_{10}d_{0} [log_{10}cm]");
+  //comparesamevariable(file, name, "sublead_dz", 4500, 5500, 20, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} d_{z} [cm]");
+  //comparesamevariable(file, name, "sublead_log10dz", -1, -1, 80, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} log_{10}d_{z} [log_{10}cm]");
+  //comparesamevariable(file, name, "sublead_seedtime", -1, -1, 100, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} time_{SC} [ns]");
+  //comparesamevariable(file, name, "sublead_smin", 4000, 6000, 40, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} smin");
+  //comparesamevariable(file, name, "sublead_sieie", -1, 200, 4, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} #sigmai#eta#eta");
+  //comparesamevariable(file, name, "sublead_detasc", 400, 600, 4, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} #Delta#eta(SC, trk. pixel seed)");
+  //comparesamevariable(file, name, "sublead_dphi", 251, 750, 8, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} #Delta#phi(SC, pixel trk.)");
+  //comparesamevariable(file, name, "sublead_hoe", -1, 40, 2, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} H/E");
+  //comparesamevariable(file, name, "sublead_relisowithea", -1, 500, 20, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} iso.");
+  //comparesamevariable(file, name, "sublead_ooemoop", -1, 250, 5, true, true, true, (float []){0.8,1e6}, (float []){0.6,0.8,0.89,0.95}, false, "electron_{2} E^{-1}-p^{-1} [(GeV)^{-1}]");
 
   file.clear();
   name.clear();
@@ -180,7 +245,7 @@ int plotter() {
   vector<double> binspt{2,4,6,8,10,12,14,16,18,20};
   seltext[0] = "HLT_DiPhoton10sminlt0p12";
   seltext[1] = "MET triggers, 2 medium ID el";
-  //efficiency(file, name, (double []){8,0.7}, binspt.size()-1, &binspt[0], "e_{2} p_{T} [GeV]");
+  efficiency(file, name, (double []){8,0.7}, binspt.size()-1, &binspt[0], "e_{2} p_{T} [GeV]");
   name.clear();
   legend.clear();
   name.push_back("met_mid_gt2_bar_el_el_sublead_log10d0");
@@ -188,7 +253,7 @@ int plotter() {
   legend.push_back("");
   legendEntries = legend;
   vector<double> binslog10d0{-4,-3.5,-3,-2.5,-2,-1,0,1,2};
-  //efficiency(file, name, (double []){-3,0.7}, binslog10d0.size()-1, &binslog10d0[0], "e_{2} log_{10}d_{0} [log_{10}cm]");
+  efficiency(file, name, (double []){-3,0.7}, binslog10d0.size()-1, &binslog10d0[0], "e_{2} log_{10}d_{0} [log_{10}cm]");
   
   file.clear();
   name.clear();
@@ -202,14 +267,35 @@ int plotter() {
   legendEntries = legend;
   seltext[0] = "HLT_DiPhoton10sminlt0p12";
   seltext[1] = "MET triggers, 2 medium ID el, t>1.4ns";
-  //efficiency(file, name, (double []){8,0.7}, binspt.size()-1, &binspt[0], "e_{2} p_{T} [GeV]");
+  efficiency(file, name, (double []){8,0.7}, binspt.size()-1, &binspt[0], "e_{2} p_{T} [GeV]");
   name.clear();
   legend.clear();
   name.push_back("met_t1p4mid_gt2_bar_el_el_sublead_log10d0");
   name.push_back("t1p4_met_t1p4mid_gt2_bar_el_el_sublead_log10d0");
   legend.push_back("");
   legendEntries = legend;
-  //efficiency(file, name, (double []){-3,0.7}, binslog10d0.size()-1, &binslog10d0[0], "e_{2} log_{10}d_{0} [log_{10}cm]");
+  efficiency(file, name, (double []){-3,0.7}, binslog10d0.size()-1, &binslog10d0[0], "e_{2} log_{10}d_{0} [log_{10}cm]");
+  
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+
+  file.push_back(metdatafile);
+  name.push_back("met_t1p4loos_gt2_bar_el_el_sublead_pt");
+  name.push_back("t1p4_met_t1p4loos_gt2_bar_el_el_sublead_pt");
+  legend.push_back("");
+  legendEntries = legend;
+  seltext[0] = "HLT_DiPhoton10sminlt0p12";
+  seltext[1] = "MET triggers, 2 loose ID el, t>1.4ns";
+  efficiency(file, name, (double []){8,0.7}, binspt.size()-1, &binspt[0], "e_{2} p_{T} [GeV]");
+  name.clear();
+  legend.clear();
+  name.push_back("met_t1p4loos_gt2_bar_el_el_sublead_log10d0");
+  name.push_back("t1p4_met_t1p4loos_gt2_bar_el_el_sublead_log10d0");
+  legend.push_back("");
+  legendEntries = legend;
+  efficiency(file, name, (double []){-3,0.7}, binslog10d0.size()-1, &binslog10d0[0], "e_{2} log_{10}d_{0} [log_{10}cm]");
   
   return -1;
 }
