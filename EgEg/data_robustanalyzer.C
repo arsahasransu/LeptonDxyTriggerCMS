@@ -463,12 +463,12 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 
 	basicseleg = true;
 	basicseleg *= (TMath::Abs(egRecoEta[idx])<2.5);
-	basicseleg *= (egRecoPt[idx]>=15);
+	basicseleg *= (egRecoPt[idx]>=10);
 	if(basicseleg) basicselegidx.push_back(idx);
 
 	selelevetoideg = true;
 	selelevetoideg *= (TMath::Abs(egRecoEta[idx])<2.5);
-	selelevetoideg *= (egRecoPt[idx]>=15);
+	selelevetoideg *= (egRecoPt[idx]>=10);
 	selelevetoideg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0126:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0457);
 	selelevetoideg *= (TMath::Abs(egRecoEta[idx])<1.479?abs(eghltEgammaGsfTrackVars_DetaSeed[idx])<0.00463:abs(eghltEgammaGsfTrackVars_DetaSeed[idx])<0.00814);
 	selelevetoideg *= (TMath::Abs(egRecoEta[idx])<1.479?abs(eghltEgammaGsfTrackVars_Dphi[idx])<0.148:abs(eghltEgammaGsfTrackVars_Dphi[idx])<0.19);
@@ -478,7 +478,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 
 	seleletightideg = true;
 	seleletightideg *= (TMath::Abs(egRecoEta[idx])<2.5);
-	seleletightideg *= (egRecoPt[idx]>=15);
+	seleletightideg *= (egRecoPt[idx]>=10);
 	seleletightideg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0104:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0353);
 	seleletightideg *= (TMath::Abs(egRecoEta[idx])<1.479?abs(eghltEgammaGsfTrackVars_DetaSeed[idx])<0.00255:abs(eghltEgammaGsfTrackVars_DetaSeed[idx])<0.00501);
 	seleletightideg *= (TMath::Abs(egRecoEta[idx])<1.479?abs(eghltEgammaGsfTrackVars_Dphi[idx])<0.022:abs(eghltEgammaGsfTrackVars_Dphi[idx])<0.0236);
@@ -516,7 +516,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 
       	selelevetoidegus = true;
 	selelevetoidegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
-	selelevetoidegus *= (egusRecoPt[idx]>=15);
+	selelevetoidegus *= (egusRecoPt[idx]>=10);
 	selelevetoidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0126:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0457);
 	selelevetoidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_DetaSeed[idx])<0.00463:abs(egushltEgammaGsfTrackVars_DetaSeed[idx])<0.00814);
 	selelevetoidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_Dphi[idx])<0.148:abs(egushltEgammaGsfTrackVars_Dphi[idx])<0.19);
@@ -526,7 +526,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 
       	seleletightidegus = true;
 	seleletightidegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
-	seleletightidegus *= (egusRecoPt[idx]>=15);
+	seleletightidegus *= (egusRecoPt[idx]>=10);
 	seleletightidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0104:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0353);
 	seleletightidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_DetaSeed[idx])<0.00255:abs(egushltEgammaGsfTrackVars_DetaSeed[idx])<0.00501);
 	seleletightidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_Dphi[idx])<0.022:abs(egushltEgammaGsfTrackVars_Dphi[idx])<0.0236);
@@ -536,7 +536,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 
       	seleletightcaloidegus = true;
 	seleletightcaloidegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
-	seleletightcaloidegus *= (egusRecoPt[idx]>=15);
+	seleletightcaloidegus *= (egusRecoPt[idx]>=10);
 	seleletightcaloidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0104:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.0353);
 	seleletightcaloidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.026*egushltEgammaSuperClusterEnergy[idx]+1.15:egushltEgammaHoverE[idx]<0.0188*egushltEgammaSuperClusterEnergy[idx]+2.06);
 	if(seleletightcaloidegus) seleletightcaloidegusidx.push_back(idx);

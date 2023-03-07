@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     ss5<<"hists_M200dM20ctau3m_"<<cnt<<".root";
     data_robustanalyzer drana_3mMC("./data/STHDM3m_EgEgSkim220407.root",ss5.str(), true);
     drana_3mMC.analyzersinglefile(cnt);
-    /*
+
     stringstream ss3;
     ss3<<"hists_DY_"<<cnt<<".root";
     data_robustanalyzer drana_dy("./data/DYToLLM50_EgEgSkim220407.root",ss3.str(), true);
@@ -63,7 +63,6 @@ int main(int argc, char* argv[]) {
     ss2<<"hists_Efmrl1_"<<cnt<<".root";
     data_robustanalyzer drana_data1("./data/Efmrl1_EgEgSkim220407.root",ss2.str(), false);
     drana_data1.analyzersinglefile(cnt);
-    */
     /*
     stringstream ss7;
     ss7<<"hists_Efmrl2_"<<cnt<<".root";
