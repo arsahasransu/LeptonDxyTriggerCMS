@@ -133,6 +133,7 @@ data_robustanalyzer::~data_robustanalyzer() {
   inputChain->Delete();
   outfile->Write();
   outfile->Close();
+  all1dhists.clear();
 }
 
 // Analyzer for a single file
@@ -198,6 +199,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAdieg33caloidlus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAdieg33caloidlus");
   addhistunseeded("cut1us");
+  if(isMC)addhistgenmchunseeded("genptgt10Acut1us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcut1us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAcut1us");
   addhistunseeded("cut2us");
@@ -250,6 +252,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     vector<int> dieg70idegusidx;
     vector<int> dieg33caloidlidegidx;
     vector<int> dieg33caloidlidegusidx;
+    vector<int> cut1idx;
     vector<int> cut1usidx;
     vector<int> cut2usidx;
     vector<int> cut3usidx;
@@ -447,6 +450,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       bool dieg70idegus = false;
       bool dieg33caloidlideg = false;
       bool dieg33caloidlidegus = false;
+      bool cut1eg = false;
       bool cut1egus = false;
       bool cut2egus = false;
       bool cut3egus = false;
@@ -500,6 +504,14 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	dieg33caloidlideg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaHoverE[idx]<0.15*eghltEgammaSuperClusterEnergy[idx]:eghltEgammaHoverE[idx]<0.1*eghltEgammaSuperClusterEnergy[idx]);
 	dieg33caloidlideg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.014:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.035);
 	if(dieg33caloidlideg) dieg33caloidlidegidx.push_back(idx);
+
+	cut1eg = true;
+	cut1eg *= (TMath::Abs(egRecoEta[idx])<2.65);
+	cut1eg *= (egRecoPt[idx]>=10);
+	cut1eg *= isL1EgSeeded(idx);
+	cut1eg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaHoverE[idx]<0.15*eghltEgammaSuperClusterEnergy[idx]:eghltEgammaHoverE[idx]<0.1*eghltEgammaSuperClusterEnergy[idx]);
+	cut1eg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.014:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.035);
+	if(cut1eg) cut1idx.push_back(idx);
 
       } // End of loop on egamma reco objects
             
@@ -555,11 +567,9 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	if(dieg33caloidlidegus) dieg33caloidlidegusidx.push_back(idx);
 
       	cut1egus = true;
-	cut1egus *= (TMath::Abs(egusRecoEta[idx])<2.5);
 	cut1egus *= (egusRecoPt[idx]>=10);
-	cut1egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.5*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.6*egushltEgammaSuperClusterEnergy[idx]);
-	cut1egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
-	//cut1egus *= (egushltEgammaClusterShape_smin[idx]<0.4);
+	cut1egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.15*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.1*egushltEgammaSuperClusterEnergy[idx]);
+	cut1egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.014:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.035);
 	if(cut1egus) cut1usidx.push_back(idx);
 
       	cut2egus = true;
@@ -619,8 +629,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 
       fillhistinevent("nosel", noselegidx);
       fillhistineventunseeded("noselus", noselegusidx);
-      fillhistinevent("basicsel", basicselegidx);
-      if(basicselegusidx.size()>=2) fillhistineventunseeded("basicselus", basicselegusidx);
+      if(basicselegidx.size()>=1) fillhistinevent("basicsel", basicselegidx);
+      if(basicselegusidx.size()>=1) fillhistineventunseeded("basicselus", basicselegusidx);
       fillhistinevent("selelevetoid", selelevetoidegidx);
       fillhistineventunseeded("selelevetoidus", selelevetoidegusidx);
       if(selelevetozwindidegusidx.size()>=2) {
@@ -646,7 +656,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	fillhistinevent("dieg33caloidlid", dieg33caloidlidegidx);
 	fillhistineventunseeded("dieg33caloidlidus", dieg33caloidlidegusidx);
       }
-      if(cut1usidx.size()>=2) fillhistineventunseeded("cut1us", cut1usidx);
+      if(cut1idx.size()>=1 && cut1usidx.size()>=2) fillhistineventunseeded("cut1us", cut1usidx);
       if(cut2usidx.size()>=2) fillhistineventunseeded("cut2us", cut2usidx);
       if(cut3usidx.size()>=2) fillhistineventunseeded("cut3us", cut3usidx);
       if(cuttimedelayonlyusidx.size()>=2) fillhistineventunseeded("cuttimedelayonlyus", cuttimedelayonlyusidx);
@@ -715,6 +725,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAbasicselus", genbasicptgt10selecegidx, basicselegusidx);
     if(isMC && dieg33caloidlidegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAdieg33caloidlus", genbasicptgt10selbaregidx, dieg33caloidlidegusidx);
     if(isMC && dieg33caloidlidegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAdieg33caloidlus", genbasicptgt10selecegidx, dieg33caloidlidegusidx);
+    if(isMC && genptgt10egidx.size()>=1 && cut1idx.size()>=1 && cut1usidx.size()>=2 ) fillhistineventgenmchunseeded("genptgt10Acut1us", genptgt10egidx, cut1usidx);
     if(isMC && cut1usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcut1us", genbasicptgt10selbaregidx, cut1usidx);
     if(isMC && cut1usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcut1us", genbasicptgt10selecegidx, cut1usidx);
     if(isMC && cut2usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcut2us", genbasicptgt10selbaregidx, cut2usidx);
@@ -728,7 +739,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     if(isMC && cuttimegt1nsonlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcuttimegt1nsonlyus", genbasicptgt10selbaregidx, cuttimegt1nsonlyusidx);
     if(isMC && cutsminlt0p16onlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcutsminlt0p16onlyus", genbasicptgt10selbaregidx, cutsminlt0p16onlyusidx);
     
-    // Clear all the vectors
+    // Clear all the vectors  
     genelpos.clear();
     gennoselegidx.clear();
     genbasicselbaregidx.clear();
@@ -758,6 +769,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     dieg70idegusidx.clear();
     dieg33caloidlidegidx.clear();
     dieg33caloidlidegusidx.clear();
+    cut1idx.clear();
     cut1usidx.clear();
     cut2usidx.clear();
     cut3usidx.clear();

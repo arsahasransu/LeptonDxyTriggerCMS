@@ -194,7 +194,7 @@ TCanvas* enhance_plotter_rate(vector<TH1F*> histvec, vector<TString> legNam, TSt
   gStyle->SetOptStat(0);
   gStyle->SetLineWidth(4);
   pad3->SetLogy(logY);
-  pad3->SetLeftMargin(0.08);
+  pad3->SetLeftMargin(0.1);
   pad3->SetRightMargin(0.1);
   pad3->SetTopMargin(0.01);
   pad3->SetBottomMargin(0.1);
@@ -207,7 +207,7 @@ TCanvas* enhance_plotter_rate(vector<TH1F*> histvec, vector<TString> legNam, TSt
   histvec[0]->GetYaxis()->SetTicks("+");
   histvec[0]->GetYaxis()->SetLabelFont(42);
   histvec[0]->GetYaxis()->SetLabelSize(0.06);
-  histvec[0]->GetYaxis()->SetLabelOffset(-0.04);
+  histvec[0]->GetYaxis()->SetLabelOffset(-0.035);
   histvec[0]->SetMinimum(yrange[0]);
   histvec[0]->SetMaximum(yrange[1]);
   
