@@ -155,9 +155,10 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   
   // Define the histograms
   if(isMC) addgenhist("gennosel");
-  if(isMC) addgenhist("genbasicselbar");
-  if(isMC) addgenhist("genbasicptgt10selbar");
-  if(isMC) addgenhist("genbasicptgt10selec");
+  //if(isMC) addgenhist("genbasicselbar");
+  //if(isMC) addgenhist("genbasicptgt10selbar");
+  //if(isMC) addgenhist("genbasicptgt10selec");
+  /*
   if(isMC) addgenhist("genetabin14_16_24");
   if(isMC) addgenhist("genptgt10");
   if(isMC) addgenhist("genptgt10etalt12");
@@ -167,38 +168,51 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   if(isMC) addgenhist("genbarsel");
   if(isMC) addgenhist("genbarselptgt10");
   if(isMC) addgenhist("genbasicselptgt15");
-  addhist("nosel");
-  addhistunseeded("noselus");
-  if(isMC)addhistgenmchunseeded("gennoselAnoselus");
-  if(isMC)addhistgenmchunseeded("genbasicselbarAnoselus");
+  */
+  //addhist("nosel");
+  //addhistunseeded("noselus");
+  //if(isMC)addhistgenmchunseeded("gennoselAnoselus");
+  //if(isMC)addhistgenmchunseeded("genbasicselbarAnoselus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAnoselus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAnoselus");
+  /*
   if(isMC)addhistgenmchunseeded("genetabin14_16_24Anoselus");
   if(isMC)addhistgenmchunseeded("genptgt10Anoselus");
   if(isMC)addhistgenmchunseeded("genptgt10etalt12Anoselus");
   if(isMC)addhistgenmchunseeded("genptgt10etabin16_24Anoselus");
   if(isMC)addhistgenmchunseeded("genptgt10etabin14_16_24Anoselus");
   if(isMC)addhistgenmchunseeded("genptgt10etabin14_16_24d0lt1cmAnoselus");
-  addhist("basicsel");
+  */
+  //addhist("basicsel");
   addhistunseeded("basicselus");
   if(isMC)addhistgenmchunseeded("genptgt10Abasicselus");
+  /*
   if(isMC)addhistgenmchunseeded("genbasicselptgt15Abasicselus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAbasicselus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAbasicselus");
-  addhist("selelevetoid");
+  */
+  addhistunseeded("ptgt25neq2noidus");
+  addhistunseeded("ptgt25neq2zwindnoidus");
+  addhistunseeded("ptgt25neq2zopponoidus");
+  //addhist("selelevetoid");
   addhistunseeded("selelevetoidus");
   addhistunseeded("selelevetozwindidus");
   addhistunseeded("selelevetozoppoidus");
+  /*
   addhist("seleletightid");
   addhistunseeded("seleletightidus");
   addhistunseeded("seleletightcaloidus");
   addhist("dieg70id");
   addhistunseeded("dieg70idus");
-  addhist("dieg33caloidlid");
+  */
+  //addhist("dieg33caloidlid");
   addhistunseeded("dieg33caloidlidus");
+  /*
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAdieg33caloidlus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAdieg33caloidlus");
   addhistunseeded("cut1us");
+  addhistunseeded("cut1zwindidus");
+  addhistunseeded("cut1zoppoidus");
   if(isMC)addhistgenmchunseeded("genptgt10Acut1us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcut1us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAcut1us");
@@ -218,18 +232,19 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcuttimegt1nsonlyus");
   addhistunseeded("cutsminlt0p16onlyus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcutsminlt0p16onlyus");
-  
+  */
   // Loop beginning on events
   for(unsigned int event=beginevent; event<endevent; event++) {
 
     // vector of eg indices
     vector<int> genelpos;
     vector<int> gennoselegidx;
-    vector<int> genbasicselbaregidx;
+    //vector<int> genbasicselbaregidx;
     vector<int> genbasicptgt10selbaregidx;
     vector<int> genbasicptgt10selecegidx;
-    vector<int> genetabin14_16_24egidx;
+    //vector<int> genetabin14_16_24egidx;
     vector<int> genptgt10egidx;
+    /*
     vector<int> genptgt10etalt12egidx;
     vector<int> genptgt10etabin16_24egidx;
     vector<int> genptgt10etabin14_16_24egidx;
@@ -237,29 +252,40 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     vector<int> genbarselegidx;
     vector<int> genbarselptgt10egidx;
     vector<int> genbasicselptgt15egidx;
+    */
     vector<int> noselegidx;
     vector<int> noselegusidx;
     vector<int> basicselegidx;
     vector<int> basicselegusidx;
+    vector<int> ptgt25ngt2noidegidx;
+    vector<int> ptgt25ngt2noidegusidx;
+    vector<int> ptgt25ngt2zwindnoidegusidx;
+    vector<int> ptgt25ngt2zopponoidegusidx;
     vector<int> selelevetoidegidx;
     vector<int> selelevetoidegusidx;
     vector<int> selelevetozwindidegusidx;
     vector<int> selelevetozoppoidegusidx;
+    /*
     vector<int> seleletightidegidx;
     vector<int> seleletightidegusidx;
     vector<int> seleletightcaloidegusidx;
     vector<int> dieg70idegidx;
     vector<int> dieg70idegusidx;
+    */
     vector<int> dieg33caloidlidegidx;
     vector<int> dieg33caloidlidegusidx;
+    /*
     vector<int> cut1idx;
     vector<int> cut1usidx;
+    vector<int> cut1zwindidegusidx;
+    vector<int> cut1zoppoidegusidx;
     vector<int> cut2usidx;
     vector<int> cut3usidx;
     vector<int> cuttimedelayonlyusidx;
     vector<int> cuttimedelaysminusidx;
     vector<int> cuttimegt1nsonlyusidx;
     vector<int> cutsminlt0p16onlyusidx;
+    */
   
     inputChain->GetEntry(event);
     //if(event>10000) break;
@@ -310,11 +336,12 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       if(numgen!=2) throw "Error!!! Code configured for exactly two gen electrons only";
       
       bool gennoseleg = false;
-      bool genbasicselbareg = false;
+      //bool genbasicselbareg = false;
       bool genbasicptgt10selbareg = false;
       bool genbasicptgt10seleceg = false;
-      bool genetabin14_16_24eg = false;
+      //bool genetabin14_16_24eg = false;
       bool genptgt10eg = false;
+      /*
       bool genptgt10etalt12eg = false;
       bool genptgt10etabin16_24eg = false;
       bool genptgt10etabin14_16_24eg = false;
@@ -322,6 +349,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       bool genbarseleg = false;
       bool genbarselptgt10eg = false;
       bool genbasicselptgt15eg = false;
+      */
 
       for(int genCtr:genelpos) {
 
@@ -330,13 +358,13 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	// Separate the EB and EE signal by the prompt equivalent for a displaced electron
 	// The default prompt eta and phi value for a bad gen electron is 1000. Check for that.
 	// Apply constraints for the fiducial region of ECAL
-
+	/*
         genbasicselbareg = true;
 	genbasicselbareg *= (abs(genLepVz[genCtr])<310 && TMath::Sqrt(genLepVx[genCtr]*genLepVx[genCtr]+genLepVy[genCtr]*genLepVy[genCtr])<130);
         genbasicselbareg *= (abs(genLepPromptEta[genCtr])<1.479 && abs(genLepPromptEta[genCtr])!=1000);
 	if(genbasicselbareg) genbasicselbaregidx.push_back(genCtr);
 	else genbasicselbaregidx.push_back(-1);
-
+	*/
         genbasicptgt10selbareg = true;
 	genbasicptgt10selbareg *= (abs(genLepVz[genCtr])<310 && TMath::Sqrt(genLepVx[genCtr]*genLepVx[genCtr]+genLepVy[genCtr]*genLepVy[genCtr])<130);
         genbasicptgt10selbareg *= (abs(genLepPromptEta[genCtr])<1.479 && abs(genLepPromptEta[genCtr])!=1000);
@@ -350,19 +378,19 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
         genbasicptgt10seleceg *= genLepPt[genCtr]>10;
 	if(genbasicptgt10seleceg) genbasicptgt10selecegidx.push_back(genCtr);
 	else genbasicptgt10selecegidx.push_back(-1);
-
+	/*
 	genetabin14_16_24eg = true;
 	genetabin14_16_24eg *= abs(genLepEta[genCtr])<1.4 || (abs(genLepEta[genCtr])>1.6 && abs(genLepEta[genCtr])<2.4);
 	if(genetabin14_16_24eg) genetabin14_16_24egidx.push_back(genCtr);
 	else genetabin14_16_24egidx.push_back(-1);
-
+	*/
 	genptgt10eg = true;
 	genptgt10eg *= genLepPt[genCtr]>10;
 	genptgt10eg *= (abs(genLepVz[genCtr])<310 && TMath::Sqrt(genLepVx[genCtr]*genLepVx[genCtr]+genLepVy[genCtr]*genLepVy[genCtr])<130);
         genptgt10eg *= (abs(genLepPromptEta[genCtr])<2.4 && abs(genLepPromptEta[genCtr])!=1000);
 	if(genptgt10eg) genptgt10egidx.push_back(genCtr);
 	else genptgt10egidx.push_back(-1);
-
+	/*
 	genptgt10etalt12eg = true;
 	genptgt10etalt12eg *= genLepPt[genCtr]>10;
 	genptgt10etalt12eg *= abs(genLepEta[genCtr])<1.2;
@@ -403,13 +431,14 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	genbasicselptgt15eg *= genLepPt[genCtr]>15;
 	if(genbasicselptgt15eg) genbasicselptgt15egidx.push_back(genCtr);
         else genbasicselptgt15egidx.push_back(-1);
-
+	*/
       }
 
       fillgenhistinevent("gennosel",gennoselegidx); // Verified that this is always 2 electrons
-      fillgenhistinevent("genbasicselbar",genbasicselbaregidx); 
-      fillgenhistinevent("genbasicptgt10selbar",genbasicptgt10selbaregidx); 
-      fillgenhistinevent("genbasicptgt10selec",genbasicptgt10selecegidx); 
+      //fillgenhistinevent("genbasicselbar",genbasicselbaregidx); 
+      //fillgenhistinevent("genbasicptgt10selbar",genbasicptgt10selbaregidx); 
+      //fillgenhistinevent("genbasicptgt10selec",genbasicptgt10selecegidx);
+      /*
       fillgenhistinevent("genetabin14_16_24",genetabin14_16_24egidx);
       fillgenhistinevent("genptgt10",genptgt10egidx);
       fillgenhistinevent("genptgt10etalt12",genptgt10etalt12egidx);
@@ -419,6 +448,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       fillgenhistinevent("genbarsel",genbarselegidx);
       fillgenhistinevent("genbarselptgt10",genbarselptgt10egidx);
       fillgenhistinevent("genbasicselptgt15",genbasicselptgt15egidx);
+      */
     } // End of loop on gen electrons
     
     if((HLT_DoublePhoton70==1 && dieg70HeusFiltN<2) || (HLT_DoublePhoton70==0 && dieg70HeusFiltN>=2)) throw "Error!! Inconsistent trigger result with number of objects for HLT_DoublePhoton70.";
@@ -441,15 +471,20 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 
       bool basicseleg = false;
       bool basicselegus = false;
+      bool ptgt25ngt2noideg = false;
+      bool ptgt25ngt2noidegus = false;
       bool selelevetoideg = false;
       bool selelevetoidegus = false;
+      /*
       bool seleletightideg = false;
       bool seleletightidegus = false;
       bool seleletightcaloidegus = false;
       bool dieg70ideg = false;
       bool dieg70idegus = false;
+      */
       bool dieg33caloidlideg = false;
       bool dieg33caloidlidegus = false;
+      /*
       bool cut1eg = false;
       bool cut1egus = false;
       bool cut2egus = false;
@@ -458,7 +493,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       bool cuttimedelaysminegus = false;
       bool cuttimegt1nsonlyegus = false;
       bool cutsminlt0p16onlyegus = false;
-    
+      */
+      
       // Loop beginning on egamma reco objects
       for(unsigned int egidx=0; egidx<egRecoN; egidx++) {
 
@@ -470,6 +506,11 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	basicseleg *= (egRecoPt[idx]>=10);
 	if(basicseleg) basicselegidx.push_back(idx);
 
+        ptgt25ngt2noideg = true;
+	ptgt25ngt2noideg *= (TMath::Abs(egRecoEta[idx])<2.5);
+	ptgt25ngt2noideg *= (egRecoPt[idx]>=25);
+	if(ptgt25ngt2noideg) ptgt25ngt2noidegidx.push_back(idx);
+
 	selelevetoideg = true;
 	selelevetoideg *= (TMath::Abs(egRecoEta[idx])<2.5);
 	selelevetoideg *= (egRecoPt[idx]>=10);
@@ -479,7 +520,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	selelevetoideg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaHoverE[idx]<0.05*eghltEgammaSuperClusterEnergy[idx]+1.16:eghltEgammaHoverE[idx]<0.05*eghltEgammaSuperClusterEnergy[idx]+2.54);
 	selelevetoideg *= (TMath::Abs(egRecoEta[idx])<1.479?abs(eghltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.209:abs(eghltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.132);
 	if(selelevetoideg) selelevetoidegidx.push_back(idx);
-
+	/*
 	seleletightideg = true;
 	seleletightideg *= (TMath::Abs(egRecoEta[idx])<2.5);
 	seleletightideg *= (egRecoPt[idx]>=10);
@@ -496,7 +537,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	dieg70ideg *= isL1EgSeeded(idx);
 	dieg70ideg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaHoverE[idx]<0.15*eghltEgammaSuperClusterEnergy[idx]:eghltEgammaHoverE[idx]<0.1*eghltEgammaSuperClusterEnergy[idx]);
 	if(dieg70ideg) dieg70idegidx.push_back(idx);
-
+	*/
 	dieg33caloidlideg = true;
 	dieg33caloidlideg *= (TMath::Abs(egRecoEta[idx])<2.65);
 	dieg33caloidlideg *= (egRecoPt[idx]>=33);
@@ -504,15 +545,15 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	dieg33caloidlideg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaHoverE[idx]<0.15*eghltEgammaSuperClusterEnergy[idx]:eghltEgammaHoverE[idx]<0.1*eghltEgammaSuperClusterEnergy[idx]);
 	dieg33caloidlideg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.014:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.035);
 	if(dieg33caloidlideg) dieg33caloidlidegidx.push_back(idx);
-
+	/*
 	cut1eg = true;
 	cut1eg *= (TMath::Abs(egRecoEta[idx])<2.65);
 	cut1eg *= (egRecoPt[idx]>=10);
 	cut1eg *= isL1EgSeeded(idx);
-	cut1eg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaHoverE[idx]<0.15*eghltEgammaSuperClusterEnergy[idx]:eghltEgammaHoverE[idx]<0.1*eghltEgammaSuperClusterEnergy[idx]);
+	cut1eg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaHoverE[idx]<0.2*eghltEgammaSuperClusterEnergy[idx]:eghltEgammaHoverE[idx]<0.2*eghltEgammaSuperClusterEnergy[idx]);
 	cut1eg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.014:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.035);
 	if(cut1eg) cut1idx.push_back(idx);
-
+	*/
       } // End of loop on egamma reco objects
             
       // Loop beginning on unseeded egamma reco objects
@@ -526,6 +567,11 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	basicselegus *= (egusRecoPt[idx]>=10);
 	if(basicselegus) basicselegusidx.push_back(idx);
 
+        ptgt25ngt2noidegus = true;
+	ptgt25ngt2noidegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
+	ptgt25ngt2noidegus *= (egusRecoPt[idx]>=25);
+	if(ptgt25ngt2noidegus) ptgt25ngt2noidegusidx.push_back(idx);
+
       	selelevetoidegus = true;
 	selelevetoidegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
 	selelevetoidegus *= (egusRecoPt[idx]>=10);
@@ -535,7 +581,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	selelevetoidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.05*egushltEgammaSuperClusterEnergy[idx]+1.16:egushltEgammaHoverE[idx]<0.05*egushltEgammaSuperClusterEnergy[idx]+2.54);
 	selelevetoidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.209:abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.0132);
 	if(selelevetoidegus) selelevetoidegusidx.push_back(idx);
-
+	/*
       	seleletightidegus = true;
 	seleletightidegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
 	seleletightidegus *= (egusRecoPt[idx]>=10);
@@ -558,36 +604,34 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	dieg70idegus *= (egusRecoPt[idx]>=70);
 	dieg70idegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.15*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.1*egushltEgammaSuperClusterEnergy[idx]);
 	if(dieg70idegus) dieg70idegusidx.push_back(idx);
-
+	*/
       	dieg33caloidlidegus = true;
 	//dieg33caloidlidegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
 	dieg33caloidlidegus *= (egusRecoPt[idx]>=33);
 	dieg33caloidlidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.15*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.1*egushltEgammaSuperClusterEnergy[idx]);
 	dieg33caloidlidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.014:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.035);
 	if(dieg33caloidlidegus) dieg33caloidlidegusidx.push_back(idx);
-
+	/*
       	cut1egus = true;
 	cut1egus *= (egusRecoPt[idx]>=10);
-	cut1egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.15*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.1*egushltEgammaSuperClusterEnergy[idx]);
+	cut1egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]);
 	cut1egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.014:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.035);
 	if(cut1egus) cut1usidx.push_back(idx);
 
       	cut2egus = true;
 	cut2egus *= (TMath::Abs(egusRecoEta[idx])<2.5);
 	cut2egus *= (egusRecoPt[idx]>=10);
-	cut2egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.5*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.6*egushltEgammaSuperClusterEnergy[idx]);
-	cut2egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
-	cut2egus *= (egushltEgammaClusterShape_smin[idx]<0.4);
-	cut2egus *= (egushltEcalSeedClusterTime[idx]<2);
+	cut2egus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_DetaSeed[idx])<0.00463:abs(egushltEgammaGsfTrackVars_DetaSeed[idx])<0.00814);
+	cut2egus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_Dphi[idx])<0.148:abs(egushltEgammaGsfTrackVars_Dphi[idx])<0.19);
+	cut2egus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.209:abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.0132);
 	if(cut2egus) cut2usidx.push_back(idx);
 
       	cut3egus = true;
 	cut3egus *= (TMath::Abs(egusRecoEta[idx])<2.5);
 	cut3egus *= (egusRecoPt[idx]>=10);
-	cut3egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.5*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.6*egushltEgammaSuperClusterEnergy[idx]);
-	cut3egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
-	cut3egus *= (egushltEgammaClusterShape_smin[idx]<0.16);
-	cut3egus *= (egushltEcalSeedClusterTime[idx]<2);
+	cut3egus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_DetaSeed[idx])<0.00255:abs(egushltEgammaGsfTrackVars_DetaSeed[idx])<0.00501);
+	cut3egus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_Dphi[idx])<0.022:abs(egushltEgammaGsfTrackVars_Dphi[idx])<0.0236);
+	cut3egus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.159:abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.0197);
 	if(cut3egus) cut3usidx.push_back(idx);
 
       	cuttimedelayonlyegus = true;
@@ -621,23 +665,42 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	cutsminlt0p16onlyegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
         cutsminlt0p16onlyegus *= (egushltEgammaClusterShape_smin[idx]<0.16);
 	if(cutsminlt0p16onlyegus) cutsminlt0p16onlyusidx.push_back(idx);
-
+	*/
       } // End of loop on unseeded egamma objects
 
       selelevetozwindidegusidx = selelevetoidegusidx;
       selelevetozoppoidegusidx = selelevetoidegusidx;
+      ptgt25ngt2zwindnoidegusidx = ptgt25ngt2noidegusidx;
+      ptgt25ngt2zopponoidegusidx = ptgt25ngt2noidegusidx;
+      //cut1zwindidegusidx = cut1usidx;
+      //cut1zoppoidegusidx = cut1usidx;
 
-      fillhistinevent("nosel", noselegidx);
-      fillhistineventunseeded("noselus", noselegusidx);
-      if(basicselegidx.size()>=1) fillhistinevent("basicsel", basicselegidx);
+      //fillhistinevent("nosel", noselegidx);
+      //fillhistineventunseeded("noselus", noselegusidx);
+      //if(basicselegidx.size()>=1) fillhistinevent("basicsel", basicselegidx);
       if(basicselegusidx.size()>=1) fillhistineventunseeded("basicselus", basicselegusidx);
-      fillhistinevent("selelevetoid", selelevetoidegidx);
+      //fillhistinevent("selelevetoid", selelevetoidegidx);
+      if(ptgt25ngt2noidegidx.size()>=1 && ptgt25ngt2zwindnoidegusidx.size()>=2) {
+	TLorentzVector elelead, elesublead;
+	elelead.SetPtEtaPhiM(egusRecoPt[ptgt25ngt2zwindnoidegusidx[0]],egusRecoEta[ptgt25ngt2zwindnoidegusidx[0]],egusRecoPhi[ptgt25ngt2zwindnoidegusidx[0]],0.0005);
+	elesublead.SetPtEtaPhiM(egusRecoPt[ptgt25ngt2zwindnoidegusidx[1]],egusRecoEta[ptgt25ngt2zwindnoidegusidx[1]],egusRecoPhi[ptgt25ngt2zwindnoidegusidx[1]],0.0005);
+	if(elelead.DeltaR(elesublead)>2.4) fillhistineventunseeded("ptgt25neq2noidus", ptgt25ngt2noidegusidx);
+	if((elelead+elesublead).M()>80 && (elelead+elesublead).M()<100 && elelead.DeltaR(elesublead)>2.4) {
+	  fillhistineventunseeded("ptgt25neq2zwindnoidus", ptgt25ngt2zwindnoidegusidx);
+	}
+	else {
+	  fillhistineventunseeded("ptgt25neq2zopponoidus", ptgt25ngt2zopponoidegusidx);
+	}
+      }
+      else {
+	fillhistineventunseeded("selelevetozoppoidus", selelevetozoppoidegusidx);
+      }
       fillhistineventunseeded("selelevetoidus", selelevetoidegusidx);
       if(selelevetozwindidegusidx.size()>=2) {
 	TLorentzVector elelead, elesublead;
 	elelead.SetPtEtaPhiM(egusRecoPt[selelevetozwindidegusidx[0]],egusRecoEta[selelevetozwindidegusidx[0]],egusRecoPhi[selelevetozwindidegusidx[0]],0.0005);
 	elesublead.SetPtEtaPhiM(egusRecoPt[selelevetozwindidegusidx[1]],egusRecoEta[selelevetozwindidegusidx[1]],egusRecoPhi[selelevetozwindidegusidx[1]],0.0005);
-	if((elelead+elesublead).M()>75 && (elelead+elesublead).M()<95) {
+	if((elelead+elesublead).M()>80 && (elelead+elesublead).M()<100) {
 	  fillhistineventunseeded("selelevetozwindidus", selelevetozwindidegusidx);
 	}
 	else {
@@ -647,32 +710,50 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       else {
 	fillhistineventunseeded("selelevetozoppoidus", selelevetozoppoidegusidx);
       }
+      /*
       fillhistinevent("seleletightid", seleletightidegidx);
       fillhistineventunseeded("seleletightidus", seleletightidegusidx);
       fillhistineventunseeded("seleletightcaloidus", seleletightcaloidegusidx);
       fillhistinevent("dieg70id", dieg70idegidx);
       fillhistineventunseeded("dieg70idus", dieg70idegusidx);
+      */
       if(dieg33caloidlidegidx.size()>=1 && dieg33caloidlidegusidx.size()>=2) {
-	fillhistinevent("dieg33caloidlid", dieg33caloidlidegidx);
+	//fillhistinevent("dieg33caloidlid", dieg33caloidlidegidx);
 	fillhistineventunseeded("dieg33caloidlidus", dieg33caloidlidegusidx);
       }
+      /*
       if(cut1idx.size()>=1 && cut1usidx.size()>=2) fillhistineventunseeded("cut1us", cut1usidx);
+      if(cut1idx.size()>=1 && cut1usidx.size()>=2) {
+	TLorentzVector elelead, elesublead;
+	elelead.SetPtEtaPhiM(egusRecoPt[cut1usidx[0]],egusRecoEta[cut1usidx[0]],egusRecoPhi[cut1usidx[0]],0.0005);
+	elesublead.SetPtEtaPhiM(egusRecoPt[cut1usidx[1]],egusRecoEta[cut1usidx[1]],egusRecoPhi[cut1usidx[1]],0.0005);
+	if((elelead+elesublead).M()>80 && (elelead+elesublead).M()<100) {
+	  fillhistineventunseeded("cut1zwindidus", cut1zwindidegusidx);
+	}
+	else {
+	  fillhistineventunseeded("cut1zoppoidus", cut1zoppoidegusidx);
+	}
+      }
+      else {
+	fillhistineventunseeded("cut1zoppoidus", cut1zoppoidegusidx);
+      }
       if(cut2usidx.size()>=2) fillhistineventunseeded("cut2us", cut2usidx);
       if(cut3usidx.size()>=2) fillhistineventunseeded("cut3us", cut3usidx);
       if(cuttimedelayonlyusidx.size()>=2) fillhistineventunseeded("cuttimedelayonlyus", cuttimedelayonlyusidx);
       if(cuttimedelaysminusidx.size()>=2) fillhistineventunseeded("cuttimedelaysminus", cuttimedelaysminusidx);
       if(cuttimegt1nsonlyusidx.size()>=2) fillhistineventunseeded("cuttimegt1nsonlyus", cuttimegt1nsonlyusidx);
       if(cutsminlt0p16onlyusidx.size()>=2) fillhistineventunseeded("cutsminlt0p16onlyus", cutsminlt0p16onlyusidx);
-      
+      */
     } // End of condition requiring atleast one egReco object
 
     // Cross-check with known triggers
+    /*
     dipho70trig = false;
     if(!comparecutonobjtofilt(dieg70HeusFiltPt, dieg70HeusFiltN, egusRecoPt, dieg70idegusidx)) cout<<event<<"Error: Mismatching objects in HLT_DoublePhoton70"<<endl;;
     if(dieg70idegidx.size()>=1 && dieg70idegusidx.size()>=2) dipho70trig = true;
     if(HLT_DoublePhoton70==true && dipho70trig==false) cout<<event<<"Error: Type 1 - too many cuts on obj - trigger cross-check failed for: HLT_DoublePhoton70"<<endl;
     if(HLT_DoublePhoton70==false && dipho70trig==true) cout<<event<<"Error: Type 2(accep) - not enough cuts on obj - trigger cross-check failed for: HLT_DoublePhoton70"<<endl;
-
+    */
     dipho33caloidltrig = false;
     if(!comparecutonobjtofilt(dieg33CsusFiltPt, dieg33CsusFiltN, egusRecoPt, dieg33caloidlidegusidx)) cout<<event<<"Error: Mismatching objects in HLT_DoublePhoton33"<<endl;;
     if(dieg33caloidlidegidx.size()>=1 && dieg33caloidlidegusidx.size()>=2) dipho33caloidltrig = true;
@@ -693,7 +774,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       TLorentzVector elelead, elesublead;
       elelead.SetPtEtaPhiM(egusRecoPt[selelevetozwindidegusidx[0]],egusRecoEta[selelevetozwindidegusidx[0]],egusRecoPhi[selelevetozwindidegusidx[0]],0.0005);
       elesublead.SetPtEtaPhiM(egusRecoPt[selelevetozwindidegusidx[1]],egusRecoEta[selelevetozwindidegusidx[1]],egusRecoPhi[selelevetozwindidegusidx[1]],0.0005);
-      if((elelead+elesublead).M()>70 && (elelead+elesublead).M()<100) {
+      if((elelead+elesublead).M()>80 && (elelead+elesublead).M()<100) {
         selelevetozwindidus++;
       }
       else {
@@ -703,23 +784,27 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     else {
       selelevetozoppoidus++;
     }
+    /*
     if(seleletightidegidx.size()>=2) seleletightid++;
     if(seleletightidegusidx.size()>=2) seleletightidus++;
     if(seleletightidegidx.size()>=2) seleletightid++;
     if(seleletightidegusidx.size()>=2) seleletightidus++;
-  
+    */
     // Perform genmatching and fill the histograms
-    if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("gennoselAnoselus", gennoselegidx, noselegusidx);
-    if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicselbarAnoselus", genbasicselbaregidx, noselegusidx);
+    //if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("gennoselAnoselus", gennoselegidx, noselegusidx);
+    //if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicselbarAnoselus", genbasicselbaregidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAnoselus", genbasicptgt10selbaregidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAnoselus", genbasicptgt10selecegidx, noselegusidx);
+    /*
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genetabin14_16_24Anoselus", genetabin14_16_24egidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10Anoselus", genptgt10egidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10etalt12Anoselus", genptgt10etalt12egidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10etabin16_24Anoselus", genptgt10etabin16_24egidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10etabin14_16_24Anoselus", genptgt10etabin14_16_24egidx, noselegusidx);
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10etabin14_16_24d0lt1cmAnoselus", genptgt10etabin14_16_24d0lt1cmegidx, noselegusidx);
+    */
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10Abasicselus", genptgt10egidx, basicselegusidx);
+    /*
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicselptgt15Abasicselus", genbasicselptgt15egidx, basicselegusidx);
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAbasicselus", genbasicptgt10selbaregidx, basicselegusidx);
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAbasicselus", genbasicptgt10selecegidx, basicselegusidx);
@@ -738,15 +823,16 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     if(isMC && cuttimedelaysminusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcuttimedelaysminus", genbasicptgt10selecegidx, cuttimedelaysminusidx);
     if(isMC && cuttimegt1nsonlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcuttimegt1nsonlyus", genbasicptgt10selbaregidx, cuttimegt1nsonlyusidx);
     if(isMC && cutsminlt0p16onlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcutsminlt0p16onlyus", genbasicptgt10selbaregidx, cutsminlt0p16onlyusidx);
-    
+    */
     // Clear all the vectors  
     genelpos.clear();
     gennoselegidx.clear();
-    genbasicselbaregidx.clear();
+    //genbasicselbaregidx.clear();
     genbasicptgt10selbaregidx.clear();
     genbasicptgt10selecegidx.clear();
-    genetabin14_16_24egidx.clear();
+    //genetabin14_16_24egidx.clear();
     genptgt10egidx.clear();
+    /*
     genptgt10etalt12egidx.clear();
     genptgt10etabin16_24egidx.clear();
     genptgt10etabin14_16_24egidx.clear();
@@ -754,33 +840,43 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     genbarselegidx.clear();
     genbarselptgt10egidx.clear();
     genbasicselptgt15egidx.clear();
+    */
     noselegidx.clear();
     noselegusidx.clear();
     basicselegidx.clear();
     basicselegusidx.clear();
+    ptgt25ngt2noidegidx.clear();
+    ptgt25ngt2noidegusidx.clear();
+    ptgt25ngt2zwindnoidegusidx.clear();
+    ptgt25ngt2zopponoidegusidx.clear();
     selelevetoidegidx.clear();
     selelevetoidegusidx.clear();
     selelevetozwindidegusidx.clear();
     selelevetozoppoidegusidx.clear();
+    /*
     seleletightidegidx.clear();
     seleletightidegusidx.clear();
     seleletightcaloidegusidx.clear();
     dieg70idegidx.clear();
-    dieg70idegusidx.clear();
+    diEeg70idegusidx.clear();
+    */
     dieg33caloidlidegidx.clear();
     dieg33caloidlidegusidx.clear();
+    /*
     cut1idx.clear();
     cut1usidx.clear();
+    cut1zwindidegusidx.clear();
+    cut1zoppoidegusidx.clear();
     cut2usidx.clear();
     cut3usidx.clear();
     cuttimedelayonlyusidx.clear();
     cuttimedelaysminusidx.clear();
     cuttimegt1nsonlyusidx.clear();
     cutsminlt0p16onlyusidx.clear();
-
+    */
   } // End of loop on events
 
-  cout<<totEntries<<"\t"<<nosel<<"\t"<<noselus<<"\t"<<basicsel<<"\t"<<basicselus<<"\t"<<selelevetoid<<"\t"<<selelevetoidus<<"\t"<<selelevetozwindidus<<"\t"<<selelevetozoppoidus<<"\t"<<dieg70idus<<"\t"<<dieg33caloidl<<endl;
+  cout<<totEntries<<"\t"<<nosel<<"\t"<<noselus<<"\t"<<basicsel<<"\t"<<basicselus<<"\t"<<selelevetoid<<"\t"<<selelevetoidus<<"\t"<<selelevetozwindidus<<"\t"<<selelevetozoppoidus/*<<"\t"<<dieg70idus*/<<"\t"<<dieg33caloidl<<endl;
 }
 
 vector< pair<int,int> > data_robustanalyzer::doGenMatchingUnseeded(vector<int> genidx, vector<int> egusidx) {
@@ -1031,6 +1127,7 @@ void data_robustanalyzer::fillhistinevent(TString selection, vector<int> egidx) 
 
   // invariant mass - barrel
   TH1F* recoeb_leadsubleadM = (TH1F*) outfile->Get(selection+"recoeb_leadsubleadM");
+  TH1F* recoeb_leadsubleaddR = (TH1F*) outfile->Get(selection+"recoeb_leadsubleaddR");
 
   // Get end-cap variables - lead pT e/gamma
   TH1F* recoee_leadegclustershape = (TH1F*) outfile->Get(selection+"recoee_leadegclustershape");
@@ -1082,6 +1179,7 @@ void data_robustanalyzer::fillhistinevent(TString selection, vector<int> egidx) 
   
   // invariant mass - end-cap
   TH1F* recoee_leadsubleadM = (TH1F*) outfile->Get(selection+"recoee_leadsubleadM");
+  TH1F* recoee_leadsubleaddR = (TH1F*) outfile->Get(selection+"recoee_leadsubleaddR");
 
   if(egidx.size()>0) {
     egmult->Fill(egidx.size());
@@ -1280,9 +1378,11 @@ void data_robustanalyzer::fillhistinevent(TString selection, vector<int> egidx) 
     // Fill invariant mass
     if(egRecoEta[egidx[0]]<1.479 && egRecoEta[egidx[1]]<1.479) {
       recoeb_leadsubleadM->Fill((leadeg+subleadeg).M());
+      recoeb_leadsubleaddR->Fill(leadeg.DeltaR(subleadeg));
     }
     else {
       recoee_leadsubleadM->Fill((leadeg+subleadeg).M());
+      recoee_leadsubleaddR->Fill(leadeg.DeltaR(subleadeg));
     }
   } // End of condition requiring atleast two eg object
 
@@ -1360,6 +1460,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
 
   // invariant mass - barrel
   TH1F* recoeb_leadsubleadM = (TH1F*) outfile->Get(selection+"recoebus_leadsubleadM");
+  TH1F* recoeb_leadsubleaddR = (TH1F*) outfile->Get(selection+"recoebus_leadsubleaddR");
 
   // Get end-cap variables - lead pt unseeded e/gamma
   TH1F* recoee_leadegclustershape = (TH1F*) outfile->Get(selection+"recoeeus_leadegclustershape");
@@ -1415,6 +1516,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
   
   // invariant mass - end-cap
   TH1F* recoee_leadsubleadM = (TH1F*) outfile->Get(selection+"recoeeus_leadsubleadM");
+  TH1F* recoee_leadsubleaddR = (TH1F*) outfile->Get(selection+"recoeeus_leadsubleaddR");
   
   if(egidx.size()>0) {
     egmult->Fill(egidx.size());
@@ -1443,8 +1545,8 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
 	recoeb_egpixelmchvar_s2->Fill(egushltEgammaPixelMatchVars_s2[egidx[0]]);
       }
       else {
-	recoeb_leadegpixelmchvar_s2->Fill(-50);
-	recoeb_egpixelmchvar_s2->Fill(-50);
+	recoeb_leadegpixelmchvar_s2->Fill(-2);
+	recoeb_egpixelmchvar_s2->Fill(-2);
       }
       if(egushltEgammaGsfTrackVars_Deta[egidx[0]]<999999) {
 	recoeb_leadegtrkiso->Fill(egushltEgammaEleGsfTrackIso[egidx[0]]);
@@ -1492,8 +1594,8 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
 	recoee_egpixelmchvar_s2->Fill(egushltEgammaPixelMatchVars_s2[egidx[0]]);
       }
       else {
-	recoee_leadegpixelmchvar_s2->Fill(-50);
-	recoee_egpixelmchvar_s2->Fill(-50);
+	recoee_leadegpixelmchvar_s2->Fill(-2);
+	recoee_egpixelmchvar_s2->Fill(-2);
       }
       if(egushltEgammaGsfTrackVars_Deta[egidx[0]]<999999) {
 	recoee_leadegtrkiso->Fill(egushltEgammaEleGsfTrackIso[egidx[0]]);
@@ -1553,8 +1655,8 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
 	recoeb_egpixelmchvar_s2->Fill(egushltEgammaPixelMatchVars_s2[egidx[1]]);
       }
       else {
-	recoeb_subleadegpixelmchvar_s2->Fill(-50);
-	recoeb_egpixelmchvar_s2->Fill(-50);
+	recoeb_subleadegpixelmchvar_s2->Fill(-2);
+	recoeb_egpixelmchvar_s2->Fill(-2);
       }
       if(egushltEgammaGsfTrackVars_Deta[egidx[1]]<999999) {
 	recoeb_subleadegtrkiso->Fill(egushltEgammaEleGsfTrackIso[egidx[1]]);
@@ -1601,8 +1703,8 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
 	recoee_egpixelmchvar_s2->Fill(egushltEgammaPixelMatchVars_s2[egidx[1]]);
       }
       else {
-	recoee_subleadegpixelmchvar_s2->Fill(-50);
-	recoee_egpixelmchvar_s2->Fill(-50);
+	recoee_subleadegpixelmchvar_s2->Fill(-2);
+	recoee_egpixelmchvar_s2->Fill(-2);
       }
       if(egushltEgammaGsfTrackVars_Deta[egidx[1]]<999999) {
 	recoee_subleadegtrkiso->Fill(egushltEgammaEleGsfTrackIso[egidx[1]]);
@@ -1633,9 +1735,11 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
     // Fill invariant mass
     if(egusRecoEta[egidx[0]]<1.479 && egusRecoEta[egidx[1]]<1.479) {
       recoeb_leadsubleadM->Fill((leadeg+subleadeg).M());
+      recoeb_leadsubleaddR->Fill(leadeg.DeltaR(subleadeg));
     }
     else {
       recoee_leadsubleadM->Fill((leadeg+subleadeg).M());
+      recoee_leadsubleaddR->Fill(leadeg.DeltaR(subleadeg));
     }
   } // End of condition requiring atleast two eg object
 
@@ -1757,6 +1861,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 
   // invariant mass - barrel
   TH1F* recoeb_leadsubleadM = (TH1F*) outfile->Get(selection+"genmchrecoebus_leadsubleadM");
+  TH1F* recoeb_leadsubleaddR = (TH1F*) outfile->Get(selection+"genmchrecoebus_leadsubleaddR");
   TH1F* genmchgeneltrigebus_dE = (TH1F*) outfile->Get(selection+"genmchgeneltrigebus_dE");
   TH1F* genmchgeneltrigebus_dPt = (TH1F*) outfile->Get(selection+"genmchgeneltrigebus_dPt");
   TH1F* genmchgeneltrigebus_dEta = (TH1F*) outfile->Get(selection+"genmchgeneltrigebus_dEta");
@@ -1820,6 +1925,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
   
   // invariant mass - end-cap
   TH1F* recoee_leadsubleadM = (TH1F*) outfile->Get(selection+"genmchrecoeeus_leadsubleadM");
+  TH1F* recoee_leadsubleaddR = (TH1F*) outfile->Get(selection+"genmchrecoeeus_leadsubleaddR");
   TH1F* genmchgeneltrigeeus_dE = (TH1F*) outfile->Get(selection+"genmchgeneltrigeeus_dE");
   TH1F* genmchgeneltrigeeus_dPt = (TH1F*) outfile->Get(selection+"genmchgeneltrigeeus_dPt");
   TH1F* genmchgeneltrigeeus_dEta = (TH1F*) outfile->Get(selection+"genmchgeneltrigeeus_dEta");
@@ -2038,8 +2144,8 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	recoeb_egpixelmchvar_s2->Fill(egushltEgammaPixelMatchVars_s2[leadidx]);
       }
       else {
-	recoeb_leadegpixelmchvar_s2->Fill(-50);
-	recoeb_egpixelmchvar_s2->Fill(-50);
+	recoeb_leadegpixelmchvar_s2->Fill(-2);
+	recoeb_egpixelmchvar_s2->Fill(-2);
       }
       if(egushltEgammaGsfTrackVars_Deta[leadidx]<999999) {
 	recoeb_leadegtrkiso->Fill(egushltEgammaEleGsfTrackIso[leadidx]);
@@ -2087,8 +2193,8 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	recoee_egpixelmchvar_s2->Fill(egushltEgammaPixelMatchVars_s2[leadidx]);
       }
       else {
-	recoee_leadegpixelmchvar_s2->Fill(-50);
-	recoee_egpixelmchvar_s2->Fill(-50);
+	recoee_leadegpixelmchvar_s2->Fill(-2);
+	recoee_egpixelmchvar_s2->Fill(-2);
       }
       if(egushltEgammaGsfTrackVars_Deta[leadidx]<999999) {
 	recoee_leadegtrkiso->Fill(egushltEgammaEleGsfTrackIso[leadidx]);
@@ -2146,8 +2252,8 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	  recoeb_egpixelmchvar_s2->Fill(egushltEgammaPixelMatchVars_s2[subleadidx]);
 	}
 	else {
-	  recoeb_subleadegpixelmchvar_s2->Fill(-50);
-	  recoeb_egpixelmchvar_s2->Fill(-50);
+	  recoeb_subleadegpixelmchvar_s2->Fill(-2);
+	  recoeb_egpixelmchvar_s2->Fill(-2);
 	}
 	if(egushltEgammaGsfTrackVars_Deta[subleadidx]<999999) {
 	  recoeb_subleadegtrkiso->Fill(egushltEgammaEleGsfTrackIso[subleadidx]);
@@ -2195,8 +2301,8 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	  recoee_egpixelmchvar_s2->Fill(egushltEgammaPixelMatchVars_s2[subleadidx]);
 	}
 	else {
-	  recoee_subleadegpixelmchvar_s2->Fill(-50);
-	  recoee_egpixelmchvar_s2->Fill(-50);
+	  recoee_subleadegpixelmchvar_s2->Fill(-2);
+	  recoee_egpixelmchvar_s2->Fill(-2);
 	}
 	if(egushltEgammaGsfTrackVars_Deta[subleadidx]<999999) {
 	  recoee_subleadegtrkiso->Fill(egushltEgammaEleGsfTrackIso[subleadidx]);
@@ -2227,9 +2333,11 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
       // Fill invariant mass
       if(egusRecoEta[leadidx]<1.479 && egusRecoEta[subleadidx]<1.479) {
 	recoeb_leadsubleadM->Fill((leadeg+subleadeg).M());
+	recoeb_leadsubleaddR->Fill(leadeg.DeltaR(subleadeg));
       }
       else {
 	recoee_leadsubleadM->Fill((leadeg+subleadeg).M());
+	recoee_leadsubleaddR->Fill(leadeg.DeltaR(subleadeg));
 	}
     } // End of sublead condition
   } // End of filling condition
@@ -2316,7 +2424,7 @@ void data_robustanalyzer::addhist(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoeb_leadegooesclsoop","barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
   all1dhists.push_back(new TH1F(selection+"recoeb_leadegvalhits","barrel e/#gamma valid hits",40,-5,35));
   all1dhists.push_back(new TH1F(selection+"recoeb_leadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
-  all1dhists.push_back(new TH1F(selection+"recoeb_leadeghovereoversupcluse","barrel e/#gamma H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"recoeb_leadeghovereoversupcluse","barrel e/#gamma H/E",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"recoeb_leadegseedclustime","barrel e/#gamma_{seed} time / ns",20000,-10,10));
 
   // barrel variables - sub-lead pT e/gamma
@@ -2340,11 +2448,12 @@ void data_robustanalyzer::addhist(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoeb_subleadegooesclsoop","barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
   all1dhists.push_back(new TH1F(selection+"recoeb_subleadegvalhits","barrel e/#gamma valid hits",40,-5,35));
   all1dhists.push_back(new TH1F(selection+"recoeb_subleadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
-  all1dhists.push_back(new TH1F(selection+"recoeb_subleadeghovereoversupcluse","barrel e/#gamma H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"recoeb_subleadeghovereoversupcluse","barrel e/#gamma H/E",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"recoeb_subleadegseedclustime","barrel e/#gamma_{seed} time / ns",20000,-10,10));
 
   // barrel variables - invariant mass
   all1dhists.push_back(new TH1F(selection+"recoeb_leadsubleadM","M(e/#gamma_{1},e/#gamma_{2}) / GeV",500,0,500));
+  all1dhists.push_back(new TH1F(selection+"recoeb_leadsubleaddR","#DeltaR(e/#gamma_{1},e/#gamma_{2}) / GeV",1000,-2,8));
 
   // end-cap variables - lead pT e/gamma
   all1dhists.push_back(new TH1F(selection+"recoee_leadegclustershape","end-cap e/#gamma clus.shape",1000,0,0.1));
@@ -2367,7 +2476,7 @@ void data_robustanalyzer::addhist(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoee_leadegooesclsoop","end-cap e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
   all1dhists.push_back(new TH1F(selection+"recoee_leadegvalhits","end-cap e/#gamma valid hits",40,-5,35));
   all1dhists.push_back(new TH1F(selection+"recoee_leadegtrkiso","end-cap e/#gamma track Iso.",1000,-5,95));
-  all1dhists.push_back(new TH1F(selection+"recoee_leadeghovereoversupcluse","end-cap e/#gamma H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"recoee_leadeghovereoversupcluse","end-cap e/#gamma H/E",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"recoee_leadegseedclustime","end-cap e/#gamma_{seed} time / ns",20000,-10,10));
 
   // end-cap variables - sub-lead pT e/gamma
@@ -2391,11 +2500,12 @@ void data_robustanalyzer::addhist(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoee_subleadegooesclsoop","end-cap e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
   all1dhists.push_back(new TH1F(selection+"recoee_subleadegvalhits","end-cap e/#gamma valid hits",40,-5,35));
   all1dhists.push_back(new TH1F(selection+"recoee_subleadegtrkiso","end-cap e/#gamma track Iso.",1000,-5,95));
-  all1dhists.push_back(new TH1F(selection+"recoee_subleadeghovereoversupcluse","end-cap e/#gamma H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"recoee_subleadeghovereoversupcluse","end-cap e/#gamma H/E",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"recoee_subleadegseedclustime","end-cap e/#gamma_{seed} time / ns",20000,-10,10));
 
   // end-cap variables - invariant mass
   all1dhists.push_back(new TH1F(selection+"recoee_leadsubleadM","M(e/#gamma_{1},e/#gamma_{2}) / GeV",500,0,500));
+  all1dhists.push_back(new TH1F(selection+"recoee_leadsubleaddR","#DeltaR(e/#gamma_{1},e/#gamma_{2}) / GeV",1000,-2,8));
 }
 
 // Function to add a set of histograms for a selection - unseeded egamma objects
@@ -2438,7 +2548,7 @@ void data_robustanalyzer::addhistunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoebus_leadegooesclsoop","barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
   all1dhists.push_back(new TH1F(selection+"recoebus_leadegvalhits","barrel e/#gamma valid hits",40,-5,35));
   all1dhists.push_back(new TH1F(selection+"recoebus_leadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
-  all1dhists.push_back(new TH1F(selection+"recoebus_leadeghovereoversupcluse","barrel e/#gamma H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"recoebus_leadeghovereoversupcluse","barrel e/#gamma H/E",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"recoebus_leadegseedclustime","barrel e/#gamma_{seed} time / ns",20000,-10,10));
 
   // barrel variables - sub-lead pT unseeded e/gamma
@@ -2464,11 +2574,12 @@ void data_robustanalyzer::addhistunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoebus_subleadegooesclsoop","barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
   all1dhists.push_back(new TH1F(selection+"recoebus_subleadegvalhits","barrel e/#gamma valid hits",40,-5,35));
   all1dhists.push_back(new TH1F(selection+"recoebus_subleadegtrkiso","barrel e/#gamma track Iso.",1000,-5,95));
-  all1dhists.push_back(new TH1F(selection+"recoebus_subleadeghovereoversupcluse","barrel e/#gamma H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"recoebus_subleadeghovereoversupcluse","barrel e/#gamma H/E",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"recoebus_subleadegseedclustime","barrel e/#gamma_{seed} time / ns",20000,-10,10));
 
   // barrel variables - invariant mass unseeded
   all1dhists.push_back(new TH1F(selection+"recoebus_leadsubleadM","barrel M(e/#gamma_{1},e/#gamma_{2}) / GeV",500,0,500));
+  all1dhists.push_back(new TH1F(selection+"recoebus_leadsubleaddR","#DeltaR(e/#gamma_{1},e/#gamma_{2}) / GeV",1000,-2,8));
 
   // end-cap variables - lead pT unseeded e/gamma
   all1dhists.push_back(new TH1F(selection+"recoeeus_leadegclustershape","end-cap e/#gamma clus.shape",1000,0,0.1));
@@ -2493,7 +2604,7 @@ void data_robustanalyzer::addhistunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoeeus_leadegooesclsoop","end-cap e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
   all1dhists.push_back(new TH1F(selection+"recoeeus_leadegvalhits","end-cap e/#gamma valid hits",40,-5,35));
   all1dhists.push_back(new TH1F(selection+"recoeeus_leadegtrkiso","end-cap e/#gamma track Iso.",1000,-5,95));
-  all1dhists.push_back(new TH1F(selection+"recoeeus_leadeghovereoversupcluse","end-cap e/#gamma H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_leadeghovereoversupcluse","end-cap e/#gamma H/E",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"recoeeus_leadegseedclustime","end-cap e/#gamma_{seed} time / ns",20000,-10,10));
 
   // end-cap variables - sub-lead pT unseeded e/gamma
@@ -2519,11 +2630,12 @@ void data_robustanalyzer::addhistunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoeeus_subleadegooesclsoop","end-cap e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
   all1dhists.push_back(new TH1F(selection+"recoeeus_subleadegvalhits","end-cap e/#gamma valid hits",40,-5,35));
   all1dhists.push_back(new TH1F(selection+"recoeeus_subleadegtrkiso","end-cap e/#gamma track Iso.",1000,-5,95));
-  all1dhists.push_back(new TH1F(selection+"recoeeus_subleadeghovereoversupcluse","end-cap e/#gamma H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_subleadeghovereoversupcluse","end-cap e/#gamma H/E",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"recoeeus_subleadegseedclustime","end-cap e/#gamma_{seed} time / ns",20000,-10,10));
 
   // end-cap variables - invariant mass unseeded
   all1dhists.push_back(new TH1F(selection+"recoeeus_leadsubleadM","end-cap M(e/#gamma_{1},e/#gamma_{2}) / GeV",500,0,500));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_leadsubleaddR","#DeltaR(e/#gamma_{1},e/#gamma_{2}) / GeV",1000,-2,8));
 
 }
 
@@ -2608,7 +2720,7 @@ void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_leadegooesclsoop","gen matched barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_leadegvalhits","gen matched barrel e/#gamma valid hits",40,-5,35));
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_leadegtrkiso","gen matched barrel e/#gamma track Iso.",1000,-5,95));
-  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_leadeghovereoversupcluse","gen matched barrel e/#gamma H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_leadeghovereoversupcluse","gen matched barrel e/#gamma H/E",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_leadegseedclustime","gen matched barrel e/#gamma_{seed} time / ns",20000,-10,10));
 
   // barrel variables - sub-lead pT unseeded e/gamma
@@ -2634,11 +2746,12 @@ void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_subleadegooesclsoop","gen matched barrel e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_subleadegvalhits","gen matched barrel e/#gamma valid hits",40,-5,35));
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_subleadegtrkiso","gen matched barrel e/#gamma track Iso.",1000,-5,95));
-  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_subleadeghovereoversupcluse","gen matched barrel e/#gamma H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_subleadeghovereoversupcluse","gen matched barrel e/#gamma H/E",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_subleadegseedclustime","gen matched barrel e/#gamma_{seed} time / ns",20000,-10,10));
 
   // barrel variables - invariant mass unseeded
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_leadsubleadM","gen matched barrel M(e/#gamma_{1},e/#gamma_{2}) / GeV",500,0,500));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_leadsubleaddR","gen matched barrel #DeltaR(e/#gamma_{1},e/#gamma_{2}) / GeV",1000,-2,8));
   all1dhists.push_back(new TH1F(selection+"genmchgeneltrigebus_dE","gen matched #Delta E(gen e, trig. e/#gamma)",10000,-50,50));
   all1dhists.push_back(new TH1F(selection+"genmchgeneltrigebus_dPt","gen matched #Delta p_{T}(gen e, trig. e/#gamma)",10000,-50,50));
   all1dhists.push_back(new TH1F(selection+"genmchgeneltrigebus_dEta","gen matched #Delta#eta(gen e, trig. e/#gamma)",8000,-4,4));
@@ -2671,7 +2784,7 @@ void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_leadegooesclsoop","gen matched end-cap e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_leadegvalhits","gen matched end-cap e/#gamma valid hits",40,-5,35));
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_leadegtrkiso","gen matched end-cap e/#gamma track Iso.",1000,-5,95));
-  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_leadeghovereoversupcluse","gen matched end-cap e/#gamma H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_leadeghovereoversupcluse","gen matched end-cap e/#gamma H/E",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_leadegseedclustime","gen matched end-cap e/#gamma_{seed} time / ns",20000,-10,10));
 
   // end-cap variables - sub-lead pT unseeded e/gamma
@@ -2697,11 +2810,12 @@ void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_subleadegooesclsoop","gen matched end-cap e/#gamma 1/E_sc-1/p",1000,-0.1,0.9));
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_subleadegvalhits","gen matched end-cap e/#gamma valid hits",40,-5,35));
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_subleadegtrkiso","gen matched end-cap e/#gamma track Iso.",1000,-5,95));
-  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_subleadeghovereoversupcluse","gen matched end-cap e/#gamma H/E",1000,0,10));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_subleadeghovereoversupcluse","gen matched end-cap e/#gamma H/E",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_subleadegseedclustime","gen matched end-cap e/#gamma_{seed} time / ns",20000,-10,10));
 
   // end-cap variables - invariant mass unseeded
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_leadsubleadM","gen matched end-cap M(e/#gamma_{1},e/#gamma_{2}) / GeV",500,0,500));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_leadsubleaddR","gen matched end-cap #DeltaR(e/#gamma_{1},e/#gamma_{2}) / GeV",1000,-2,8));
   all1dhists.push_back(new TH1F(selection+"genmchgeneltrigeeus_dE","gen matched #Delta E(gen e, trig. e/#gamma)",10000,-50,50));
   all1dhists.push_back(new TH1F(selection+"genmchgeneltrigeeus_dPt","gen matched #Delta p_{T}(gen e, trig. e/#gamma)",10000,-50,50));
   all1dhists.push_back(new TH1F(selection+"genmchgeneltrigeeus_dEta","gen matched #Delta#eta(gen e, trig. e/#gamma)",8000,-4,4));

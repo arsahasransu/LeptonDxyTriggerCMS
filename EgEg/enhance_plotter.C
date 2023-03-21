@@ -167,9 +167,10 @@ TCanvas* enhance_plotter_rate(vector<TH1F*> histvec, vector<TString> legNam, TSt
   TPad *pad1 = new TPad("pad1","pad1",0,0,0.075,0.98);
   TPad *pad2 = new TPad("pad2","pad2",0.1,0,0.95,0.1);
   TPad *pad3 = new TPad("pad3","pad3",0.075,0.1,1,0.98);
-  //pad1->SetFillColor(5);
-  //pad2->SetFillColor(5);
-  //pad3->SetFillColor(7);
+  TPad *pad4 = new TPad("pad4","pad4",0.075,0.1,1,0.98);
+  pad1->SetFillColor(5);
+  pad2->SetFillColor(5);
+  pad3->SetFillColor(7);
 
   pad1->Draw();
   pad2->Draw();
