@@ -134,6 +134,7 @@ data_robustanalyzer::~data_robustanalyzer() {
   outfile->Write();
   outfile->Close();
   all1dhists.clear();
+  all2dhists.clear();
 }
 
 // Analyzer for a single file
@@ -170,7 +171,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   if(isMC) addgenhist("genbasicselptgt15");
   */
   //addhist("nosel");
-  //addhistunseeded("noselus");
+  addhistunseeded("noselus");
   //if(isMC)addhistgenmchunseeded("gennoselAnoselus");
   //if(isMC)addhistgenmchunseeded("genbasicselbarAnoselus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAnoselus");
@@ -207,18 +208,22 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   */
   //addhist("dieg33caloidlid");
   addhistunseeded("dieg33caloidlidus");
-  /*
-  if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAdieg33caloidlus");
-  if(isMC)addhistgenmchunseeded("genbasicptgt10selecAdieg33caloidlus");
   addhistunseeded("cut1us");
-  addhistunseeded("cut1zwindidus");
-  addhistunseeded("cut1zoppoidus");
   if(isMC)addhistgenmchunseeded("genptgt10Acut1us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcut1us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAcut1us");
   addhistunseeded("cut2us");
+  addhistunseeded("cut21l1s2us");
+  if(isMC)addhistgenmchunseeded("genptgt10Acut2us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcut2us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAcut2us");
+  addhistunseeded("cuttimegt1nsus");
+  addhistunseeded("cuttimegt1ns1l1s2us");
+  /*
+  if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAdieg33caloidlus");
+  if(isMC)addhistgenmchunseeded("genbasicptgt10selecAdieg33caloidlus");
+  addhistunseeded("cut1zwindidus");
+  addhistunseeded("cut1zoppoidus");
   addhistunseeded("cut3us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcut3us");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAcut3us");
@@ -228,7 +233,6 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   addhistunseeded("cuttimedelaysminus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcuttimedelaysminus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAcuttimedelaysminus");
-  addhistunseeded("cuttimegt1nsonlyus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcuttimegt1nsonlyus");
   addhistunseeded("cutsminlt0p16onlyus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcutsminlt0p16onlyus");
@@ -274,16 +278,18 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     */
     vector<int> dieg33caloidlidegidx;
     vector<int> dieg33caloidlidegusidx;
-    /*
     vector<int> cut1idx;
     vector<int> cut1usidx;
+    vector<int> cut2idx;
+    vector<int> cut2usidx;
+    vector<int> cuttimegt1nsidx;
+    vector<int> cuttimegt1nsusidx;
+    /*
     vector<int> cut1zwindidegusidx;
     vector<int> cut1zoppoidegusidx;
-    vector<int> cut2usidx;
     vector<int> cut3usidx;
     vector<int> cuttimedelayonlyusidx;
     vector<int> cuttimedelaysminusidx;
-    vector<int> cuttimegt1nsonlyusidx;
     vector<int> cutsminlt0p16onlyusidx;
     */
   
@@ -484,14 +490,16 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       */
       bool dieg33caloidlideg = false;
       bool dieg33caloidlidegus = false;
-      /*
       bool cut1eg = false;
       bool cut1egus = false;
+      bool cut2eg = false;
       bool cut2egus = false;
+      bool cuttimegt1nseg = false;
+      bool cuttimegt1nsegus = false;
+      /*
       bool cut3egus = false;
       bool cuttimedelayonlyegus = false;
       bool cuttimedelaysminegus = false;
-      bool cuttimegt1nsonlyegus = false;
       bool cutsminlt0p16onlyegus = false;
       */
       
@@ -545,15 +553,32 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	dieg33caloidlideg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaHoverE[idx]<0.15*eghltEgammaSuperClusterEnergy[idx]:eghltEgammaHoverE[idx]<0.1*eghltEgammaSuperClusterEnergy[idx]);
 	dieg33caloidlideg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.014:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.035);
 	if(dieg33caloidlideg) dieg33caloidlidegidx.push_back(idx);
-	/*
+	
 	cut1eg = true;
 	cut1eg *= (TMath::Abs(egRecoEta[idx])<2.65);
 	cut1eg *= (egRecoPt[idx]>=10);
 	cut1eg *= isL1EgSeeded(idx);
-	cut1eg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaHoverE[idx]<0.2*eghltEgammaSuperClusterEnergy[idx]:eghltEgammaHoverE[idx]<0.2*eghltEgammaSuperClusterEnergy[idx]);
+	cut1eg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaHoverE[idx]<0.15*eghltEgammaSuperClusterEnergy[idx]:eghltEgammaHoverE[idx]<0.1*eghltEgammaSuperClusterEnergy[idx]);
 	cut1eg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.014:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.035);
 	if(cut1eg) cut1idx.push_back(idx);
-	*/
+	
+	cut2eg = true;
+	cut2eg *= (TMath::Abs(egRecoEta[idx])<2.5);
+	cut2eg *= (egRecoPt[idx]>=10);
+	cut2eg *= isL1EgSeeded(idx);
+	cut2eg *= (eghltEgammaHoverE[idx]<0.2*eghltEgammaSuperClusterEnergy[idx]);
+	cut2eg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
+	if(cut2eg) cut2idx.push_back(idx);
+	
+	cuttimegt1nseg = true;
+	cuttimegt1nseg *= (TMath::Abs(egRecoEta[idx])<2.5);
+	cuttimegt1nseg *= (egRecoPt[idx]>=10);
+	cuttimegt1nseg *= isL1EgSeeded(idx);
+	cuttimegt1nseg *= (eghltEgammaHoverE[idx]<0.2*eghltEgammaSuperClusterEnergy[idx]);
+	cuttimegt1nseg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
+	cuttimegt1nseg *= eghltEcalSeedClusterTime[idx]>1;
+	if(cuttimegt1nseg) cuttimegt1nsidx.push_back(idx);
+	
       } // End of loop on egamma reco objects
             
       // Loop beginning on unseeded egamma reco objects
@@ -611,21 +636,30 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	dieg33caloidlidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.15*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.1*egushltEgammaSuperClusterEnergy[idx]);
 	dieg33caloidlidegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.014:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.035);
 	if(dieg33caloidlidegus) dieg33caloidlidegusidx.push_back(idx);
-	/*
+	
       	cut1egus = true;
 	cut1egus *= (egusRecoPt[idx]>=10);
-	cut1egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]);
+	cut1egus *= (TMath::Abs(egusRecoEta[idx])<2.5);
+	cut1egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.15*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.1*egushltEgammaSuperClusterEnergy[idx]);
 	cut1egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.014:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.035);
 	if(cut1egus) cut1usidx.push_back(idx);
 
       	cut2egus = true;
-	cut2egus *= (TMath::Abs(egusRecoEta[idx])<2.5);
 	cut2egus *= (egusRecoPt[idx]>=10);
-	cut2egus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_DetaSeed[idx])<0.00463:abs(egushltEgammaGsfTrackVars_DetaSeed[idx])<0.00814);
-	cut2egus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_Dphi[idx])<0.148:abs(egushltEgammaGsfTrackVars_Dphi[idx])<0.19);
-	cut2egus *= (TMath::Abs(egusRecoEta[idx])<1.479?abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.209:abs(egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[idx])<0.0132);
+	cut2egus *= (TMath::Abs(egusRecoEta[idx])<2.5);
+	cut2egus *= (egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]);
+	cut2egus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
 	if(cut2egus) cut2usidx.push_back(idx);
 
+	cuttimegt1nsegus = true;
+	cuttimegt1nsegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
+	cuttimegt1nsegus *= (egusRecoPt[idx]>=10);
+	cuttimegt1nsegus *= (egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]);
+	cuttimegt1nsegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
+	cuttimegt1nsegus *= egushltEcalSeedClusterTime[idx]>1;
+	if(cuttimegt1nsegus) cuttimegt1nsusidx.push_back(idx);
+	
+	/*
       	cut3egus = true;
 	cut3egus *= (TMath::Abs(egusRecoEta[idx])<2.5);
 	cut3egus *= (egusRecoPt[idx]>=10);
@@ -650,14 +684,6 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	cuttimedelaysminegus *= (egushltEgammaClusterShape_smin[idx]<0.12);
 	if(cuttimedelaysminegus) cuttimedelaysminusidx.push_back(idx);
 
-      	cuttimegt1nsonlyegus = true;
-	cuttimegt1nsonlyegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
-	cuttimegt1nsonlyegus *= (egusRecoPt[idx]>=10);
-	cuttimegt1nsonlyegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]:egushltEgammaHoverE[idx]<0.2*egushltEgammaSuperClusterEnergy[idx]);
-	cuttimegt1nsonlyegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
-	cuttimegt1nsonlyegus *= (egushltEcalSeedClusterTime[idx]>1);
-	if(cuttimegt1nsonlyegus) cuttimegt1nsonlyusidx.push_back(idx);
-
       	cutsminlt0p16onlyegus = true;
 	cutsminlt0p16onlyegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
 	cutsminlt0p16onlyegus *= (egusRecoPt[idx]>=10);
@@ -676,7 +702,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       //cut1zoppoidegusidx = cut1usidx;
 
       //fillhistinevent("nosel", noselegidx);
-      //fillhistineventunseeded("noselus", noselegusidx);
+      fillhistineventunseeded("noselus", noselegusidx);
       //if(basicselegidx.size()>=1) fillhistinevent("basicsel", basicselegidx);
       if(basicselegusidx.size()>=1) fillhistineventunseeded("basicselus", basicselegusidx);
       //fillhistinevent("selelevetoid", selelevetoidegidx);
@@ -721,8 +747,13 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	//fillhistinevent("dieg33caloidlid", dieg33caloidlidegidx);
 	fillhistineventunseeded("dieg33caloidlidus", dieg33caloidlidegusidx);
       }
-      /*
+      
       if(cut1idx.size()>=1 && cut1usidx.size()>=2) fillhistineventunseeded("cut1us", cut1usidx);
+      if(cut2idx.size()>=1 && cut2usidx.size()>=2) fillhistineventunseeded("cut21l1s2us", cut2usidx);
+      if(cut2usidx.size()>=1) fillhistineventunseeded("cut2us", cut2usidx);
+      if(cuttimegt1nsidx.size()>=1 && cuttimegt1nsusidx.size()>=2) fillhistineventunseeded("cuttimegt1ns1l1s2us", cuttimegt1nsusidx);
+      if(cuttimegt1nsusidx.size()>=1) fillhistineventunseeded("cuttimegt1nsus", cuttimegt1nsusidx);
+      /*
       if(cut1idx.size()>=1 && cut1usidx.size()>=2) {
 	TLorentzVector elelead, elesublead;
 	elelead.SetPtEtaPhiM(egusRecoPt[cut1usidx[0]],egusRecoEta[cut1usidx[0]],egusRecoPhi[cut1usidx[0]],0.0005);
@@ -737,11 +768,9 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       else {
 	fillhistineventunseeded("cut1zoppoidus", cut1zoppoidegusidx);
       }
-      if(cut2usidx.size()>=2) fillhistineventunseeded("cut2us", cut2usidx);
       if(cut3usidx.size()>=2) fillhistineventunseeded("cut3us", cut3usidx);
       if(cuttimedelayonlyusidx.size()>=2) fillhistineventunseeded("cuttimedelayonlyus", cuttimedelayonlyusidx);
       if(cuttimedelaysminusidx.size()>=2) fillhistineventunseeded("cuttimedelaysminus", cuttimedelaysminusidx);
-      if(cuttimegt1nsonlyusidx.size()>=2) fillhistineventunseeded("cuttimegt1nsonlyus", cuttimegt1nsonlyusidx);
       if(cutsminlt0p16onlyusidx.size()>=2) fillhistineventunseeded("cutsminlt0p16onlyus", cutsminlt0p16onlyusidx);
       */
     } // End of condition requiring atleast one egReco object
@@ -804,26 +833,27 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10etabin14_16_24d0lt1cmAnoselus", genptgt10etabin14_16_24d0lt1cmegidx, noselegusidx);
     */
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10Abasicselus", genptgt10egidx, basicselegusidx);
+    if(isMC && cut1usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcut1us", genbasicptgt10selbaregidx, cut1usidx);
+    if(isMC && cut1usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcut1us", genbasicptgt10selecegidx, cut1usidx);
+    if(isMC && genptgt10egidx.size()>=1 && cut1idx.size()>=1 && cut1usidx.size()>=2 ) fillhistineventgenmchunseeded("genptgt10Acut1us", genptgt10egidx, cut1usidx);
+    if(isMC && cut2usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcut2us", genbasicptgt10selbaregidx, cut2usidx);
+    if(isMC && cut2usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcut2us", genbasicptgt10selecegidx, cut2usidx);
+    if(isMC && genptgt10egidx.size()>=1 && cut2idx.size()>=1 && cut2usidx.size()>=2 ) fillhistineventgenmchunseeded("genptgt10Acut2us", genptgt10egidx, cut2usidx);
     /*
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicselptgt15Abasicselus", genbasicselptgt15egidx, basicselegusidx);
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAbasicselus", genbasicptgt10selbaregidx, basicselegusidx);
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAbasicselus", genbasicptgt10selecegidx, basicselegusidx);
     if(isMC && dieg33caloidlidegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAdieg33caloidlus", genbasicptgt10selbaregidx, dieg33caloidlidegusidx);
     if(isMC && dieg33caloidlidegusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAdieg33caloidlus", genbasicptgt10selecegidx, dieg33caloidlidegusidx);
-    if(isMC && genptgt10egidx.size()>=1 && cut1idx.size()>=1 && cut1usidx.size()>=2 ) fillhistineventgenmchunseeded("genptgt10Acut1us", genptgt10egidx, cut1usidx);
-    if(isMC && cut1usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcut1us", genbasicptgt10selbaregidx, cut1usidx);
-    if(isMC && cut1usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcut1us", genbasicptgt10selecegidx, cut1usidx);
-    if(isMC && cut2usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcut2us", genbasicptgt10selbaregidx, cut2usidx);
-    if(isMC && cut2usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcut2us", genbasicptgt10selecegidx, cut2usidx);
     if(isMC && cut3usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcut3us", genbasicptgt10selbaregidx, cut3usidx);
     if(isMC && cut3usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcut3us", genbasicptgt10selecegidx, cut3usidx);
     if(isMC && cuttimedelayonlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcuttimedelayonlyus", genbasicptgt10selbaregidx, cuttimedelayonlyusidx);
     if(isMC && cuttimedelayonlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcuttimedelayonlyus", genbasicptgt10selecegidx, cuttimedelayonlyusidx);
     if(isMC && cuttimedelaysminusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcuttimedelaysminus", genbasicptgt10selbaregidx, cuttimedelaysminusidx);
     if(isMC && cuttimedelaysminusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcuttimedelaysminus", genbasicptgt10selecegidx, cuttimedelaysminusidx);
-    if(isMC && cuttimegt1nsonlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcuttimegt1nsonlyus", genbasicptgt10selbaregidx, cuttimegt1nsonlyusidx);
     if(isMC && cutsminlt0p16onlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcutsminlt0p16onlyus", genbasicptgt10selbaregidx, cutsminlt0p16onlyusidx);
     */
+
     // Clear all the vectors  
     genelpos.clear();
     gennoselegidx.clear();
@@ -862,16 +892,18 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     */
     dieg33caloidlidegidx.clear();
     dieg33caloidlidegusidx.clear();
-    /*
     cut1idx.clear();
     cut1usidx.clear();
+    cut2idx.clear();
+    cut2usidx.clear();
+    cuttimegt1nsidx.clear();
+    cuttimegt1nsusidx.clear();
+    /*
     cut1zwindidegusidx.clear();
     cut1zoppoidegusidx.clear();
-    cut2usidx.clear();
     cut3usidx.clear();
     cuttimedelayonlyusidx.clear();
     cuttimedelaysminusidx.clear();
-    cuttimegt1nsonlyusidx.clear();
     cutsminlt0p16onlyusidx.clear();
     */
   } // End of loop on events
@@ -1076,6 +1108,8 @@ void data_robustanalyzer::fillhistinevent(TString selection, vector<int> egidx) 
   TH1F* subleadegpt = (TH1F*) outfile->Get(selection+"recoeg_subleadegpt");
   TH1F* subleadegeta = (TH1F*) outfile->Get(selection+"recoeg_subleadegeta");
   TH1F* subleadegphi = (TH1F*) outfile->Get(selection+"recoeg_subleadegphi");
+  TH1F* maxegseedclustime = (TH1F*) outfile->Get(selection+"recoeg_maxegseedclustime");
+  TH1F* minegsmin = (TH1F*) outfile->Get(selection+"recoeg_minegsmin");
 
   // Get barrel variables - lead pT e/gamma
   TH1F* recoeb_leadegclustershape = (TH1F*) outfile->Get(selection+"recoeb_leadegclustershape");
@@ -1181,6 +1215,20 @@ void data_robustanalyzer::fillhistinevent(TString selection, vector<int> egidx) 
   TH1F* recoee_leadsubleadM = (TH1F*) outfile->Get(selection+"recoee_leadsubleadM");
   TH1F* recoee_leadsubleaddR = (TH1F*) outfile->Get(selection+"recoee_leadsubleaddR");
 
+  int maxseedtimepos = -1;
+  int minsminpos = -1;
+  for(int idx=0; idx<egidx.size(); idx++) {
+    if(idx==0) {
+      maxseedtimepos = 0;
+      minsminpos = 0;
+      continue;
+    }
+    if(eghltEcalSeedClusterTime[egidx[idx]]>eghltEcalSeedClusterTime[maxseedtimepos]) {
+      maxseedtimepos = egidx[idx];
+    }
+  }
+  if(maxseedtimepos!=-1) maxegseedclustime->Fill(eghltEcalSeedClusterTime[maxseedtimepos]);
+  
   if(egidx.size()>0) {
     egmult->Fill(egidx.size());
     leadegpt->Fill(egRecoPt[egidx[0]]);
@@ -1399,12 +1447,24 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
   TH1F* subleadegpt = (TH1F*) outfile->Get(selection+"recoegus_subleadegpt");
   TH1F* subleadegeta = (TH1F*) outfile->Get(selection+"recoegus_subleadegeta");
   TH1F* subleadegphi = (TH1F*) outfile->Get(selection+"recoegus_subleadegphi");
+  TH1F* maxegseedclustime = (TH1F*) outfile->Get(selection+"recoegus_maxegseedclustime");
+  TH1F* minegsmin = (TH1F*) outfile->Get(selection+"recoegus_minegsmin");
+  TH1F* max2egseedclustime = (TH1F*) outfile->Get(selection+"recoegus_max2egseedclustime");
+  TH1F* min2egsmin = (TH1F*) outfile->Get(selection+"recoegus_min2egsmin");
   
   // Both lead and sub-lead electrons
   TH1F* recoeb_egseedclustime = (TH1F*) outfile->Get(selection+"recoebus_egseedclustime");  
+  TH1F* recoeb_egsmin = (TH1F*) outfile->Get(selection+"recoebus_egsmin");  
   TH1F* recoeb_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoebus_egpixelmchvar_s2");
+  TH1F* recoeb_maxegseedclustime = (TH1F*) outfile->Get(selection+"recoebus_maxegseedclustime");
+  TH1F* recoeb_max2egseedclustime = (TH1F*) outfile->Get(selection+"recoebus_max2egseedclustime");
+  TH1F* recoeb_min2egsmin = (TH1F*) outfile->Get(selection+"recoebus_min2egsmin");
   TH1F* recoee_egseedclustime = (TH1F*) outfile->Get(selection+"recoeeus_egseedclustime");  
+  TH1F* recoee_egsmin = (TH1F*) outfile->Get(selection+"recoeeus_egsmin");  
   TH1F* recoee_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"recoeeus_egpixelmchvar_s2");
+  TH1F* recoee_maxegseedclustime = (TH1F*) outfile->Get(selection+"recoeeus_maxegseedclustime");
+  TH1F* recoee_max2egseedclustime = (TH1F*) outfile->Get(selection+"recoeeus_max2egseedclustime");
+  TH1F* recoee_min2egsmin = (TH1F*) outfile->Get(selection+"recoeeus_min2egsmin");
 
   // Get barrel variables - lead pt unseeded e/gamma
   TH1F* recoeb_leadegclustershape = (TH1F*) outfile->Get(selection+"recoebus_leadegclustershape");
@@ -1517,6 +1577,70 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
   // invariant mass - end-cap
   TH1F* recoee_leadsubleadM = (TH1F*) outfile->Get(selection+"recoeeus_leadsubleadM");
   TH1F* recoee_leadsubleaddR = (TH1F*) outfile->Get(selection+"recoeeus_leadsubleaddR");
+
+  int max2seedtimedelaypos[2] = {-1,-1}; // Ordered max, max2
+  int min2sminpos[2] = {-1,-1}; // Ordered min, min2
+
+  for(int idx=0; idx<egidx.size(); idx++) { // Verified that algorithm works as desired
+    if(idx==0){ // Default initialization
+      max2seedtimedelaypos[0] = egidx[0];
+      min2sminpos[0] = egidx[0];
+      continue;
+    }
+
+    if(egushltEcalSeedClusterTime[egidx[idx]]>egushltEcalSeedClusterTime[max2seedtimedelaypos[0]]) {
+      max2seedtimedelaypos[1] = max2seedtimedelaypos[0];
+      max2seedtimedelaypos[0] = egidx[idx];
+    }
+    else if(egushltEcalSeedClusterTime[egidx[idx]]==egushltEcalSeedClusterTime[max2seedtimedelaypos[0]]) {
+      max2seedtimedelaypos[1] = egidx[idx];
+    }
+    else {
+      if(max2seedtimedelaypos[1]==-1) {
+	max2seedtimedelaypos[1] = egidx[idx];
+      }
+      else {
+	if(egushltEcalSeedClusterTime[egidx[idx]]>egushltEcalSeedClusterTime[max2seedtimedelaypos[1]]) {
+	  max2seedtimedelaypos[1] = egidx[idx];
+	}
+      }
+    }
+
+    if(egushltEgammaClusterShape_smin[egidx[idx]]<egushltEgammaClusterShape_smin[min2sminpos[0]]) {
+      min2sminpos[1] = min2sminpos[0];
+      min2sminpos[0] = egidx[idx];
+    }
+    else if(egushltEgammaClusterShape_smin[egidx[idx]]==egushltEgammaClusterShape_smin[min2sminpos[0]]) {
+      min2sminpos[1] = egidx[idx];
+    }
+    else {
+      if(min2sminpos[1]==-1) {
+	  min2sminpos[1] = egidx[idx];
+      }
+      else {
+	if(egushltEgammaClusterShape_smin[egidx[idx]]<egushltEgammaClusterShape_smin[min2sminpos[1]]) {
+	  min2sminpos[1] = egidx[idx];
+	}
+      }
+    }
+  }  // End of loop on all eg candidates
+
+  // Fill the max2 timedelay and the min2 smin
+  if(max2seedtimedelaypos[0]!=-1) {
+    maxegseedclustime->Fill(egushltEcalSeedClusterTime[max2seedtimedelaypos[0]]);
+    if(TMath::Abs(egusRecoEta[max2seedtimedelaypos[0]])<=1.479) recoeb_maxegseedclustime->Fill(egushltEcalSeedClusterTime[max2seedtimedelaypos[0]]);
+    else recoee_maxegseedclustime->Fill(egushltEcalSeedClusterTime[max2seedtimedelaypos[0]]);
+  }
+  if(max2seedtimedelaypos[1]!=-1) {
+    max2egseedclustime->Fill(egushltEcalSeedClusterTime[max2seedtimedelaypos[1]]);
+    if(TMath::Abs(egusRecoEta[max2seedtimedelaypos[1]])<=1.479) recoeb_max2egseedclustime->Fill(egushltEcalSeedClusterTime[max2seedtimedelaypos[1]]);
+    else recoee_max2egseedclustime->Fill(egushltEcalSeedClusterTime[max2seedtimedelaypos[1]]);
+  }
+  if(min2sminpos[1]!=-1) {
+    min2egsmin->Fill(egushltEgammaClusterShape_smin[min2sminpos[1]]);
+    if(TMath::Abs(egusRecoEta[min2sminpos[1]])<=1.479) recoeb_min2egsmin->Fill(egushltEgammaClusterShape_smin[min2sminpos[1]]);
+    else recoee_min2egsmin->Fill(egushltEgammaClusterShape_smin[min2sminpos[1]]);
+  }
   
   if(egidx.size()>0) {
     egmult->Fill(egidx.size());
@@ -1530,6 +1654,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
       recoeb_leadegin5x5clusshape->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5[egidx[0]]);
       recoeb_leadegin5x5noiseclnd->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[egidx[0]]);
       recoeb_leadegsmin->Fill(egushltEgammaClusterShape_smin[egidx[0]]);
+      recoeb_egsmin->Fill(egushltEgammaClusterShape_smin[egidx[0]]);
       recoeb_leadegsmaj->Fill(egushltEgammaClusterShape_smaj[egidx[0]]);
       //recoeb_leadegscenergy->Fill(egushltEgammaSuperClusterEnergy[egidx[0]]);
       recoeb_leadeghovere->Fill(egushltEgammaHoverE[egidx[0]]);
@@ -1579,6 +1704,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
       recoee_leadegin5x5clusshape->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5[egidx[0]]);
       recoee_leadegin5x5noiseclnd->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[egidx[0]]);
       recoee_leadegsmin->Fill(egushltEgammaClusterShape_smin[egidx[0]]);
+      recoee_egsmin->Fill(egushltEgammaClusterShape_smin[egidx[0]]);
       recoee_leadegsmaj->Fill(egushltEgammaClusterShape_smaj[egidx[0]]);
       //recoee_leadegscenergy->Fill(egushltEgammaSuperClusterEnergy[egidx[0]]);
       recoee_leadeghovere->Fill(egushltEgammaHoverE[egidx[0]]);
@@ -1640,6 +1766,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
       recoeb_subleadegin5x5clusshape->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5[egidx[1]]);
       recoeb_subleadegin5x5noiseclnd->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[egidx[1]]);
       recoeb_subleadegsmin->Fill(egushltEgammaClusterShape_smin[egidx[1]]);
+      recoeb_egsmin->Fill(egushltEgammaClusterShape_smin[egidx[1]]);
       recoeb_subleadegsmaj->Fill(egushltEgammaClusterShape_smaj[egidx[1]]);
       recoeb_subleadegscenergy->Fill(egushltEgammaSuperClusterEnergy[egidx[1]]);
       recoeb_subleadeghovere->Fill(egushltEgammaHoverE[egidx[1]]);
@@ -1688,6 +1815,7 @@ void data_robustanalyzer::fillhistineventunseeded(TString selection, vector<int>
       recoee_subleadegin5x5clusshape->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5[egidx[1]]);
       recoee_subleadegin5x5noiseclnd->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[egidx[1]]);
       recoee_subleadegsmin->Fill(egushltEgammaClusterShape_smin[egidx[1]]);
+      recoee_egsmin->Fill(egushltEgammaClusterShape_smin[egidx[1]]);
       recoee_subleadegsmaj->Fill(egushltEgammaClusterShape_smaj[egidx[1]]);
       recoee_subleadegscenergy->Fill(egushltEgammaSuperClusterEnergy[egidx[1]]);
       recoee_subleadeghovere->Fill(egushltEgammaHoverE[egidx[1]]);
@@ -1799,6 +1927,14 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
   TH1F* subleadegeta = (TH1F*) outfile->Get(selection+"genmchrecoegus_subleadegeta");
   TH1F* subleadegphi = (TH1F*) outfile->Get(selection+"genmchrecoegus_subleadegphi");
 
+  TH1F* max2egseedclustime = (TH1F*) outfile->Get(selection+"genmchrecoegus_max2egseedclustime");
+  TH1F* min2egsmin = (TH1F*) outfile->Get(selection+"genmchrecoegus_min2egsmin");
+
+  // Variables with gen matched trigger eg and gen electron
+  TH2F* genlog10d0_egtimedelay = (TH2F*)outfile->Get(selection+"genmch_genlog10d0_egtimedelay");
+  TH2F* eb_genlog10d0_egtimedelay = (TH2F*)outfile->Get(selection+"genmch_EB_genlog10d0_egtimedelay");
+  TH2F* ee_genlog10d0_egtimedelay = (TH2F*)outfile->Get(selection+"genmch_EE_genlog10d0_egtimedelay");
+
   // Both lead and sub-lead electrons
   TH1F* recoeb_egseedclustime = (TH1F*) outfile->Get(selection+"genmchrecoebus_egseedclustime");  
   TH1F* recoeb_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoebus_egpixelmchvar_s2");
@@ -1806,6 +1942,12 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
   TH1F* recoee_egseedclustime = (TH1F*) outfile->Get(selection+"genmchrecoeeus_egseedclustime");  
   TH1F* recoee_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoeeus_egpixelmchvar_s2");
   TH1F* recoee_pxlmch22_egpixelmchvar_s2 = (TH1F*) outfile->Get(selection+"genmchrecoeeus_pxlmch22_egpixelmchvar_s2");
+  TH1F* recoeb_max2egseedclustime = (TH1F*) outfile->Get(selection+"genmchrecoebus_max2egseedclustime");
+  TH1F* recoeb_min2egsmin = (TH1F*) outfile->Get(selection+"genmchrecoebus_min2egsmin");
+  TH1F* recoee_max2egseedclustime = (TH1F*) outfile->Get(selection+"genmchrecoeeus_max2egseedclustime");
+  TH1F* recoee_min2egsmin = (TH1F*) outfile->Get(selection+"genmchrecoeeus_min2egsmin");
+  TH1F* recoeb_egsmin = (TH1F*) outfile->Get(selection+"genmchrecoebus_egsmin");  
+  TH1F* recoee_egsmin = (TH1F*) outfile->Get(selection+"genmchrecoeeus_egsmin");  
 
   // Get barrel variables - lead pt unseeded e/gamma
   TH1F* recoeb_leadegclustershape = (TH1F*) outfile->Get(selection+"genmchrecoebus_leadegclustershape");
@@ -2104,6 +2246,17 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
     gensubleadlog10lxy->Fill(TMath::Log10(TMath::Abs(genLepLxy[gen2])));    
   }
   genegmult->Fill(mchcnt);
+
+  if(egus1!=-1) {
+    genlog10d0_egtimedelay->Fill(TMath::Log10(TMath::Abs(genLepDxy[gen1])), egushltEcalSeedClusterTime[egus1]);
+    if(TMath::Abs(egusRecoEta[egus1])<=1.479) eb_genlog10d0_egtimedelay->Fill(TMath::Log10(TMath::Abs(genLepDxy[gen1])), egushltEcalSeedClusterTime[egus1]);
+    else ee_genlog10d0_egtimedelay->Fill(TMath::Log10(TMath::Abs(genLepDxy[gen1])), egushltEcalSeedClusterTime[egus1]);
+  }
+  if(egus2!=-1) {
+    genlog10d0_egtimedelay->Fill(TMath::Log10(TMath::Abs(genLepDxy[gen2])), egushltEcalSeedClusterTime[egus2]);
+    if(TMath::Abs(egusRecoEta[egus2])<=1.479) eb_genlog10d0_egtimedelay->Fill(TMath::Log10(TMath::Abs(genLepDxy[gen2])), egushltEcalSeedClusterTime[egus2]);
+    else ee_genlog10d0_egtimedelay->Fill(TMath::Log10(TMath::Abs(genLepDxy[gen2])), egushltEcalSeedClusterTime[egus2]);
+  }
   
   // Fill trigger egamma objects
   if(egus1!=-1 || egus2!=-1) {
@@ -2129,6 +2282,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
       recoeb_leadegin5x5clusshape->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5[leadidx]);
       recoeb_leadegin5x5noiseclnd->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[leadidx]);
       recoeb_leadegsmin->Fill(egushltEgammaClusterShape_smin[leadidx]);
+      recoeb_egsmin->Fill(egushltEgammaClusterShape_smin[leadidx]);
       recoeb_leadegsmaj->Fill(egushltEgammaClusterShape_smaj[leadidx]);
       //recoeb_leadegscenergy->Fill(egushltEgammaSuperClusterEnergy[leadidx]);
       recoeb_leadeghovere->Fill(egushltEgammaHoverE[leadidx]);
@@ -2178,6 +2332,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
       recoee_leadegin5x5clusshape->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5[leadidx]);
       recoee_leadegin5x5noiseclnd->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[leadidx]);
       recoee_leadegsmin->Fill(egushltEgammaClusterShape_smin[leadidx]);
+      recoee_egsmin->Fill(egushltEgammaClusterShape_smin[leadidx]);
       recoee_leadegsmaj->Fill(egushltEgammaClusterShape_smaj[leadidx]);
       //recoee_leadegscenergy->Fill(egushltEgammaSuperClusterEnergy[leadidx]);
       recoee_leadeghovere->Fill(egushltEgammaHoverE[leadidx]);
@@ -2237,6 +2392,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	recoeb_subleadegin5x5clusshape->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5[subleadidx]);
 	recoeb_subleadegin5x5noiseclnd->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[subleadidx]);
 	recoeb_subleadegsmin->Fill(egushltEgammaClusterShape_smin[subleadidx]);
+	recoeb_egsmin->Fill(egushltEgammaClusterShape_smin[subleadidx]);
 	recoeb_subleadegsmaj->Fill(egushltEgammaClusterShape_smaj[subleadidx]);
 	recoeb_subleadegscenergy->Fill(egushltEgammaSuperClusterEnergy[subleadidx]);
 	recoeb_subleadeghovere->Fill(egushltEgammaHoverE[subleadidx]);
@@ -2286,6 +2442,7 @@ void data_robustanalyzer::fillhistineventgenmchunseeded(TString selection, vecto
 	recoee_subleadegin5x5clusshape->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5[subleadidx]);
 	recoee_subleadegin5x5noiseclnd->Fill(egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[subleadidx]);
 	recoee_subleadegsmin->Fill(egushltEgammaClusterShape_smin[subleadidx]);
+	recoee_egsmin->Fill(egushltEgammaClusterShape_smin[subleadidx]);
 	recoee_subleadegsmaj->Fill(egushltEgammaClusterShape_smaj[subleadidx]);
 	recoee_subleadegscenergy->Fill(egushltEgammaSuperClusterEnergy[subleadidx]);
 	recoee_subleadeghovere->Fill(egushltEgammaHoverE[subleadidx]);
@@ -2402,6 +2559,8 @@ void data_robustanalyzer::addhist(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoeg_subleadegpt","reco e/#gamma p_{T} / GeV",550,-50,500));
   all1dhists.push_back(new TH1F(selection+"recoeg_subleadegeta","reco e/#gamma #eta",100,-5,5));
   all1dhists.push_back(new TH1F(selection+"recoeg_subleadegphi","reco e/#gamma #phi",66,-3.3,3.3));
+  all1dhists.push_back(new TH1F(selection+"recoeg_maxegseedclustime","e/#gamma_{seed} time / ns",20000,-10,10));
+  all1dhists.push_back(new TH1F(selection+"recoeg_minegsmin","e/#gamma smin",1000,0,1));
 
   // barrel variables - lead pT e/gamma
   all1dhists.push_back(new TH1F(selection+"recoeb_leadegclustershape","barrel e/#gamma clus.shape",1000,0,0.1));
@@ -2518,12 +2677,24 @@ void data_robustanalyzer::addhistunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recoegus_subleadegpt","reco e/#gamma p_{T} / GeV",550,-50,500));
   all1dhists.push_back(new TH1F(selection+"recoegus_subleadegeta","reco e/#gamma #eta",100,-5,5));
   all1dhists.push_back(new TH1F(selection+"recoegus_subleadegphi","reco e/#gamma #phi",66,-3.3,3.3));
+  all1dhists.push_back(new TH1F(selection+"recoegus_maxegseedclustime","e/#gamma_{seed} time / ns",20000,-10,10));
+  all1dhists.push_back(new TH1F(selection+"recoegus_minegsmin","e/#gamma smin",1000,0,1));
+  all1dhists.push_back(new TH1F(selection+"recoegus_max2egseedclustime","e/#gamma_{seed} time / ns",20000,-10,10));
+  all1dhists.push_back(new TH1F(selection+"recoegus_min2egsmin","e/#gamma smin",1000,0,1));
 
   // Both lead and sub lead electrons
   all1dhists.push_back(new TH1F(selection+"recoebus_egseedclustime","barrel e/#gamma_{seed} time / ns",20000,-10,10));
   all1dhists.push_back(new TH1F(selection+"recoeeus_egseedclustime","end-cap e/#gamma_{seed} time / ns",20000,-10,10));
+  all1dhists.push_back(new TH1F(selection+"recoebus_egsmin","barrel e/#gamma smin",1000,0,1));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_egsmin","end-cap e/#gamma smin",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"recoebus_egpixelmchvar_s2","barrel e/#gamma pixelmachvar",1000,-50,950));
   all1dhists.push_back(new TH1F(selection+"recoeeus_egpixelmchvar_s2","end-cap e/#gamma pixelmachvar",1000,-50,950));
+  all1dhists.push_back(new TH1F(selection+"recoebus_maxegseedclustime","barrel e/#gamma_{seed} time / ns",20000,-10,10));
+  all1dhists.push_back(new TH1F(selection+"recoebus_max2egseedclustime","barrel e/#gamma_{seed} time / ns",20000,-10,10));
+  all1dhists.push_back(new TH1F(selection+"recoebus_min2egsmin","barrel e/#gamma smin",1000,0,1));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_maxegseedclustime","end-cap e/#gamma_{seed} time / ns",20000,-10,10));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_max2egseedclustime","end-cap e/#gamma_{seed} time / ns",20000,-10,10));
+  all1dhists.push_back(new TH1F(selection+"recoeeus_min2egsmin","end-cap e/#gamma smin",1000,0,1));
 
   // barrel variables - lead pT unseeded e/gamma
   all1dhists.push_back(new TH1F(selection+"recoebus_leadegclustershape","barrel e/#gamma clus.shape",1000,0,0.1));
@@ -2682,6 +2853,11 @@ void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recomchgenel_subleadlxy","gen e/#gamma_{2} l_{xy} / cm",20000,-10,190));
   all1dhists.push_back(new TH1F(selection+"recomchgenel_subleadlog10lxy","gen e/#gamma_{2} log_{10}l_{xy} / log_{10}cm",600,-1,5));
 
+  // Variables with gen matched trigger eg and gen electron
+  all2dhists.push_back(new TH2F(selection+"genmch_genlog10d0_egtimedelay","genlog10d0_egtimedelay",1000,-5,5,200,-10,10));
+  all2dhists.push_back(new TH2F(selection+"genmch_EB_genlog10d0_egtimedelay","EB_genlog10d0_egtimedelay",1000,-5,5,200,-10,10));
+  all2dhists.push_back(new TH2F(selection+"genmch_EE_genlog10d0_egtimedelay","EE_genlog10d0_egtimedelay",1000,-5,5,200,-10,10));
+  
   // Variables for gen matched trigger electron
   all1dhists.push_back(new TH1F(selection+"genmchrecoegus_leadegpt","gen matched reco e/#gamma p_{T} / GeV",550,-50,500));
   all1dhists.push_back(new TH1F(selection+"genmchrecoegus_leadegeta","gen matched reco e/#gamma #eta",100,-5,5));
@@ -2691,11 +2867,20 @@ void data_robustanalyzer::addhistgenmchunseeded(TString selection) {
   all1dhists.push_back(new TH1F(selection+"genmchrecoegus_subleadegeta","gen matched reco e/#gamma #eta",100,-5,5));
   all1dhists.push_back(new TH1F(selection+"genmchrecoegus_subleadegphi","gen matched reco e/#gamma #phi",66,-3.3,3.3));
 
+  all1dhists.push_back(new TH1F(selection+"genmchrecoegus_max2egseedclustime","e/#gamma_{seed} time / ns",20000,-10,10));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoegus_min2egsmin","e/#gamma smin",1000,0,1));
+
   // Both lead and sub lead electrons
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_egseedclustime","gen matched barrel e/#gamma_{seed} time / ns",20000,-10,10));
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_egseedclustime","gen matched end-cap e/#gamma_{seed} time / ns",20000,-10,10));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_egsmin","gen matched barrel e/#gamma smin",1000,0,1));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_egsmin","gen matched end-cap e/#gamma smin",1000,0,1));
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_egpixelmchvar_s2","gen matched barrel e/#gamma pixelmachvar",1000,-50,950));
   all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_egpixelmchvar_s2","gen matched end-cap e/#gamma pixelmachvar",1000,-50,950));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_max2egseedclustime","gen matched barrel e/#gamma_{seed} time / ns",20000,-10,10));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoebus_min2egsmin","gen matched barrel e/#gamma smin",1000,0,1));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_max2egseedclustime","gen matched end-cap e/#gamma_{seed} time / ns",20000,-10,10));
+  all1dhists.push_back(new TH1F(selection+"genmchrecoeeus_min2egsmin","gen matched end-cap e/#gamma smin",1000,0,1));
 
   // barrel variables - lead pT unseeded e/gamma
   all1dhists.push_back(new TH1F(selection+"genmchrecoebus_leadegclustershape","gen matched barrel e/#gamma clus.shape",1000,0,0.1));

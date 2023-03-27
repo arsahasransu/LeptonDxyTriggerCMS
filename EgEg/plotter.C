@@ -160,7 +160,7 @@ int makeratehist(std::vector<TString> cutname, TString var, int nbins=0, double 
   allhists.push_back(sig1mhist);
   allhists.push_back(sig3mhist);
 
-  double axisscale = 0.0;
+  double axisscale = 0.0, axisscale2, axisscale3, axisscale4;
   for(unsigned int histctr=0; histctr<allhists.size(); histctr++) {
 
     allratehists.push_back((TH1F*) allhists[histctr]->Clone());
@@ -176,15 +176,26 @@ int makeratehist(std::vector<TString> cutname, TString var, int nbins=0, double 
 
     allratehists[histctr]->SetLineWidth(2);
     allratehists[histctr]->SetLineColor(coloropt[histctr]);
-    if(histctr==1) {
+    /*if(histctr==1) {
       axisscale = allratehists[0]->GetBinContent(0)*0.8/allratehists[1]->GetBinContent(0);
       allratehists[histctr]->Scale(axisscale);
     }
     if(histctr>1) {
       allratehists[histctr]->Scale(axisscale);
-    }
+      }*/
   }
-
+  axisscale = allratehists[0]->GetBinContent(0)*0.8/allratehists[1]->GetBinContent(0);
+  axisscale2 = allratehists[0]->GetBinContent(0)*0.8/allratehists[2]->GetBinContent(0);
+  axisscale = axisscale2<axisscale?axisscale2:axisscale;
+  axisscale3 = allratehists[0]->GetBinContent(0)*0.8/allratehists[3]->GetBinContent(0);
+  axisscale = axisscale3<axisscale?axisscale3:axisscale;
+  axisscale4 = allratehists[0]->GetBinContent(0)*0.8/allratehists[4]->GetBinContent(0);
+  axisscale = axisscale4<axisscale?axisscale4:axisscale;
+  cout<<axisscale<<"\t"<<axisscale2<<"\t"<<axisscale3<<"\t"<<axisscale4<<endl;
+  allratehists[1]->Scale(axisscale);
+  allratehists[2]->Scale(axisscale);
+  allratehists[3]->Scale(axisscale);
+  allratehists[4]->Scale(axisscale);
   cout<<allratehists[1]->GetMaximum()<<endl;
   TCanvas* c1;
   c1 = new TCanvas();
@@ -193,19 +204,25 @@ int makeratehist(std::vector<TString> cutname, TString var, int nbins=0, double 
   TPad* pad = (TPad*) c1->FindObject("pad3");
   pad->cd();
   TGaxis *axis;
-  axis = new TGaxis(*(rebin+nbins),yrange[0],*(rebin+nbins),yrange[1],yrange[0]/axisscale,yrange[1]/axisscale,510,"-L");
+  if(!logY) {
+    axis = new TGaxis(*(rebin+nbins),yrange[0],*(rebin+nbins),yrange[1],yrange[0]/axisscale,yrange[1]/axisscale,510,"-L");
+    axis->SetLabelOffset(-0.035);
+  }
+  else {
+    axis = new TGaxis(*(rebin+nbins),yrange[0],*(rebin+nbins),yrange[1],yrange[0]/axisscale,yrange[1]/axisscale,510,"-LG");
+    axis->SetLabelOffset(-0.035);
+  }
   axis->SetLineColor(coloropt[1]);
   axis->SetLineWidth(4);
   axis->SetLabelColor(coloropt[1]);
   axis->SetLabelFont(42);
   axis->SetLabelSize(0.06);
-  axis->SetLabelOffset(-0.035);
   axis->Draw();
 
   if(drawsignalline!=-1.0) {
     drawsignalline = allratehists[1]->GetMaximum();
     TLine *signalline = new TLine(*rebin,drawsignalline,*(rebin+nbins),drawsignalline);
-    signalline->SetLineWidth(2);
+    signalline->SetLineWidth(3);
     signalline->SetLineColor(coloropt[1]);
     signalline->SetLineStyle(9);
     signalline->Draw();
@@ -329,11 +346,12 @@ int plotter() {
   scale.push_back(1);
   
   legendEntries = legend;    
-  comparesamevariable(file, name, "subleadegpt", dieg33caloidlidusrecoegus_subleadegpt_nbinspt, &dieg33caloidlidusrecoegus_subleadegpt_binspt[0], true, false, false, (float []){3e-2,3}, (float []){0.525,0.62,0.775,0.97}, (float []){64,0.15}, true, "e/#gamma_{2} p_{T} [GeV]", "normalized events / GeV", true, "dieg33caloidlidusrecoegus_subleadegpt");
+  //comparesamevariable(file, name, "subleadegpt", dieg33caloidlidusrecoegus_subleadegpt_nbinspt, &dieg33caloidlidusrecoegus_subleadegpt_binspt[0], true, false, false, (float []){3e-2,3}, (float []){0.525,0.62,0.775,0.97}, (float []){64,0.15}, true, "e/#gamma_{2} p_{T} [GeV]", "normalized events / GeV", true, "dieg33caloidlidusrecoegus_subleadegpt");
   
-  makeratehist({"dieg33caloidlidusrecoegus","dieg33caloidlidusrecoegus","dieg33caloidlidusrecoegus","dieg33caloidlidusrecoegus","dieg33caloidlidusrecoegus"}, "subleadegpt", dieg33caloidlidusrecoegus_subleadegpt_nbinspt, &dieg33caloidlidusrecoegus_subleadegpt_binspt[0], false, false, (float []){0.48,0.65,0.68,0.975}, (float []){64,4.45}, (float []){0,11}, 0.875, "e/#gamma_{2} p_{T} [GeV]");
+  //makeratehist({"dieg33caloidlidusrecoegus","dieg33caloidlidusrecoegus","dieg33caloidlidusrecoegus","dieg33caloidlidusrecoegus","dieg33caloidlidusrecoegus"}, "subleadegpt", dieg33caloidlidusrecoegus_subleadegpt_nbinspt, &dieg33caloidlidusrecoegus_subleadegpt_binspt[0], false, false, (float []){0.48,0.65,0.68,0.975}, (float []){64,4.45}, (float []){0,11}, 0.875, "e/#gamma_{2} p_{T} [GeV]");
 
-  vector<double> cut1usrecoegus_subleadegpt_binspt{9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,33,36,40};
+  // RATE REDUCTION STUDY PLOTS
+  vector<double> cut1usrecoegus_subleadegpt_binspt{9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,33};
   int cut1usrecoegus_subleadegpt_nbinspt = cut1usrecoegus_subleadegpt_binspt.size()-1;
   seltext[0] = "#geq1 seeded, #geq2 unseeded e/#gamma";
   seltext[1] = "p_{T}>10 GeV, Calo ID";  
@@ -399,16 +417,190 @@ int plotter() {
   scale.push_back(1);
   
   legendEntries = legend;    
-  //comparesamevariable(file, name, "subleadegpt", cut1usrecoegus_subleadegpt_nbinspt, &cut1usrecoegus_subleadegpt_binspt[0], true, false, false, (float []){3e-4,3}, (float []){0.525,0.62,0.775,0.97}, (float []){64,0.15}, true, "e/#gamma_{2} p_{T} [GeV]", "normalized events / GeV", true, "genptgt10Acut1usgenmchrecoegus_subleadegpt");
+  //comparesamevariable(file, name, "subleadegpt", cut1usrecoegus_subleadegpt_nbinspt, &cut1usrecoegus_subleadegpt_binspt[0], true, false, false, (float []){3e-4,3}, (float []){0.525,0.62,0.775,0.97}, (float []){64,0.15}, true, "e/#gamma_{2} p_{T} [GeV]", "normalized events / GeV", true, "dieg10caloidlidusrecoegus_subleadegpt");
   
-  //makeratehist({"cut1usrecoegus","cut1usrecoegus","cut1usrecoegus","cut1usrecoegus","cut1usrecoegus"}, "subleadegpt", cut1usrecoegus_subleadegpt_nbinspt, &cut1usrecoegus_subleadegpt_binspt[0], false, false, (float []){0.48,0.675,0.68,0.975}, (float []){24,60}, (float []){0,150}, 0.875, "e/#gamma_{2} p_{T} [GeV]");
+  //makeratehist({"cut1usrecoegus","cut1usrecoegus","cut1usrecoegus","cut1usrecoegus","cut1usrecoegus"}, "subleadegpt", cut1usrecoegus_subleadegpt_nbinspt, &cut1usrecoegus_subleadegpt_binspt[0], false, false, (float []){0.48,0.65,0.68,0.975}, (float []){24,60}, (float []){0,150}, 0.875, "e/#gamma_{2} p_{T} [GeV]");
 
-  vector<double> genbasicptgt10selbarAnoselus_binsseedclustime{-1.4,-1.2,-1.0,-0.8,-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.8,3.0,3.2,3.4,3.6,3.8,4.0};
+  vector<double> genbasicptgt10selbarAnoselus_binsseedclustime{-1.4,-1.0,-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.4,1.8,2.4,3.2,4.0};
   int genbasicptgt10selbarAnoselus_nbinsseedclustime = genbasicptgt10selbarAnoselus_binsseedclustime.size()-1;
-  vector<double> genbasicptgt10selbarAnoselus_binsmin{0.0,0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.11,0.12,0.13,0.14,0.15,0.16,0.17,0.18,0.19,0.2,0.21,0.22,0.23,0.24,0.25,0.26,0.27,0.28,0.29,0.3,0.31,0.32,0.33,0.34,0.35,0.36,0.37,0.38,0.39,0.4,0.41,0.42,0.43,0.44,0.45,0.46,0.47,0.48,0.49,0.5,0.51,0.52,0.53,0.54,0.55,0.56,0.57,0.58,0.59,0.6};
+  vector<double> genbasicptgt10selbarAnoselus_binsmin{0.0,0.01,0.06,0.1,0.14,0.18,0.2,0.22,0.23,0.24,0.25,0.26,0.28,0.32,0.36,0.4,0.5,0.6,0.65};
   int genbasicptgt10selbarAnoselus_nbinsmin = genbasicptgt10selbarAnoselus_binsmin.size()-1;
-  seltext[0] = "gen. p_{T} > 10 GeV, |#eta|<1.479";
-  seltext[1] = "#geq1 unseeded e/#gamma";  
+  seltext[0] = "gen. p_{T} > 10 GeV, |#eta|<1.48";
+  seltext[1] = "#geq1 seeded e/#gamma, #geq2 unseeded e/#gamma, loose ECAL ID";  
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  histtype.clear();
+  markerstyle.clear();
+  markersize.clear();
+  legendmarkerstyle.clear();
+  scale.clear();
+
+  file.push_back(datafile);
+  name.push_back("cut2usrecoebus");
+  legend.push_back("2018 data, all e");
+  coloropt.push_back(kBlack);
+  histtype.push_back("p e1");
+  markerstyle.push_back(20);
+  markersize.push_back(2);
+  legendmarkerstyle.push_back("lep");
+  scale.push_back(1);
+  
+  file.push_back(datafile);
+  name.push_back("selelevetozwindidusrecoebus");
+  legend.push_back("2018 data, prompt e");
+  coloropt.push_back(kBlack);
+  histtype.push_back("p e1 same");
+  markerstyle.push_back(24);
+  markersize.push_back(2);
+  legendmarkerstyle.push_back("lep");
+  scale.push_back(1);
+  
+  file.push_back(dyfile);
+  name.push_back("selelevetozwindidusrecoebus");
+  legend.push_back("DY #rightarrow ee MC");
+  coloropt.push_back(4);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  file.push_back(sig3cmfile);
+  name.push_back("genptgt10Acut2usgenmchrecoebus");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 cm");
+  coloropt.push_back(kRed+3);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  file.push_back(sig30cmfile);
+  name.push_back("genptgt10Acut2usgenmchrecoebus");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 30 cm");
+  coloropt.push_back(kRed);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig1mfile);
+  name.push_back("genptgt10Acut2usgenmchrecoebus");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 1 m");
+  coloropt.push_back(kOrange+2);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig3mfile);
+  name.push_back("genptgt10Acut2usgenmchrecoebus");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 m");
+  coloropt.push_back(kOrange);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  legendEntries = legend;    
+  //comparesamevariable(file, name, "egseedclustime", genbasicptgt10selbarAnoselus_nbinsseedclustime, &genbasicptgt10selbarAnoselus_binsseedclustime[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){-1.1,0.4}, true, "e/#gamma ecal seed cluster time [ns]","normalized events / ns", true, "genbasicptgt10selAcut2us_EB_egseedclustime");
+  comparesamevariable(file, name, "egsmin", genbasicptgt10selbarAnoselus_nbinsmin, &genbasicptgt10selbarAnoselus_binsmin[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma smin","normalized events / bin", true, "genbasicptgt10selAcut2us_EB_smin");
+    
+  seltext[0] = "gen. p_{T} > 10 GeV, 1.48<|#eta|<2.5";
+  seltext[1] = "#geq1 seeded e/#gamma, #geq2 unseeded e/#gamma, loose ECAL ID";  
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  histtype.clear();
+  markerstyle.clear();
+  markersize.clear();
+  legendmarkerstyle.clear();
+  scale.clear();
+
+  file.push_back(datafile);
+  name.push_back("cut2usrecoeeus");
+  legend.push_back("2018 data, all e");
+  coloropt.push_back(kBlack);
+  histtype.push_back("p e1");
+  markerstyle.push_back(20);
+  markersize.push_back(2);
+  legendmarkerstyle.push_back("lep");
+  scale.push_back(1);
+  
+  file.push_back(datafile);
+  name.push_back("selelevetozwindidusrecoeeus");
+  legend.push_back("2018 data, prompt e");
+  coloropt.push_back(kBlack);
+  histtype.push_back("p e1 same");
+  markerstyle.push_back(24);
+  markersize.push_back(2);
+  legendmarkerstyle.push_back("lep");
+  scale.push_back(1);
+  
+  file.push_back(dyfile);
+  name.push_back("selelevetozwindidusrecoeeus");
+  legend.push_back("DY #rightarrow ee MC");
+  coloropt.push_back(4);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  file.push_back(sig3cmfile);
+  name.push_back("genptgt10Acut2usgenmchrecoeeus");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 cm");
+  coloropt.push_back(kRed+3);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  file.push_back(sig30cmfile);
+  name.push_back("genptgt10Acut2usgenmchrecoeeus");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 30 cm");
+  coloropt.push_back(kRed);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig1mfile);
+  name.push_back("genptgt10Acut2usgenmchrecoeeus");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 1 m");
+  coloropt.push_back(kOrange+2);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig3mfile);
+  name.push_back("genptgt10Acut2usgenmchrecoeeus");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 m");
+  coloropt.push_back(kOrange);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  legendEntries = legend;    
+  //comparesamevariable(file, name, "egseedclustime", genbasicptgt10selbarAnoselus_nbinsseedclustime, &genbasicptgt10selbarAnoselus_binsseedclustime[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){-1.1,0.4}, true, "e/#gamma ecal seed cluster time [ns]","normalized events / ns", true, "genbasicptgt10selAcut2us_EE_egseedclustime");
+  comparesamevariable(file, name, "egsmin", genbasicptgt10selbarAnoselus_nbinsmin, &genbasicptgt10selbarAnoselus_binsmin[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma smin","normalized events / 0.01 units", true, "genbasicptgt10selAcut2us_EE_smin");
+    
+  seltext[0] = "gen. p_{T} > 10 GeV, |#eta|<1.48";
+  seltext[1] = "#geq1 unseeded e/#gamma, no ID";  
 
   file.clear();
   name.clear();
@@ -429,7 +621,7 @@ int plotter() {
   markersize.push_back(2);
   legendmarkerstyle.push_back("lep");
   scale.push_back(1);
-
+  
   file.push_back(datafile);
   name.push_back("selelevetozwindidusrecoebus");
   legend.push_back("2018 data, prompt e");
@@ -449,9 +641,9 @@ int plotter() {
   markersize.push_back(0);
   legendmarkerstyle.push_back("l");
   scale.push_back(1);
-
+  
   file.push_back(sig3cmfile);
-  name.push_back("genbasicptgt10selbarAnoselusgenmchrecoebus");
+  name.push_back("genptgt10Abasicselusgenmchrecoebus");
   legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 cm");
   coloropt.push_back(kRed+3);
   histtype.push_back("hist e1 same");
@@ -461,7 +653,7 @@ int plotter() {
   scale.push_back(1);
   
   file.push_back(sig30cmfile);
-  name.push_back("genbasicptgt10selbarAnoselusgenmchrecoebus");
+  name.push_back("genptgt10Abasicselusgenmchrecoebus");
   legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 30 cm");
   coloropt.push_back(kRed);
   histtype.push_back("hist e1 same");
@@ -471,7 +663,7 @@ int plotter() {
   scale.push_back(1);
 
   file.push_back(sig1mfile);
-  name.push_back("genbasicptgt10selbarAnoselusgenmchrecoebus");
+  name.push_back("genptgt10Abasicselusgenmchrecoebus");
   legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 1 m");
   coloropt.push_back(kOrange+2);
   histtype.push_back("hist e1 same");
@@ -481,7 +673,7 @@ int plotter() {
   scale.push_back(1);
 
   file.push_back(sig3mfile);
-  name.push_back("genbasicptgt10selbarAnoselusgenmchrecoebus");
+  name.push_back("genptgt10Abasicselusgenmchrecoebus");
   legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 m");
   coloropt.push_back(kOrange);
   histtype.push_back("hist e1 same");
@@ -491,9 +683,118 @@ int plotter() {
   scale.push_back(1);
   
   legendEntries = legend;    
-  //comparesamevariable(file, name, "egseedclustime", genbasicptgt10selbarAnoselus_nbinsseedclustime, &genbasicptgt10selbarAnoselus_binsseedclustime[0], true, false, false, (float []){3e-3,0.7}, (float []){0.525,0.6,0.775,0.99}, (float []){-1.1,0.4}, true, "e/#gamma ecal seed cluster time [ns]","normalized events / 0.2 ns", false, "genbasicptgt10selbarAnoselusgenmchrecoebus_egseedclustime");
-  //comparesamevariable(file, name, "leadegsmin", genbasicptgt10selbarAnoselus_nbinsmin, &genbasicptgt10selbarAnoselus_binsmin[0], true, false, false, (float []){3e-3,0.7}, (float []){0.525,0.6,0.775,0.99}, (float []){0.02,0.4}, true, "e/#gamma smin","normalized events / 0.01 units", false, "genbasicptgt10selbarAnoselusgenmchrecoebus_leadsmin");
-  //comparesamevariable(file, name, "leadegsmin", 10, 600, 10, true, false, false, (float []){3e-3,0.9}, (float []){0.525,0.52,0.775,0.97}, true, "e/#gamma s_{min}");
+  //comparesamevariable(file, name, "egseedclustime", genbasicptgt10selbarAnoselus_nbinsseedclustime, &genbasicptgt10selbarAnoselus_binsseedclustime[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){-1.1,0.4}, true, "e/#gamma ecal seed cluster time [ns]","normalized events / ns", true, "genbasicptgt10selAnoselus_EB_egseedclustime");
+  comparesamevariable(file, name, "egsmin", genbasicptgt10selbarAnoselus_nbinsmin, &genbasicptgt10selbarAnoselus_binsmin[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma smin","normalized events / bin", true, "genbasicptgt10selAnoselus_EB_smin");
     
+  seltext[0] = "gen. p_{T} > 10 GeV, 1.48<|#eta|<2.5";
+  seltext[1] = "#geq1 unseeded e/#gamma, no ID";  
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  histtype.clear();
+  markerstyle.clear();
+  markersize.clear();
+  legendmarkerstyle.clear();
+  scale.clear();
+
+  file.push_back(datafile);
+  name.push_back("noselusrecoeeus");
+  legend.push_back("2018 data, all e");
+  coloropt.push_back(kBlack);
+  histtype.push_back("p e1");
+  markerstyle.push_back(20);
+  markersize.push_back(2);
+  legendmarkerstyle.push_back("lep");
+  scale.push_back(1);
+  
+  file.push_back(datafile);
+  name.push_back("selelevetozwindidusrecoeeus");
+  legend.push_back("2018 data, prompt e");
+  coloropt.push_back(kBlack);
+  histtype.push_back("p e1 same");
+  markerstyle.push_back(24);
+  markersize.push_back(2);
+  legendmarkerstyle.push_back("lep");
+  scale.push_back(1);
+  
+  file.push_back(dyfile);
+  name.push_back("selelevetozwindidusrecoeeus");
+  legend.push_back("DY #rightarrow ee MC");
+  coloropt.push_back(4);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  file.push_back(sig3cmfile);
+  name.push_back("genptgt10Abasicselusgenmchrecoeeus");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 cm");
+  coloropt.push_back(kRed+3);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  file.push_back(sig30cmfile);
+  name.push_back("genptgt10Abasicselusgenmchrecoeeus");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 30 cm");
+  coloropt.push_back(kRed);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig1mfile);
+  name.push_back("genptgt10Abasicselusgenmchrecoeeus");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 1 m");
+  coloropt.push_back(kOrange+2);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig3mfile);
+  name.push_back("genptgt10Abasicselusgenmchrecoeeus");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 m");
+  coloropt.push_back(kOrange);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  legendEntries = legend;    
+  //comparesamevariable(file, name, "egseedclustime", genbasicptgt10selbarAnoselus_nbinsseedclustime, &genbasicptgt10selbarAnoselus_binsseedclustime[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){-1.1,0.4}, true, "e/#gamma ecal seed cluster time [ns]","normalized events / ns", true, "genbasicptgt10selAnoselus_EE_egseedclustime");
+  comparesamevariable(file, name, "egsmin", genbasicptgt10selbarAnoselus_nbinsmin, &genbasicptgt10selbarAnoselus_binsmin[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma smin","normalized events / 0.01 units", true, "genbasicptgt10selAnoselus_EE_smin");
+
+  seltext[0] = "#geq1 seeded e/#gamma, #geq2 unseeded e/#gamma";
+  seltext[1] = "p_{T} > 10 GeV, |#eta|<2.5, loose ECAL ID";  
+
+  coloropt.clear();
+  coloropt.push_back(kBlack);
+  coloropt.push_back(kRed+3);
+  coloropt.push_back(kRed);
+  coloropt.push_back(kOrange+2);
+  coloropt.push_back(kOrange);
+  //makeratehist({"cut2usrecoegus","cut2usrecoegus","cut2usrecoegus","cut2usrecoegus","cut2usrecoegus"}, "subleadegpt", cut1usrecoegus_subleadegpt_nbinspt, &cut1usrecoegus_subleadegpt_binspt[0], false, false, (float []){0.48,0.65,0.68,0.975}, (float []){24,60}, (float []){0,250}, 0.875, "e/#gamma_{2} p_{T} [GeV]");
+
+  vector<double> cut2usrecoegus_binsmaxegseedclustime{0.0,0.2,0.4,0.6,0.8,1.0,1.4,1.8,2.4,3.2,4.0};
+  int cut2usrecoegus_nbinsmaxegseedclustime = cut2usrecoegus_binsmaxegseedclustime.size()-1;
+  //makeratehist({"cut2usrecoegus","cut2usrecoegus","cut2usrecoegus","cut2usrecoegus","cut2usrecoegus"}, "maxegseedclustime", cut2usrecoegus_nbinsmaxegseedclustime, &cut2usrecoegus_binsmaxegseedclustime[0], false, false, (float []){0.48,0.65,0.68,0.975}, (float []){24,60}, (float []){0,20}, 0.875, "e/#gamma max. ecal seed cluster time [ns]");
+
+  //makeratehist({"cut2usrecoegus","cut2usrecoegus","cut2usrecoegus","cut2usrecoegus","cut2usrecoegus"}, "max2egseedclustime", cut2usrecoegus_nbinsmaxegseedclustime, &cut2usrecoegus_binsmaxegseedclustime[0], false, false, (float []){0.48,0.65,0.68,0.975}, (float []){24,60}, (float []){0,20}, 0.875, "e/#gamma second max. ecal seed cluster time [ns]");
+
+  seltext[0] = "#geq1 seeded e/#gamma, #geq2 unseeded e/#gamma";
+  seltext[1] = "p_{T} > 10 GeV, |#eta|<2.5, loose ECAL ID, time>1ns";  
+
+  //makeratehist({"cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus"}, "leadegpt", cut1usrecoegus_subleadegpt_nbinspt, &cut1usrecoegus_subleadegpt_binspt[0], false, false, (float []){0.48,0.65,0.68,0.975}, (float []){24,60}, (float []){0,250}, 0.875, "e/#gamma_{1} p_{T} [GeV]");
+  //makeratehist({"cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus"}, "subleadegpt", cut1usrecoegus_subleadegpt_nbinspt, &cut1usrecoegus_subleadegpt_binspt[0], false, false, (float []){0.48,0.65,0.68,0.975}, (float []){18,1}, (float []){0,2.8}, 0.875, "e/#gamma_{2} p_{T} [GeV]");
+
   return -1;
 }

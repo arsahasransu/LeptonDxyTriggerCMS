@@ -164,24 +164,27 @@ TCanvas* fancy_enhance_plotter(vector<TH1F*> histvec, vector<TString> legNam, TS
 TCanvas* enhance_plotter_rate(vector<TH1F*> histvec, vector<TString> legNam, TString xtitle, TString ytitle, float legPos[]=(float []){0.7,0.75,0.95,1}, float yrange[]=(float []){0.1,1}, bool logY=false, bool normalize=false) {
 
   TCanvas *c1 = new TCanvas("c1","c1",1500,1125);
-  TPad *pad1 = new TPad("pad1","pad1",0,0,0.075,0.98);
-  TPad *pad2 = new TPad("pad2","pad2",0.1,0,0.95,0.1);
-  TPad *pad3 = new TPad("pad3","pad3",0.075,0.1,1,0.98);
-  TPad *pad4 = new TPad("pad4","pad4",0.075,0.1,1,0.98);
-  pad1->SetFillColor(5);
-  pad2->SetFillColor(5);
-  pad3->SetFillColor(7);
-
+  TPad *pad1 = new TPad("pad1","pad1",0,0,0.075,0.99);
+  TPad *pad2 = new TPad("pad2","pad2",0.1,0,0.925,0.1);
+  TPad *pad3 = new TPad("pad3","pad3",0.075,0.1,0.925,0.99);
+  TPad *pad4 = new TPad("pad4","pad4",0.925,0,1,0.99);
+  //pad1->SetFillColor(kOrange); // Along y-axis
+  //pad2->SetFillColor(kSpring+10); // Along x-axis
+  //pad3->SetFillColor(kCyan);
+  //pad4->SetFillColor(kGreen);
+  
   pad1->Draw();
   pad2->Draw();
   pad3->Draw();
-
+  pad4->Draw();
+  
   pad1->cd();
   TLatex laty;
   laty.SetTextSize(0.5);
   laty.SetTextFont(42);
   laty.SetTextAlign(32);
   laty.SetTextAngle(90);
+  laty.SetTextColor(kBlack);
   laty.DrawLatex(0.5,0.995,ytitle);
 
   pad2->cd();
@@ -189,8 +192,18 @@ TCanvas* enhance_plotter_rate(vector<TH1F*> histvec, vector<TString> legNam, TSt
   latx.SetTextSize(0.5);
   latx.SetTextFont(42);
   latx.SetTextAlign(32);
-  latx.DrawLatex(0.955,0.5,xtitle);
+  latx.SetTextColor(kBlack);
+  latx.DrawLatex(0.9,0.5,xtitle);
 
+  pad4->cd();
+  TLatex laty2;
+  laty2.SetTextSize(0.5);
+  laty2.SetTextFont(42);
+  laty2.SetTextAlign(32);
+  laty2.SetTextAngle(90);
+  laty2.SetTextColor(histvec[1]->GetLineColor());
+  laty2.DrawLatex(0.5,0.995,"signal acceptance / run 2 HLT");
+  
   pad3->cd();
   gStyle->SetOptStat(0);
   gStyle->SetLineWidth(4);
@@ -217,14 +230,14 @@ TCanvas* enhance_plotter_rate(vector<TH1F*> histvec, vector<TString> legNam, TSt
   if(normalize) histvec[0]->DrawNormalized("p e");
   else histvec[0]->Draw("p e");
 
-  for(unsigned int ctr=1; ctr<histvec.size(); ctr++) {
+  for(unsigned int ctr=histvec.size()-1; ctr>0; ctr--) {
     histvec[ctr]->SetLineWidth(5);
     histvec[ctr]->GetXaxis()->SetTitle("");
     histvec[ctr]->GetYaxis()->SetTitle("");
     if(normalize)
       histvec[ctr]->DrawNormalized("hist same");
     else
-      histvec[ctr]->Draw("hist same");
+      histvec[ctr]->Draw("hist e same");
   }
 
   histvec[0]->SetMarkerStyle(20);

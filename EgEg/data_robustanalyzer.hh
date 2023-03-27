@@ -5,6 +5,7 @@
 #include "TFile.h"
 #include "TString.h"
 #include "TH1F.h"
+#include "TH2F.h"
 
 using namespace std;
 
@@ -51,6 +52,7 @@ class data_robustanalyzer {
   double egushltEgammaPixelMatchVars_s2[100], egushltEgammaEleGsfTrackIso[100], egushltEgammaGsfTrackVars_Chi2[100], egushltEgammaGsfTrackVars_Deta[100], egushltEgammaGsfTrackVars_DetaSeed[100], egushltEgammaGsfTrackVars_Dphi[100], egushltEgammaGsfTrackVars_MissingHits[100], egushltEgammaGsfTrackVars_NLayerIT[100], egushltEgammaGsfTrackVars_OneOESeedMinusOneOP[100], egushltEgammaGsfTrackVars_OneOESuperMinusOneOP[100], egushltEgammaGsfTrackVars_ValidHits[100];
 
   std::vector<TH1F*> all1dhists;
+  std::vector<TH2F*> all2dhists;
 };
 
 #endif
