@@ -79,7 +79,7 @@ void data_robustanalyzer::analyzersinglefile() {
 
   // Count events passing certain selections
   int evttrigDoubleMu33=0, evttrigDoubleMu16=0, evttrigL2Mu23NV2Cha=0, evttrigL2Mu23NV2ChaCS=0, evttrigDoubleL2Mu23NV2Cha=0, evttrigDoubleL2Mu23NV2ChaCS=0;
-  int nosel=0, basicsel=0, sel2=0, sel3=0, sel20=0, sel30=0, sel40=0, sel100=0;
+  int nosel=0, basicsel=0, sel2=0, sel3=0, sel20=0, sel30=0, sel31=0, sel40=0, sel100=0;
 
   selections.push_back("DoubleMu33Displ");
   selections.push_back("DoubleMu16NoSel");
@@ -95,7 +95,8 @@ void data_robustanalyzer::analyzersinglefile() {
   addhist("sel2"); // Selection to cross-check the trigger filter selection
   addhist("sel3"); // Selection to cross-check the parent triggers
   addhist("sel20"); // sel2 + mumu DeltaR>1, (M<85 or M>95)
-  addhist("sel30"); // sel20 + log10dxysig>0.6
+  addhist("sel30"); // sel31 + log10dxysig>1.4
+  addhist("sel31"); // sel3 - pt>16
   addhist("sel40"); // sel2 + log10dxysig>0.6
   addhist("sel100"); // mumu DeltaR>1, mumuM<84 or mumuM>98
 
@@ -109,6 +110,7 @@ void data_robustanalyzer::analyzersinglefile() {
   vector<int> sel3muidx;
   vector<int> sel20muidx;
   vector<int> sel30muidx;
+  vector<int> sel31muidx;
   vector<int> sel40muidx;
   vector<int> sel100muidx;
 
@@ -132,6 +134,7 @@ void data_robustanalyzer::analyzersinglefile() {
 
       bool basicselmu = false;
       bool sel3mu = false;
+      bool sel31mu = false;
       bool sel30mu = false;
       bool sel40mu = false;
       bool sel100mu = false;
@@ -153,10 +156,17 @@ void data_robustanalyzer::analyzersinglefile() {
 	sel3mu *= (TMath::Abs(muRecoDxy[idx])>=0.01);
 	if(sel3mu) sel3muidx.push_back(idx);
 	
+	sel31mu = true;
+	sel31mu *= (muRecoPt[idx]>=16);
+	sel31mu *= (TMath::Abs(muRecoEta[idx])<2.5);
+	sel31mu *= (TMath::Abs(muRecoDxy[idx])>=0.01);
+	if(sel31mu) sel31muidx.push_back(idx);
+	
 	sel30mu = true;
 	sel30mu *= (TMath::Abs(muRecoEta[idx])<2.5);
 	sel30mu *= (muRecoPt[idx]>=16);
-	sel30mu *= (TMath::Log10(TMath::Abs(muRecoDxySig[idx]))>0.6);
+	sel30mu *= (TMath::Abs(muRecoDxy[idx])>=0.01);
+	sel30mu *= (TMath::Log10(TMath::Abs(muRecoDxySig[idx]))>1.4);
 	if(sel30mu) sel30muidx.push_back(idx);
 
 	sel40mu = true;
@@ -196,17 +206,6 @@ void data_robustanalyzer::analyzersinglefile() {
       }
     }
     
-    bool sel30mumu = false;
-    if(sel30muidx.size()>=2) {
-      TLorentzVector muidx, muidx2;
-      muidx.SetPtEtaPhiM(muRecoPt[sel30muidx[0]],muRecoEta[sel30muidx[0]],muRecoPhi[sel30muidx[0]],0.1);
-      muidx2.SetPtEtaPhiM(muRecoPt[sel30muidx[1]],muRecoEta[sel30muidx[1]],muRecoPhi[sel30muidx[1]],0.1);
-      double invM = (muidx+muidx2).M();
-      if((invM<85 || invM>95) && muidx.DeltaR(muidx2)>1) {
-	sel30mumu = true;
-      }
-    }
-
     bool sel40mumu = false;
     if(sel40muidx.size()>=2) {
       sel40mumu = true;
@@ -247,11 +246,15 @@ void data_robustanalyzer::analyzersinglefile() {
       fillhistinevent("sel3", sel3muidx);
       if(sel3muidx.size()>=2) sel3++;
     }
+    if(sel31muidx.size()>0) {
+      fillhistinevent("sel31", sel31muidx);
+      if(sel31muidx.size()>=2) sel31++;
+    }
     if(sel20mumu) {
       fillhistinevent("sel20", sel20muidx);
       sel20++;
     }
-    if(sel30mumu) {
+    if(sel30muidx.size()>0) {
       fillhistinevent("sel30", sel30muidx);
       sel30++;
     }
@@ -281,6 +284,7 @@ void data_robustanalyzer::analyzersinglefile() {
     sel3muidx.clear();
     sel20muidx.clear();
     sel30muidx.clear();
+    sel31muidx.clear();
     sel40muidx.clear();
     sel100muidx.clear();
     seldec.clear();
@@ -441,7 +445,7 @@ void data_robustanalyzer::addhist(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recomu_subleadlog10dxysig","#mu_{2} log_{10}(d_{0} sig.)",1000,-3,7));
 
   all1dhists.push_back(new TH1F(selection+"recomumu_leadsubleaddR","#DeltaR(#mu_{1},#mu_{2})",1000,-1,9));
-  all1dhists.push_back(new TH1F(selection+"recomumu_leadsubleadM","M(#mu_{1},#mu_{2})",1000,-50,550));
+  all1dhists.push_back(new TH1F(selection+"recomumu_leadsubleadM","M(#mu_{1},#mu_{2})",1200,-50,550));
   
 }
 
