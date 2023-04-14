@@ -22,7 +22,7 @@ class data_robustanalyzer {
   void addhistunseeded(TString);
   void addhistcomparegenrecounseeded(TString);
   void fillgenhistinevent();
-  void fillhistinevent(TString, vector<int>);
+  void fillhistinevent(TString, vector<int>, vector<int>);
   void fillhistineventunseeded(TString, vector<int>);
   void fillhistcomparegenrecounseeded(TString, vector<int>);
   bool isL1EgSeeded(int);

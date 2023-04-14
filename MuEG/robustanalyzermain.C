@@ -5,21 +5,21 @@ using namespace std;
 
 int main() {
 
-  //data_robustanalyzer drana_30cmMC("./data/STHDM30cm_MuEgSkim210.root","hists_M200dM20ctau30cm.root", true);
-  //drana_30cmMC.analyzersinglefile();
+  data_robustanalyzer drana_30cmMC("./data/STHDM30cm_MuEgSkim210.root","hists_M200dM20ctau30cm.root", true);
+  drana_30cmMC.analyzersinglefile();
 
   data_robustanalyzer drana_3cmMC("./data/STHDM3cm_MuEgSkim210.root","hists_M200dM20ctau3cm.root", true);
   drana_3cmMC.analyzersinglefile();
 
-  //data_robustanalyzer drana_3mMC("./data/STHDM3m_MuEgSkim210.root","hists_M200dM20ctau3m.root", true);
-  //drana_3mMC.analyzersinglefile();
+  data_robustanalyzer drana_3mMC("./data/STHDM3m_MuEgSkim210.root","hists_M200dM20ctau3m.root", true);
+  drana_3mMC.analyzersinglefile();
 
   data_robustanalyzer drana_1mMC("./data/STHDM1m_MuEgSkim210.root","hists_M200dM20ctau1m.root", true);
   drana_1mMC.analyzersinglefile();
 
   data_robustanalyzer drana_DYMC("./data/DYToLL_MuEgSkim210.root","hists_DY.root", true);
   drana_DYMC.analyzersinglefile();
-
+  /*
   //data_robustanalyzer drana_QCDPt20To30MC("./data/QCDPt20To30_Skim210.root","hists_QCDPt20To30.root", true);
   //drana_QCDPt20To30MC.analyzersinglefile();
 
@@ -37,7 +37,7 @@ int main() {
 
   //data_robustanalyzer drana_data4("./data/Efmrl4_Skim210.root","hists_Efmrl4.root", false);
   //drana_data4.analyzersinglefile();
-
+  */
   data_robustanalyzer drana_data("./data/Efmrl_MuEgSkim210.root","hists_Efmrl.root", false);
   drana_data.analyzersinglefile();
 

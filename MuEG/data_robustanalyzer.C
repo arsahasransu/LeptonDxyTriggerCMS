@@ -447,15 +447,15 @@ void data_robustanalyzer::analyzersinglefile() {
       } // End of loop on unseeded egamma objects
 
       if(isMC) fillgenhistinevent();
-      fillhistinevent("nosel", noselegidx);
-      fillhistinevent("basicsel", basicselegidx);
-      fillhistinevent("sel2", sel2egidx);
-      fillhistinevent("sel3", sel3egidx);
-      fillhistinevent("sel10", sel10egidx);
-      fillhistinevent("sel13", sel13egidx);
-      fillhistinevent("sel14", sel14egidx);
-      fillhistinevent("sel15", sel15egidx);
-      fillhistinevent("sel80", sel80egidx);
+      fillhistinevent("nosel", noselegidx, noselmuidx);
+      fillhistinevent("basicsel", basicselegidx, basicselmuidx);
+      fillhistinevent("sel2", sel2egidx, sel2muidx);
+      fillhistinevent("sel3", sel3egidx, sel3muidx);
+      fillhistinevent("sel10", sel10egidx, sel10muidx);
+      fillhistinevent("sel13", sel13egidx, sel13muidx);
+      fillhistinevent("sel14", sel14egidx, sel14muidx);
+      fillhistinevent("sel15", sel15egidx, sel15muidx);
+      fillhistinevent("sel80", sel80egidx, sel80muidx);
       if(isMC && sel10egusidx.size()>0) fillhistcomparegenrecounseeded("sel10us", sel10egusidx);
       fillhistineventunseeded("sel10us", sel10egusidx);
       fillhistineventunseeded("sel11us", sel11egusidx);
@@ -672,7 +672,12 @@ void data_robustanalyzer::fillgenhistinevent() {
 }
 
 // Function to fill a set of histograms in the event
-void data_robustanalyzer::fillhistinevent(TString selection, vector<int> egidx) {
+void data_robustanalyzer::fillhistinevent(TString selection, vector<int> egidx, vector<int> muidx) {
+
+  TH1F* mumult = (TH1F*) outfile->Get(selection+"recomu_mumult");
+  TH1F* mupt = (TH1F*) outfile->Get(selection+"recomu_mupt");
+  TH1F* mueta = (TH1F*) outfile->Get(selection+"recomu_mueta");
+  TH1F* muphi = (TH1F*) outfile->Get(selection+"recomu_muphi");
 
   // nothing here for now
   TH1F* egmult = (TH1F*) outfile->Get(selection+"recoeg_egmult");
@@ -734,6 +739,14 @@ void data_robustanalyzer::fillhistinevent(TString selection, vector<int> egidx) 
   TH1F* recoee_seedclustime = (TH1F*) outfile->Get(selection+"recoee_seedclustime");  
   
   if(egidx.size()>0) {
+
+    if(muidx.size()>0) {
+      mumult->Fill(muidx.size());
+      mupt->Fill(muRecoPt[muidx[0]]);
+      mueta->Fill(muRecoEta[muidx[0]]);
+      muphi->Fill(muRecoPhi[muidx[0]]);
+    }
+    
     egmult->Fill(egidx.size());
     egpt->Fill(egRecoPt[egidx[0]]);
     egeta->Fill(egRecoEta[egidx[0]]);
@@ -1210,6 +1223,11 @@ void data_robustanalyzer::addgenhist() {
 
 // Function to add a set of histograms for a selection
 void data_robustanalyzer::addhist(TString selection) {
+
+  all1dhists.push_back(new TH1F(selection+"recomu_mumult","reco N #mu",50,-5,45));
+  all1dhists.push_back(new TH1F(selection+"recomu_mupt","reco #mu p_{T} / GeV",550,-50,500));
+  all1dhists.push_back(new TH1F(selection+"recomu_mueta","reco #mu #eta",52,-2.6,2.6));
+  all1dhists.push_back(new TH1F(selection+"recomu_muphi","reco #mu #phi",66,-3.3,3.3));
 
   all1dhists.push_back(new TH1F(selection+"recoeg_egmult","reco N e/#gamma",50,-5,45));
   all1dhists.push_back(new TH1F(selection+"recoeg_egpt","reco e/#gamma p_{T} / GeV",550,-50,500));

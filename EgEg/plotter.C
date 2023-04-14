@@ -354,7 +354,7 @@ int plotter() {
   vector<double> cut1usrecoegus_subleadegpt_binspt{9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,33};
   int cut1usrecoegus_subleadegpt_nbinspt = cut1usrecoegus_subleadegpt_binspt.size()-1;
   seltext[0] = "#geq1 seeded, #geq2 unseeded e/#gamma";
-  seltext[1] = "p_{T}>10 GeV, Calo ID";  
+  seltext[1] = "p_{T}>10 GeV, |#eta|<1.48 (1.48<|#eta|<2.5), #sigmai#etai#eta<0.014 (0.035), H/E<0.15 (0.1)";  
 
   file.clear();
   name.clear();

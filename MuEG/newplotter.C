@@ -4,86 +4,268 @@
 #include <vector>
 #include "enhance_plotter.C"
 
-double datasf = 1.92/(19+11+10+5); // Data rate - 1.92 Hz, 22 events from parent trigger selection
+double datasf = 2.0/45; // Data rate - 1.92 Hz, 22 events from parent trigger selection
 double sig3cmsf = 1.0/39;
-//double sig30cmsf = 1.0/28;
+double sig30cmsf = 1.0/29;
 double sig1msf = 1.0/12;
-//double sig3msf = 1.0/7;
+double sig3msf = 1.0/11;
 TString cutdeets = "Cut details";
 TFile* datafile = TFile::Open("hists_Efmrl.root","READ");
 //TFile* dyfile = TFile::Open("hists_DY.root","READ");
 TFile* sig3cmfile = TFile::Open("hists_M200dM20ctau3cm.root","READ");
-//TFile* sig30cmfile = TFile::Open("hists_M200dM20ctau30cm.root","READ");
+TFile* sig30cmfile = TFile::Open("hists_M200dM20ctau30cm.root","READ");
 TFile* sig1mfile = TFile::Open("hists_M200dM20ctau1m.root","READ");
-//TFile* sig3mfile = TFile::Open("hists_M200dM20ctau3m.root","READ");
+TFile* sig3mfile = TFile::Open("hists_M200dM20ctau3m.root","READ");
 
 TString seltext[2] = {"line1", "line2"};
 
 std::vector<int> coloropt{1, kGreen-9, kGreen-7, kGreen-3, kGreen+2};
 std::vector<TString> legendEntries{"l1", "l2", "l3", "l4", "l5", "l6"};
+std::vector<TString> histtype{"p e1", "hist same"};
+std::vector<int> markerstyle{20, 24};
+std::vector<int> markersize{10, 10};
+std::vector<TString> legendmarkerstyle{"lep", "l"};
+std::vector<double> scale{1, 1};
 
-int comparemultihist(TString cutname, TString var, int xbinlow, int xbinhigh, int rebin=-1, bool logY=false, bool isMConly=false, bool overflow=false, float legPos[]=(float []){0.7,0.75,0.95,1}, float yrange[]=(float []){0.1,100}, bool normalized=false) {
+int comparesamevariable(std::vector<TFile*> file, std::vector<TString> cutname, TString var, int nbins=0, double *rebin=0, bool logY=false, bool underflow=false, bool overflow=false, float yrange[]=(float []){0.1,100}, float legPos[]=(float []){0.7,0.75,0.95,1}, float seltextpos[]=(float []){0.1,1}, bool normalize=true, TString xaxistitle="xaxis", TString yaxistitle="yaxis", bool dividebybinw=true, TString savefilename="default") {
 
-  std::vector<TString> legNam;
-  if(!isMConly) legNam.push_back("2018 data");
-  legNam.push_back("c#tau = 3 cm");
-  //legNam.push_back("c#tau = 30 cm");
-  //legNam.push_back("c#tau = 1 m");
-  //legNam.push_back("c#tau = 3 m");
+  // Check if the size of file vector is same as the cutnames
+  if(file.size()!=cutname.size()) {
+    cout<<"Error! Mismatching size of vectors"<<endl;
+    return -1;
+  }
 
-  TString histname = cutname+"_"+var;
-  TH1F* datahist;
-  if(!isMConly) datahist = (TH1F*) datafile->Get(histname);
-  TH1F* sig3cmhist = (TH1F*) sig3cmfile->Get(histname);
-  //TH1F* sig30cmhist = (TH1F*) sig30cmfile->Get(histname);
-  //TH1F* sig1mhist = (TH1F*) sig1mfile->Get(histname);
-  //TH1F* sig3mhist = (TH1F*) sig3mfile->Get(histname);
-
-  // Get the title from histogram title
-  TString xtitle = sig3cmhist->GetTitle();
+  TString foldername = "";
+  foldername += ((TString)file[0]->GetName()).ReplaceAll(".root","").ReplaceAll("hists_","")+"_"+cutname[0]+"_";
 
   std::vector<TH1F*> allhists;
-  if(!isMConly) allhists.push_back(datahist);
-  allhists.push_back(sig3cmhist);
-  //allhists.push_back(sig30cmhist);
-  //allhists.push_back(sig1mhist);
-  //allhists.push_back(sig3mhist);
-
-  if(rebin==-1) rebin = 1;
-  xbinlow = xbinlow==-1?1:xbinlow;
-  xbinhigh = xbinhigh==-1?(overflow?allhists[0]->GetNbinsX()+1:allhists[0]->GetNbinsX()):xbinhigh;
-  xbinlow = xbinlow/rebin;
-  xbinhigh = xbinhigh/rebin;
+  for(unsigned int histctr=0; histctr<cutname.size(); histctr++) {
+    TString cutwithvar = cutname[histctr]+"_"+var;
+    allhists.push_back((TH1F*)file[histctr]->Get(cutwithvar));
+    cutname[histctr] += "_"+((TString)file[histctr]->GetName()).ReplaceAll(".root","").ReplaceAll("hists_","");
+  }
+  
+  // Get the title from histogram title
+  TString dummytitle = "xaxis";
+  TString histtitle = allhists[0]->GetTitle();
+  TString xtitle = xaxistitle.CompareTo(dummytitle)?xaxistitle:histtitle;
 
   for(unsigned int histctr=0; histctr<allhists.size(); histctr++) {
-    if(rebin!=1) allhists[histctr]->Rebin(rebin);
-
+    if(nbins>0) {
+      allhists[histctr] = (TH1F*) allhists[histctr]->Rebin(nbins,"newx",rebin);
+    }
+  
     // Make changes to sig and bkg to enable good basic plotting
     double err = 0.0;
-    //allhists[histctr]->SetBinContent(xbinlow,allhists[histctr]->IntegralAndError(0,xbinlow,err));
-    //allhists[histctr]->SetBinError(xbinlow,err);
+    if(underflow) {
+      allhists[histctr]->GetXaxis()->SetRange(0, allhists[histctr]->GetNbinsX());
+    }
     err = 0.0;
     if(overflow) {
-      allhists[histctr]->SetBinContent(xbinhigh,allhists[histctr]->IntegralAndError(xbinhigh,allhists[histctr]->GetNbinsX()+1,err));
-      allhists[histctr]->SetBinError(xbinhigh,err);
+      allhists[histctr]->GetXaxis()->SetRange(1, allhists[histctr]->GetNbinsX()+1);
+    }
+    if(underflow && overflow) {
+      allhists[histctr]->GetXaxis()->SetRange(0, allhists[histctr]->GetNbinsX()+1);
     }
 
-    allhists[histctr]->GetXaxis()->SetRange(xbinlow, xbinhigh);
+    if(dividebybinw) {
+      for(unsigned int bincnt=1; bincnt<=allhists[histctr]->GetNbinsX(); bincnt++) {
+	allhists[histctr]->SetBinContent(bincnt, allhists[histctr]->GetBinContent(bincnt)/allhists[histctr]->GetBinWidth(bincnt));
+      }
+    }
+    
     allhists[histctr]->GetXaxis()->SetTitle(xtitle);
-    allhists[histctr]->GetYaxis()->SetTitle("normalized number of events (a.u.)");
+    if(normalize) allhists[histctr]->GetYaxis()->SetTitle(yaxistitle);
+    else allhists[histctr]->GetYaxis()->SetTitle(yaxistitle);
 
     allhists[histctr]->SetTitle("");
 
     allhists[histctr]->SetLineWidth(2);
-    if(isMConly) allhists[histctr]->SetLineColor(coloropt[histctr+1]);
-    else allhists[histctr]->SetLineColor(coloropt[histctr]);
+    allhists[histctr]->SetLineColor(coloropt[histctr]);
   }
 
   TCanvas* c1;
   c1 = new TCanvas();
-  c1 = enhance_plotter(allhists, legNam, allhists[0]->GetXaxis()->GetTitle(),allhists[0]->GetYaxis()->GetTitle(),legPos,logY,yrange,normalized);
-  c1->SaveAs("./dirplots/"+cutname+"/"+cutname+"_"+var+".png");
+  c1 = fancy_enhance_plotter(allhists, legendEntries, allhists[0]->GetXaxis()->GetTitle(),allhists[0]->GetYaxis()->GetTitle(),legPos,logY,yrange,normalize, histtype, markerstyle, markersize, legendmarkerstyle, scale);
+
+  TPad* pad = (TPad*) c1->FindObject("pad3");
+  pad->cd();
+
+  auto linehor = new TLine(*rebin,yrange[1],*(rebin+nbins),yrange[1]);
+  linehor->SetLineColor(kBlack);
+  linehor->SetLineWidth(4);
+  linehor->SetLineStyle(1);
+  linehor->Draw();
   
+  auto linevert = new TLine(*(rebin+nbins),yrange[0],*(rebin+nbins),yrange[1]);
+  linevert->SetLineColor(kBlack);
+  linevert->SetLineWidth(4);
+  linevert->SetLineStyle(1);
+  linevert->Draw();
+  
+  TLatex sel;
+  sel.SetTextFont(42);
+  sel.SetTextSize(0.045);
+  if(!logY) sel.DrawLatex(seltextpos[0], seltextpos[1]+0.1*(yrange[1]-yrange[0]), seltext[0]);
+  else sel.DrawLatex(seltextpos[0], seltextpos[1]+0.02*seltextpos[0], seltext[0]);
+  sel.DrawLatex(seltextpos[0], seltextpos[1], seltext[1]);
+  
+  c1->SaveAs("./dirplots/"+foldername+"/"+savefilename+".png");
+  c1->SaveAs("./dirplots/"+foldername+"/"+savefilename+".C");
+
+  return -1;
+}
+
+int makeratehist(std::vector<TString> cutname, TString var, int nbins=0, double *rebin=0, bool logY=false, bool overflow=false, float legPos[]=(float []){0.7,0.75,0.95,1}, float seltextpos[]=(float []){0.1,1}, float yrange[]=(float []){0.1,1}, float drawsignalline=-1.0, TString xaxistitle="p_{T} [GeV]", TString yaxistitle="rate [Hz]") {
+
+  std::vector<TString> legNam;
+  legNam.push_back("2018 data");
+  legNam.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 cm");
+  legNam.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 30 cm");
+  legNam.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 1 m");
+  legNam.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 m");
+
+  TString histname0 = cutname[0]+"_"+var;
+  TString histname1 = cutname[1]+"_"+var;
+  TString histname2 = cutname[2]+"_"+var;
+  TString histname3 = cutname[3]+"_"+var;
+  TString histname4 = cutname[4]+"_"+var;
+  TH1F* datahist;
+  datahist = (TH1F*) datafile->Get(histname0);
+  datahist->Scale(datasf);
+  TH1F* sig3cmhist = (TH1F*) sig3cmfile->Get(histname1);
+  sig3cmhist->Scale(sig3cmsf);
+  TH1F* sig30cmhist = (TH1F*) sig30cmfile->Get(histname2);
+  sig30cmhist->Scale(sig30cmsf);
+  TH1F* sig1mhist = (TH1F*) sig1mfile->Get(histname3);
+  sig1mhist->Scale(sig1msf);
+  TH1F* sig3mhist = (TH1F*) sig3mfile->Get(histname4);
+  sig3mhist->Scale(sig3msf);
+
+  std::vector<TH1F*> allhists;
+  std::vector<TH1F*> allratehists;
+  
+  if(nbins>0) {
+    datahist = (TH1F*) datahist->Rebin(nbins,"newx",rebin);
+    sig3cmhist = (TH1F*) sig3cmhist->Rebin(nbins,"newx",rebin);
+    sig30cmhist = (TH1F*) sig30cmhist->Rebin(nbins,"newx",rebin);
+    sig1mhist = (TH1F*) sig1mhist->Rebin(nbins,"newx",rebin);
+    sig3mhist = (TH1F*) sig3mhist->Rebin(nbins,"newx",rebin);
+  }
+  allhists.push_back(datahist);
+  allhists.push_back(sig3cmhist);
+  allhists.push_back(sig30cmhist);
+  allhists.push_back(sig1mhist);
+  allhists.push_back(sig3mhist);
+
+  double axisscale = 0.0, axisscale2, axisscale3, axisscale4;
+  for(unsigned int histctr=0; histctr<allhists.size(); histctr++) {
+
+    allratehists.push_back((TH1F*) allhists[histctr]->Clone());
+    for(unsigned int bincnt=0; bincnt<allhists[histctr]->GetNbinsX()+1; bincnt++) {
+      double err = 0;
+      allratehists[histctr]->SetBinContent(bincnt, allhists[histctr]->IntegralAndError(bincnt,allhists[histctr]->GetNbinsX()+1,err));
+      allratehists[histctr]->SetBinError(bincnt, err);
+    }
+    allratehists[histctr]->GetXaxis()->SetTitle(xaxistitle);
+    allratehists[histctr]->GetYaxis()->SetTitle(yaxistitle);
+
+    allratehists[histctr]->SetTitle("");
+
+    allratehists[histctr]->SetLineWidth(2);
+    allratehists[histctr]->SetLineColor(coloropt[histctr]);
+    /*if(histctr==1) {
+      axisscale = allratehists[0]->GetBinContent(0)*0.8/allratehists[1]->GetBinContent(0);
+      allratehists[histctr]->Scale(axisscale);
+    }
+    if(histctr>1) {
+      allratehists[histctr]->Scale(axisscale);
+      }*/
+  }
+  axisscale = allratehists[0]->GetBinContent(0)*0.8/allratehists[1]->GetBinContent(0);
+  axisscale2 = allratehists[0]->GetBinContent(0)*0.8/allratehists[2]->GetBinContent(0);
+  axisscale = axisscale2<axisscale?axisscale2:axisscale;
+  axisscale3 = allratehists[0]->GetBinContent(0)*0.8/allratehists[3]->GetBinContent(0);
+  axisscale = axisscale3<axisscale?axisscale3:axisscale;
+  axisscale4 = allratehists[0]->GetBinContent(0)*0.8/allratehists[4]->GetBinContent(0);
+  axisscale = axisscale4<axisscale?axisscale4:axisscale;
+  cout<<axisscale<<"\t"<<axisscale2<<"\t"<<axisscale3<<"\t"<<axisscale4<<endl;
+  allratehists[1]->Scale(axisscale);
+  allratehists[2]->Scale(axisscale);
+  allratehists[3]->Scale(axisscale);
+  allratehists[4]->Scale(axisscale);
+  cout<<allratehists[1]->GetMaximum()<<endl;
+  TCanvas* c1;
+  c1 = new TCanvas();
+  c1 = enhance_plotter_rate(allratehists, legNam, allratehists[0]->GetXaxis()->GetTitle(),allratehists[0]->GetYaxis()->GetTitle(),legPos,yrange,logY,false);
+
+  TPad* pad = (TPad*) c1->FindObject("pad3");
+  pad->cd();
+  TGaxis *axis;
+  if(!logY) {
+    axis = new TGaxis(*(rebin+nbins),yrange[0],*(rebin+nbins),yrange[1],yrange[0]/axisscale,yrange[1]/axisscale,510,"-L");
+    axis->SetLabelOffset(-0.035);
+  }
+  else {
+    axis = new TGaxis(*(rebin+nbins),yrange[0],*(rebin+nbins),yrange[1],yrange[0]/axisscale,yrange[1]/axisscale,510,"-LG");
+    axis->SetLabelOffset(-0.035);
+  }
+  axis->SetLineColor(coloropt[1]);
+  axis->SetLineWidth(4);
+  axis->SetLabelColor(coloropt[1]);
+  axis->SetLabelFont(42);
+  axis->SetLabelSize(0.06);
+  axis->Draw();
+
+  if(drawsignalline!=-1.0) {
+    drawsignalline = allratehists[1]->GetMaximum();
+    TLine *signalline = new TLine(*rebin,drawsignalline,*(rebin+nbins),drawsignalline);
+    signalline->SetLineWidth(3);
+    signalline->SetLineColor(coloropt[1]);
+    signalline->SetLineStyle(9);
+    signalline->Draw();
+  }
+
+  auto line = new TLine(*rebin,yrange[1],*(rebin+nbins),yrange[1]);
+  line->SetLineColor(kBlack);
+  line->SetLineWidth(4);
+  line->SetLineStyle(1);
+  line->Draw();
+  
+  TLatex sel;
+  sel.SetTextFont(42);
+  sel.SetTextSize(0.045);
+  sel.DrawLatex(seltextpos[0], seltextpos[1]+0.1*(yrange[1]-yrange[0]), seltext[0]);
+  sel.DrawLatex(seltextpos[0], seltextpos[1], seltext[1]);
+  
+  c1->SaveAs("./dirplots/"+cutname[0]+"/"+cutname[0]+"_"+var+"_ratehist.png");
+  c1->SaveAs("./dirplots/"+cutname[0]+"/"+cutname[0]+"_"+var+"_ratehist.C");
+  
+  TCanvas* c2;
+  c2 = new TCanvas();
+  c2 = enhance_plotter_rate(allratehists, legNam, allratehists[0]->GetXaxis()->GetTitle(),allratehists[0]->GetYaxis()->GetTitle(),legPos,yrange,logY,false);
+  c2->GetCanvas()->SetGrayscale();
+
+  TPad* pad3 = (TPad*) c2->FindObject("pad3");
+  pad3->cd();
+  axis->Draw();
+
+  if(drawsignalline!=-1.0) {
+    drawsignalline = allratehists[1]->GetMaximum();
+    TLine *signalline = new TLine(*rebin,drawsignalline,*(rebin+nbins),drawsignalline);
+    signalline->SetLineWidth(2);
+    signalline->SetLineColor(coloropt[1]);
+    signalline->SetLineStyle(9);
+    signalline->Draw();
+  }
+
+  line->Draw();
+  
+  sel.DrawLatex(seltextpos[0], seltextpos[1]+0.1*(yrange[1]-yrange[0]), seltext[0]);
+  sel.DrawLatex(seltextpos[0], seltextpos[1], seltext[1]);
+  
+  c2->SaveAs("./dirplots/"+cutname[0]+"/"+cutname[0]+"_"+var+"_ratehist_grayscale.png");
+
   return -1;
 }
 
@@ -139,171 +321,93 @@ int crossChecktwohist(TFile* file, vector<TString> cutname, TString var, int xbi
   return -1;
 }
 
-int makeratehist(TString cutname, TString var, int xbinlow, int xbinhigh, int rebin=-1, bool logY=false, bool overflow=false, float legPos[]=(float []){0.7,0.75,0.95,1}, float seltextpos[]=(float []){0.1,1}, float yrange[]=(float []){0.1,1}, float drawsignalline=-1.0) {
-
-  std::vector<TString> legNam;
-  legNam.push_back("2018 data");
-  legNam.push_back("c#tau = 3 cm");
-  //legNam.push_back("c#tau = 30 cm");
-  //legNam.push_back("c#tau = 1 m");
-  //legNam.push_back("c#tau = 3 m");
-
-  TString histname = cutname+"_"+var;
-  TH1F* datahist;
-  datahist = (TH1F*) datafile->Get(histname);
-  datahist->Scale(datasf);
-  TH1F* sig3cmhist = (TH1F*) sig3cmfile->Get(histname);
-  sig3cmhist->Scale(sig3cmsf);
-  //TH1F* sig30cmhist = (TH1F*) sig30cmfile->Get(histname);
-  //sig30cmhist->Scale(sig30cmsf);
-  //TH1F* sig1mhist = (TH1F*) sig1mfile->Get(histname);
-  //sig1mhist->Scale(sig1msf);
-  //TH1F* sig3mhist = (TH1F*) sig3mfile->Get(histname);
-  //sig3mhist->Scale(sig3msf);
-
-  // Get the title from histogram title
-  TString xtitle = sig3cmhist->GetTitle();
-
-  std::vector<TH1F*> allhists;
-  std::vector<TH1F*> allratehists;
-  allhists.push_back(datahist);
-  allhists.push_back(sig3cmhist);
-  //allhists.push_back(sig30cmhist);
-  //allhists.push_back(sig1mhist);
-  //allhists.push_back(sig3mhist);
-
-  double axisscale = 0.0;
-  for(unsigned int histctr=0; histctr<allhists.size(); histctr++) {
-
-    allratehists.push_back((TH1F*) allhists[histctr]->Clone());
-    for(unsigned int bincnt=0; bincnt<allhists[histctr]->GetNbinsX(); bincnt++) {
-      double err = 0;
-      allratehists[histctr]->SetBinContent(bincnt, allhists[histctr]->IntegralAndError(bincnt,allhists[histctr]->GetNbinsX()+1,err));
-      allratehists[histctr]->SetBinError(bincnt, err);
-    }
-    allratehists[histctr]->GetXaxis()->SetRange(xbinlow, xbinhigh);
-    allratehists[histctr]->GetXaxis()->SetTitle(xtitle);
-    allratehists[histctr]->GetYaxis()->SetTitle("rate / Hz");
-
-    allratehists[histctr]->SetTitle("");
-
-    allratehists[histctr]->SetLineWidth(2);
-    allratehists[histctr]->SetLineColor(coloropt[histctr]);
-    if(histctr==1) {
-      axisscale = allratehists[0]->GetBinContent(0)*0.8/allratehists[1]->GetBinContent(0);
-      allratehists[histctr]->Scale(axisscale);
-    }
-    if(histctr>1) {
-      allratehists[histctr]->Scale(axisscale);
-    }
-  }
-
-  cout<<allratehists[1]->GetMaximum()<<endl;
-  TCanvas* c1;
-  c1 = new TCanvas();
-  c1 = enhance_plotter_rate(allratehists, legNam, allratehists[0]->GetXaxis()->GetTitle(),allratehists[0]->GetYaxis()->GetTitle(),legPos,yrange,logY,false);
-
-  TPad* pad = (TPad*) c1->FindObject("pad3");
-  pad->cd();
-  TGaxis *axis;
-  axis = new TGaxis(allratehists[0]->GetBinLowEdge(xbinhigh+1),yrange[0],allratehists[0]->GetBinLowEdge(xbinhigh+1),yrange[1],yrange[0]/axisscale,yrange[1]/axisscale,510,"-L");
-  axis->SetLineColor(coloropt[1]);
-  axis->SetLabelColor(coloropt[1]);
-  axis->SetLabelFont(132);
-  axis->SetLabelSize(0.06);
-  axis->SetLabelOffset(-0.035);
-  axis->Draw();
-
-  if(drawsignalline!=-1.0) {
-    drawsignalline = allratehists[1]->GetMaximum();
-    TLine *signalline = new TLine(allratehists[0]->GetBinLowEdge(xbinlow),drawsignalline,allratehists[0]->GetBinLowEdge(xbinhigh+1),drawsignalline);
-    signalline->SetLineWidth(2);
-    signalline->SetLineColor(coloropt[1]);
-    signalline->SetLineStyle(9);
-    signalline->Draw();
-  }
-
-  TLatex sel;
-  sel.SetTextFont(132);
-  sel.SetTextSize(0.05);
-  sel.DrawLatex(seltextpos[0], seltextpos[1]+0.1*(yrange[1]-yrange[0]), seltext[0]);
-  sel.DrawLatex(seltextpos[0], seltextpos[1], seltext[1]);
-  
-  c1->SaveAs("./dirplots/"+cutname+"/"+cutname+"_"+var+"_ratehist.png");
-  
-  return -1;
-}
-
-int comparesamevariable(std::vector<TFile*> file, std::vector<TString> cutname, TString var, int xbinlow, int xbinhigh, int rebin=-1, bool logY=false, bool underflow=false, bool overflow=false, float yrange[]=(float []){0.1,100}, float legPos[]=(float []){0.7,0.75,0.95,1}, bool normalize=true, TString xaxistitle="xaxis") {
-
-  // Check if the size of file vector is same as the cutnames
-  if(file.size()!=cutname.size()) {
-    cout<<"Error! Mismatching size of vectors"<<endl;
-    return -1;
-  }
-
-  TString foldername = "";
-  foldername += ((TString)file[0]->GetName()).ReplaceAll(".root","").ReplaceAll("hists_","")+"_"+cutname[0]+"_";
-
-  std::vector<TH1F*> allhists;
-  for(unsigned int histctr=0; histctr<cutname.size(); histctr++) {
-    TString cutwithvar = cutname[histctr]+"_"+var;
-    allhists.push_back((TH1F*)file[histctr]->Get(cutwithvar));
-    cutname[histctr] += "_"+((TString)file[histctr]->GetName()).ReplaceAll(".root","").ReplaceAll("hists_","");
-  }
-  
-  // Get the title from histogram title
-  TString dummytitle = "xaxis";
-  TString histtitle = allhists[0]->GetTitle();
-  TString xtitle = xaxistitle.CompareTo(dummytitle)?xaxistitle:histtitle;
-
-  if(rebin==-1) rebin = 1;
-  xbinlow = xbinlow==-1?(underflow?0:1):xbinlow;
-  xbinhigh = xbinhigh==-1?(overflow?allhists[0]->GetNbinsX()+1:allhists[0]->GetNbinsX()):xbinhigh;
-  xbinlow = xbinlow/rebin;
-  xbinhigh = xbinhigh/rebin;
-
-  for(unsigned int histctr=0; histctr<allhists.size(); histctr++) {
-    if(rebin!=1) allhists[histctr]->Rebin(rebin);
-
-    // Make changes to sig and bkg to enable good basic plotting
-    double err = 0.0;
-    if(underflow) {
-      allhists[histctr]->SetBinContent(xbinlow,allhists[histctr]->IntegralAndError(0,xbinlow,err));
-      allhists[histctr]->SetBinError(xbinlow,err);
-    }
-    err = 0.0;
-    if(overflow) {
-      allhists[histctr]->SetBinContent(xbinhigh,allhists[histctr]->IntegralAndError(xbinhigh,allhists[histctr]->GetNbinsX()+1,err));
-      allhists[histctr]->SetBinError(xbinhigh,err);
-    }
-
-    allhists[histctr]->GetXaxis()->SetRange(xbinlow, xbinhigh);
-    allhists[histctr]->GetXaxis()->SetTitle(xtitle);
-    if(normalize) allhists[histctr]->GetYaxis()->SetTitle("normalized number of events (a.u.)");
-    else allhists[histctr]->GetYaxis()->SetTitle("number of events");
-
-    allhists[histctr]->SetTitle("");
-
-    allhists[histctr]->SetLineWidth(2);
-    allhists[histctr]->SetLineColor(coloropt[histctr]);
-  }
-
-  TCanvas* c1;
-  c1 = new TCanvas();
-  c1 = enhance_plotter(allhists, legendEntries, allhists[0]->GetXaxis()->GetTitle(),allhists[0]->GetYaxis()->GetTitle(),legPos,logY,yrange,normalize);
-  c1->SaveAs("./dirplots/"+foldername+"/"+var+".png");
-
-  return -1;
-}
-
 int newplotter() {
 
-  std::vector<int> coloroptrate{1, kRed+2, kRed-3, kRed-7, kRed-9};
+  std::vector<int> coloroptrate{kBlack, kRed+3, kRed, kOrange+2, kOrange};
   coloropt = coloroptrate;
+
   seltext[0] = "N#mu#geq1, p_{T}#geq38 GeV, |#eta|<2.5, d_{0}>0.01 cm";
   seltext[1] = "Ne/#gamma#geq1, p_{T}>38 GeV, |#eta|<2.65";
-  //makeratehist("sel3recoeg", "egpt", 66, 150, 1, false, false, (float []){0.55,0.775,0.75,0.975}, (float []){60,0.8}, (float []){0.1,2.05}, 0.875);
+
+  std::vector<TFile*> file;
+  std::vector<TString> name;
+  std::vector<TString> leg;
+
+  file.clear();
+  name.clear();
+  leg.clear();
+  coloropt.clear();
+  histtype.clear();
+  markerstyle.clear();
+  markersize.clear();
+  legendmarkerstyle.clear();
+  scale.clear();
+
+  file.push_back(datafile);
+  name.push_back("sel3recomu");
+  leg.push_back("2018 data");
+  coloropt.push_back(kBlack);
+  histtype.push_back("p e1");
+  markerstyle.push_back(20);
+  markersize.push_back(2);
+  legendmarkerstyle.push_back("lep");
+  scale.push_back(1);
+  
+  file.push_back(sig3cmfile);
+  name.push_back("sel3recomu");
+  leg.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 cm");
+  coloropt.push_back(kRed+3);
+  histtype.push_back("hist same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  file.push_back(sig30cmfile);
+  name.push_back("sel3recomu");
+  leg.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 30 cm");
+  coloropt.push_back(kRed);
+  histtype.push_back("hist same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig1mfile);
+  name.push_back("sel3recomu");
+  leg.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 1 m");
+  coloropt.push_back(kOrange+2);
+  histtype.push_back("hist same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig3mfile);
+  name.push_back("sel3recomu");
+  leg.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 m");
+  coloropt.push_back(kOrange);
+  histtype.push_back("hist same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+ 
+  legendEntries = leg;  
+
+  vector<double> egpt_binsptgt38{34,38,42,46,50,55,60,65,70,75};
+  int egpt_nbinsptgt38 = egpt_binsptgt38.size()-1;
+  comparesamevariable(file, name, "mupt", egpt_nbinsptgt38, &egpt_binsptgt38[0], true, false, false, (float []){2e-2,3}, (float []){0.575,0.7,0.825,0.99}, (float []){35,0.8}, true, "#mu_{1} p_{T} [GeV]", "normalized events / GeV", false, "sel3recomu_mupt");
+
+  makeratehist({"sel3recoeg","sel3recoeg","sel3recoeg","sel3recoeg","sel3recoeg"}, "egpt", egpt_nbinsptgt38, &egpt_binsptgt38[0], false, true, (float []){0.5,0.65,0.7,0.975}, (float []){35,0.1}, (float []){0,2.9}, 0.875, "e/#gamma_{1} p_{T} [GeV]");
+  makeratehist({"sel3recomu","sel3recomu","sel3recomu","sel3recomu","sel3recomu"}, "mupt", egpt_nbinsptgt38, &egpt_binsptgt38[0], false, true, (float []){0.5,0.65,0.7,0.975}, (float []){35,0.1}, (float []){0,2.9}, 0.875, "#mu_{1} p_{T} [GeV]");
+
+  vector<double> mupt_binspt{14,16,18,20,22,24,26,28,30,34,38,42,46,50,55,60,65,70,75};
+  int mupt_nbinspt = mupt_binspt.size()-1;
+  seltext[0] = "N#mu#geq1, p_{T}>16 GeV, |#eta|<2.5";
+  seltext[1] = "Ne/#gamma#geq1, p_{T}>20 GeV, |#eta|<2.65, loose Run2 CaloID"; 
+  makeratehist({"sel2recomu","sel2recomu","sel2recomu","sel2recomu","sel2recomu"}, "mupt", mupt_nbinspt, &mupt_binspt[0], false, true, (float []){0.5,0.65,0.7,0.975}, (float []){40,20}, (float []){0,79}, 0.875, "#mu_{1} p_{T} [GeV]");
+  makeratehist({"sel2recoeg","sel2recoeg","sel2recoeg","sel2recoeg","sel2recoeg"}, "egpt", mupt_nbinspt, &mupt_binspt[0], false, true, (float []){0.5,0.65,0.7,0.975}, (float []){40,20}, (float []){0,79}, 0.875, "e/#gamma_{1} p_{T} [GeV]");
 
   seltext[0] = "N#mu#geq1, p_{T}#geq16 GeV, |#eta|<2.5";
   seltext[1] = "Ne/#gamma#geq1, p_{T}>15 GeV, |#eta|<2.65";
@@ -590,8 +694,8 @@ int newplotter() {
   namesel.push_back("gen");
   legsel.push_back("trigger selected");
   legendEntries = legsel;  
-  comparesamevariable(filesel, namesel, "recomchelpt", 50, 120, 2, true, true, true, (float []){1,4e2}, (float []){0.64,0.7,0.89,0.99}, false, "e p_{T} / GeV");
-  comparesamevariable(filesel, namesel, "recomchellog10d0", 250, 750, 10, true, true, true, (float []){1,9e2}, (float []){0.64,0.7,0.89,0.99}, false, "e log_{10}d_{0} / log_{10}cm");
+  //comparesamevariable(filesel, namesel, "recomchelpt", 50, 120, 2, true, true, true, (float []){1,4e2}, (float []){0.64,0.7,0.89,0.99}, false, "e p_{T} / GeV");
+  //comparesamevariable(filesel, namesel, "recomchellog10d0", 250, 750, 10, true, true, true, (float []){1,9e2}, (float []){0.64,0.7,0.89,0.99}, false, "e log_{10}d_{0} / log_{10}cm");
 
   //std::vector<int> coloroptschemetim{kBlack, /*kBlue, */kRed+2, kRed-3, /*kRed-7, kRed-9*/};
   return -1;
