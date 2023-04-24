@@ -43,6 +43,7 @@ class data_robustanalyzer {
   TH2F* overlapHist;
   std::vector<TString> selections;
   std::vector<TH1F*> all1dhists;
+  std::vector<TH2F*> all2dhists;
   TString outFileName;
 };
 

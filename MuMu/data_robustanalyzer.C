@@ -325,6 +325,8 @@ void data_robustanalyzer::fillhistinevent(TString selection, vector<int> muidx) 
   TH1F* alldxysig = (TH1F*) outfile->Get(selection+"recomu_alldxysig");
   TH1F* alllog10dxysig = (TH1F*) outfile->Get(selection+"recomu_alllog10dxysig");
 
+  TH2F* alllog10_dxy_dxysig = (TH2F*) outfile->Get(selection+"recomu_all_log10_dxy_dxysig");
+
   TH1F* leadpt = (TH1F*) outfile->Get(selection+"recomu_leadpt");
   TH1F* leadeta = (TH1F*) outfile->Get(selection+"recomu_leadeta");
   TH1F* leadphi = (TH1F*) outfile->Get(selection+"recomu_leadphi");
@@ -353,6 +355,7 @@ void data_robustanalyzer::fillhistinevent(TString selection, vector<int> muidx) 
     alllog10dxy->Fill(TMath::Log10(TMath::Abs(muRecoDxy[muidx[idx]])));
     alldxysig->Fill(muRecoDxySig[muidx[idx]]);
     alllog10dxysig->Fill(TMath::Log10(TMath::Abs(muRecoDxySig[muidx[idx]])));
+    alllog10_dxy_dxysig->Fill(TMath::Log10(TMath::Abs(muRecoDxy[muidx[idx]])), TMath::Log10(TMath::Abs(muRecoDxySig[muidx[idx]])));
   }
 
   if(muidx.size()>=1) {
@@ -427,6 +430,8 @@ void data_robustanalyzer::addhist(TString selection) {
   all1dhists.push_back(new TH1F(selection+"recomu_alllog10dxy","#mu log_{10}d_{0} / log_{10}cm",1000,-5,5));
   all1dhists.push_back(new TH1F(selection+"recomu_alldxysig","#mu d_{0} sig.",100000,0,10000));
   all1dhists.push_back(new TH1F(selection+"recomu_alllog10dxysig","#mu log_{10}(d_{0} sig.)",1000,-3,7));
+
+  all2dhists.push_back(new TH2F(selection+"recomu_all_log10_dxy_dxysig","#mu d0~sig. d0",1000,-5,5,1000,-3,7));
 
   all1dhists.push_back(new TH1F(selection+"recomu_leadpt","#mu_{1} p_{T} / GeV",550,-50,500));
   all1dhists.push_back(new TH1F(selection+"recomu_leadeta","#mu_{1} #eta",52,-2.6,2.6));
