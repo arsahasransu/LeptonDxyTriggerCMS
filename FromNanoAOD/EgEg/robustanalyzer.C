@@ -82,12 +82,12 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
   // Count events passing certain selections
   int evtcnt_nosel=0, evtcnt_metrig_t1p4_loose=0, evtcnt_t1p4trig_metrig_t1p4_loose=0;
   addhist("nosel_el");
-  addhist("mettrig_t1p4_loose_el");
-  addhist("mettrig_t1p4_loose_eb_el");
-  addhist("mettrig_t1p4_loose_ee_el");
-  addhist("t1p4trig_mettrig_t1p4_loose_el");
-  addhist("t1p4trig_mettrig_t1p4_loose_eb_el");
-  addhist("t1p4trig_mettrig_t1p4_loose_ee_el");
+  addhist("mettrig_t1p4_loose_gt2_el");
+  addhist("mettrig_t1p4_loose_gt2_eb_el");
+  addhist("mettrig_t1p4_loose_gt2_ee_el");
+  addhist("t1p4trig_mettrig_t1p4_loose_gt2_el");
+  addhist("t1p4trig_mettrig_t1p4_loose_gt2_eb_el");
+  addhist("t1p4trig_mettrig_t1p4_loose_gt2_ee_el");
 
   vector<int> nosel_el_idx;
   vector<int> t1p4_loose_el_idx;
@@ -120,16 +120,19 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
       double neutiso = ((*elneuthadiso)->at(idx))+((*elphiso)->at(idx))-((*(*rho))*ea);
       double reliso = ((*elchhadiso)->at(idx))+(neutiso>0?neutiso:0);
       
-      nosel_elidx.push_back(idx);
+      nosel_el_idx.push_back(idx);
       
       bool t1p4_loose_el_sel = true;
-      t1p4_loose_el_sel *= (TMath::Abs((*eleta)->at(idx))<2.5);
-      t1p4_loose_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? (abs((*elsieie)->at(idx)) < 0.0107) : (abs((*elsieie)->at(idx)) < 0.0275);
-      t1p4_loose_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? (abs((*eldeta)->at(idx)) < 0.00691) : (abs((*eldeta)->at(idx)) < 0.0121);
-      t1p4_loose_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? (abs((*eldphi)->at(idx)) < 0.175) : (abs((*eldphi)->at(idx)) < 0.228);
-      t1p4_loose_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? ((*elhoe)->at(idx) < (0.05+1.28/energy+0.0422*(*(*rho))/energy)) : ((*elhoe)->at(idx) < (0.05+2.3/energy+0.262*(*(*rho))/energy));
-      t1p4_loose_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? (reliso < (0.194+(0.535/((*elpt)->at(idx))))) : (reliso < (0.184+(0.519/((*elpt)->at(idx)))));
-      t1p4_loose_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? ((*elooemoop)->at(idx) < 0.138) : ((*elooemoop)->at(idx) < 0.127);
+      t1p4_loose_el_sel *= (TMath::Abs((*elpt)->at(idx))>10);
+      t1p4_loose_el_sel *= (TMath::Abs((*eleta)->at(idx))<2.4);
+      //t1p4_loose_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? (abs((*elsieie)->at(idx)) < 0.0107) : (abs((*elsieie)->at(idx)) < 0.0275);
+      t1p4_loose_el_sel *= (TMath::Abs((*eleta)->at(idx))<1.479 ? (abs((*elsieie)->at(idx)) < 0.016) : (abs((*elsieie)->at(idx)) < 0.04));
+      //t1p4_loose_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? (abs((*eldeta)->at(idx)) < 0.00691) : (abs((*eldeta)->at(idx)) < 0.0121);
+      //t1p4_loose_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? (abs((*eldphi)->at(idx)) < 0.175) : (abs((*eldphi)->at(idx)) < 0.228);
+      //t1p4_loose_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? ((*elhoe)->at(idx) < (0.05+1.28/energy+0.0422*(*(*rho))/energy)) : ((*elhoe)->at(idx) < (0.05+2.3/energy+0.262*(*(*rho))/energy));
+      t1p4_loose_el_sel *= (TMath::Abs((*eleta)->at(idx))<1.479 ? ((*elhoe)->at(idx) < (0.2/energy)) : ((*elhoe)->at(idx) < (0.2/energy)));
+      //t1p4_loose_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? (reliso < (0.194+(0.535/((*elpt)->at(idx))))) : (reliso < (0.184+(0.519/((*elpt)->at(idx)))));
+      //t1p4_loose_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? ((*elooemoop)->at(idx) < 0.138) : ((*elooemoop)->at(idx) < 0.127);
       t1p4_loose_el_sel *= ((*elseedtime)->at(idx) > 1.4);
       if(t1p4_loose_el_sel) {
 	t1p4_loose_el_idx.push_back(idx);
@@ -160,17 +163,20 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
       */
     } // End of loop on electrons
                
-    fillhistinevent("nosel_el", nosel_elidx);
-    if(mettrigs && t1p4_loose_el_idx.size()>=1) fillhistinevent("mettrig_t1p4_loose_el", t1p4_loose_el_idx);
-    if(mettrigs && t1p4_loose_ebel_idx.size()>=1) fillhistinevent("mettrig_t1p4_loose_eb_el", t1p4_loose_ebel_idx);
-    if(mettrigs && t1p4_loose_eeel_idx.size()>=1) fillhistinevent("mettrig_t1p4_loose_ee_el", t1p4_loose_eeel_idx);
-    if(t1p4nstrig && mettrigs && t1p4_loose_el_idx.size()>=1) fillhistinevent("t1p4trig_mettrig_t1p4_loose_el", t1p4_loose_el_idx);
-    if(t1p4nstrig && mettrigs && t1p4_loose_ebel_idx.size()>=1) fillhistinevent("t1p4trig_mettrig_t1p4_loose_eb_el", t1p4_loose_ebel_idx);
-    if(t1p4nstrig && mettrigs && t1p4_loose_eeel_idx.size()>=1) fillhistinevent("t1p4trig_mettrig_t1p4_loose_ee_el", t1p4_loose_eeel_idx);
+    fillhistinevent("nosel_el", nosel_el_idx);
+    bool mettrig_t1p4_loose_sel = (mettrigs && t1p4_loose_el_idx.size()>=2);
+    bool mettrig_t1p4_loose_eb_sel = (mettrig_t1p4_loose_sel && t1p4_loose_ebel_idx.size()>=1);
+    bool mettrig_t1p4_loose_ee_sel = (mettrig_t1p4_loose_sel && t1p4_loose_eeel_idx.size()>=1);
+    if(mettrig_t1p4_loose_sel) fillhistinevent("mettrig_t1p4_loose_gt2_el", t1p4_loose_el_idx);
+    if(mettrig_t1p4_loose_eb_sel) fillhistinevent("mettrig_t1p4_loose_gt2_eb_el", t1p4_loose_ebel_idx);
+    if(mettrig_t1p4_loose_ee_sel) fillhistinevent("mettrig_t1p4_loose_gt2_ee_el", t1p4_loose_eeel_idx);
+    if(t1p4nstrig && mettrig_t1p4_loose_sel) fillhistinevent("t1p4trig_mettrig_t1p4_loose_gt2_el", t1p4_loose_el_idx);
+    if(t1p4nstrig && mettrig_t1p4_loose_sel) fillhistinevent("t1p4trig_mettrig_t1p4_loose_gt2_eb_el", t1p4_loose_ebel_idx);
+    if(t1p4nstrig && mettrig_t1p4_loose_sel) fillhistinevent("t1p4trig_mettrig_t1p4_loose_gt2_ee_el", t1p4_loose_eeel_idx);
 
     evtcnt_nosel++;
-    if(mettrigs && t1p4_loose_el_idx.size()>=1) evtcnt_metrig_t1p4_loose++;
-    if(t1p4nstrig && mettrigs && t1p4_loose_el_idx.size()>=1) evtcnt_t1p4trig_metrig_t1p4_loose++;
+    if(mettrig_t1p4_loose_sel) evtcnt_metrig_t1p4_loose++;
+    if(t1p4nstrig && mettrig_t1p4_loose_sel) evtcnt_t1p4trig_metrig_t1p4_loose++;
     
     // Clear all the vectors
     nosel_el_idx.clear();
