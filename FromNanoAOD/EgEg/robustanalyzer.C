@@ -193,8 +193,8 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
     if(t1p4nstrig && mettrig_t1p4_loose_sel) fillhistinevent("t1p4trig_mettrig_t1p4_loose_gt2_el", t1p4_loose_el_idx);
     if(t1p4nstrig && mettrig_t1p4_loose_sel) fillhistinevent("t1p4trig_mettrig_t1p4_loose_gt2_eb_el", t1p4_loose_ebel_idx);
     if(t1p4nstrig && mettrig_t1p4_loose_sel) fillhistinevent("t1p4trig_mettrig_t1p4_loose_gt2_ee_el", t1p4_loose_eeel_idx);
-    if(mettrigs && veto_el_idx.size()>=2) fillhistinevent("mettrig_dipho10_veto_el", veto_el_idx);
-    if(reftrig && mettrigs && veto_el_idx.size()>=2) fillhistinevent("reftrig_mettrig_dipho10_veto_el", veto_el_idx);
+    if(mettrigs && veto_el_idx.size()>=2) fillhistinevent("mettrig_dipho10gt2_veto_el", veto_el_idx);
+    if(reftrig && mettrigs && veto_el_idx.size()>=2) fillhistinevent("reftrig_mettrig_dipho10gt2_veto_el", veto_el_idx);
 
     evtcnt_nosel++;
     if(mettrig_t1p4_loose_sel) evtcnt_metrig_t1p4_loose++;
