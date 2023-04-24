@@ -31,6 +31,7 @@ robustanalyzer::robustanalyzer(TString filename, TString outfilename, int numCor
   rho = new TTreeReaderValue<double>((*tree), "rho");
   HLT_DiPhoton10sminlt0p12 = new TTreeReaderValue<bool>((*tree), "HLT_DiPhoton10sminlt0p12");
   HLT_DiPhoton10Time1p4ns = new TTreeReaderValue<bool>((*tree), "HLT_DiPhoton10Time1p4ns");
+  HLT_DiPhoton10_CaloIdL = new TTreeReaderValue<bool>((*tree), "HLT_DiPhoton10_CaloIdL");
   HLTOR_METTrig = new TTreeReaderValue<bool>((*tree), "HLTOR_METTrig");
 
   eln = new TTreeReaderValue<int>((*tree), "ele_n");
@@ -80,7 +81,7 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
   int event = beginevent-1;
   
   // Count events passing certain selections
-  int evtcnt_nosel=0, evtcnt_metrig_t1p4_loose=0, evtcnt_t1p4trig_metrig_t1p4_loose=0;
+  int evtcnt_nosel=0, evtcnt_metrig_t1p4_loose=0, evtcnt_t1p4trig_metrig_t1p4_loose=0, evtcnt_mettrig_dipho10_veto=0;
   addhist("nosel_el");
   addhist("mettrig_t1p4_loose_el");
   addhist("mettrig_t1p4_loose_eb_el");
@@ -88,11 +89,14 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
   addhist("t1p4trig_mettrig_t1p4_loose_el");
   addhist("t1p4trig_mettrig_t1p4_loose_eb_el");
   addhist("t1p4trig_mettrig_t1p4_loose_ee_el");
+  addhist("mettrig_dipho10_veto_el");
+  addhist("reftrig_mettrig_dipho10_veto_el");
 
   vector<int> nosel_el_idx;
   vector<int> t1p4_loose_el_idx;
   vector<int> t1p4_loose_ebel_idx;
   vector<int> t1p4_loose_eeel_idx;
+  vector<int> veto_el_idx;
  
   // Loop beginning on events
   while(tree->Next()) {
@@ -106,6 +110,7 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
     Bool_t mettrigs = (*(*HLTOR_METTrig));
     Bool_t t1p4nstrig = (*(*HLT_DiPhoton10Time1p4ns));
     Bool_t sminlt0p12trig = (*(*HLT_DiPhoton10sminlt0p12));
+    Bool_t reftrig = (*(*HLT_DiPhoton10_CaloIdL));
     
     // Loop beginning on electrons
     for(unsigned int idx=0; idx<(*(*eln)); idx++) {
@@ -120,7 +125,7 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
       double neutiso = ((*elneuthadiso)->at(idx))+((*elphiso)->at(idx))-((*(*rho))*ea);
       double reliso = ((*elchhadiso)->at(idx))+(neutiso>0?neutiso:0);
       
-      nosel_elidx.push_back(idx);
+      nosel_el_idx.push_back(idx);
       
       bool t1p4_loose_el_sel = true;
       t1p4_loose_el_sel *= (TMath::Abs((*eleta)->at(idx))<2.5);
@@ -135,6 +140,21 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
 	t1p4_loose_el_idx.push_back(idx);
 	if(TMath::Abs((*eleta)->at(idx))<1.479) t1p4_loose_ebel_idx.push_back(idx);
 	else t1p4_loose_eeel_idx.push_back(idx);
+      }
+      
+      bool veto_el_sel = true;
+      veto_el_sel *= ((*elpt)->at(idx) > 10);
+      veto_el_sel *= (TMath::Abs((*eleta)->at(idx))<2.5);
+      veto_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? (abs((*elsieie)->at(idx)) < 0.0117) : (abs((*elsieie)->at(idx)) < 0.0298);
+      veto_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? (abs((*eldeta)->at(idx)) < 0.0071) : (abs((*eldeta)->at(idx)) < 0.0173);
+      veto_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? (abs((*eldphi)->at(idx)) < 0.208) : (abs((*eldphi)->at(idx)) < 0.234);
+      veto_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? ((*elhoe)->at(idx) < (0.05+1.28/energy+0.0422*(*(*rho))/energy)) : ((*elhoe)->at(idx) < (0.05+2.3/energy+0.262*(*(*rho))/energy));
+      veto_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? (reliso < (0.406+(0.535/((*elpt)->at(idx))))) : (reliso < (0.342+(0.519/((*elpt)->at(idx)))));
+      veto_el_sel *= TMath::Abs((*eleta)->at(idx))<1.479 ? ((*elooemoop)->at(idx) < 0.178) : ((*elooemoop)->at(idx) < 0.137);
+      if(veto_el_sel) {
+	veto_el_idx.push_back(idx);
+	//if(TMath::Abs((*eleta)->at(idx))<1.479) veto_ebel_idx.push_back(idx);
+	//else veto_eeel_idx.push_back(idx);
       }
       
       /*
@@ -160,26 +180,30 @@ void robustanalyzer::analyzersinglefile(int splitCnt) {
       */
     } // End of loop on electrons
                
-    fillhistinevent("nosel_el", nosel_elidx);
+    fillhistinevent("nosel_el", nosel_el_idx);
     if(mettrigs && t1p4_loose_el_idx.size()>=1) fillhistinevent("mettrig_t1p4_loose_el", t1p4_loose_el_idx);
     if(mettrigs && t1p4_loose_ebel_idx.size()>=1) fillhistinevent("mettrig_t1p4_loose_eb_el", t1p4_loose_ebel_idx);
     if(mettrigs && t1p4_loose_eeel_idx.size()>=1) fillhistinevent("mettrig_t1p4_loose_ee_el", t1p4_loose_eeel_idx);
     if(t1p4nstrig && mettrigs && t1p4_loose_el_idx.size()>=1) fillhistinevent("t1p4trig_mettrig_t1p4_loose_el", t1p4_loose_el_idx);
     if(t1p4nstrig && mettrigs && t1p4_loose_ebel_idx.size()>=1) fillhistinevent("t1p4trig_mettrig_t1p4_loose_eb_el", t1p4_loose_ebel_idx);
     if(t1p4nstrig && mettrigs && t1p4_loose_eeel_idx.size()>=1) fillhistinevent("t1p4trig_mettrig_t1p4_loose_ee_el", t1p4_loose_eeel_idx);
+    if(mettrigs && veto_el_idx.size()>=1) fillhistinevent("mettrig_dipho10_veto_el", veto_el_idx);
+    if(reftrig && mettrigs && veto_el_idx.size()>=1) fillhistinevent("reftrig_mettrig_dipho10_veto_el", veto_el_idx);
 
     evtcnt_nosel++;
     if(mettrigs && t1p4_loose_el_idx.size()>=1) evtcnt_metrig_t1p4_loose++;
     if(t1p4nstrig && mettrigs && t1p4_loose_el_idx.size()>=1) evtcnt_t1p4trig_metrig_t1p4_loose++;
+    if(mettrigs && veto_el_idx.size()>=1) evtcnt_mettrig_dipho10_veto++;
     
     // Clear all the vectors
     nosel_el_idx.clear();
     t1p4_loose_el_idx.clear();
     t1p4_loose_ebel_idx.clear();
     t1p4_loose_eeel_idx.clear();
+    veto_el_idx.clear();
     
   } // End of loop on events
-  cout<<totEntries<<"\t"<<evtcnt_nosel<<"\t"<<evtcnt_metrig_t1p4_loose<<"\t"<<evtcnt_t1p4trig_metrig_t1p4_loose<<endl;
+  cout<<totEntries<<"\t"<<evtcnt_nosel<<"\t"<<evtcnt_metrig_t1p4_loose<<"\t"<<evtcnt_t1p4trig_metrig_t1p4_loose<<"\t"<<evtcnt_mettrig_dipho10_veto<<endl;
 }
 
 // Function to add a set of histograms for a selection
