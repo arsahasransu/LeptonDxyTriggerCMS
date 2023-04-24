@@ -30,7 +30,7 @@ class robustanalyzer {
 
   TTreeReaderValue<int> *run, *lumi;
   TTreeReaderValue<double> *rho;
-  TTreeReaderValue<bool> *HLT_DiPhoton10sminlt0p12, *HLT_DiPhoton10Time1p4ns, *HLTOR_METTrig;
+  TTreeReaderValue<bool> *HLT_DiPhoton10sminlt0p12, *HLT_DiPhoton10Time1p4ns, *HLT_DiPhoton10_CaloIdL, *HLTOR_METTrig;
 
   TTreeReaderValue<int> *eln;
   TTreeReaderValue<vector<double>> *ele, *elpt, *eleta, *elphi, *eld0, *eldz, *elseedtime, *elsmin, *elsmaj, *elsieie, *eldeta, *eldphi, *elhoe, *elchhadiso, *elneuthadiso, *elphiso, *elooemoop, *elinnerhits;
