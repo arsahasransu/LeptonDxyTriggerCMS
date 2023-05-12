@@ -140,6 +140,7 @@ void data_robustanalyzer::analyzersinglefile() {
   addhist("sel13"); // sel12+mudxy>0.01
   addhist("sel14"); // sel13+ecal iso.
   addhist("sel15"); // sel13mu+mupt>20+sel14eg+egpt>20
+  addhist("sel15muonly"); // sel13mu+mupt>20+sel14eg+egpt>20
   addhist("sel80"); // new mu cuts + loose egamma cuts
   if(isMC) addhistcomparegenrecounseeded("sel10us");
   addhistunseeded("sel10us"); // Unseeded e/gamma objects, pT and eta requirements only
@@ -300,7 +301,7 @@ void data_robustanalyzer::analyzersinglefile() {
 
 	basicseleg = true;
 	basicseleg *= (TMath::Abs(egRecoEta[idx])<2.65);
-	basicseleg *= (egRecoPt[idx]>=15);
+	basicseleg *= (egRecoPt[idx]>=20);
 	if(basicseleg) basicselegidx.push_back(idx);
 
 	sel2eg = true;
@@ -449,12 +450,13 @@ void data_robustanalyzer::analyzersinglefile() {
       if(isMC) fillgenhistinevent();
       fillhistinevent("nosel", noselegidx, noselmuidx);
       fillhistinevent("basicsel", basicselegidx, basicselmuidx);
-      fillhistinevent("sel2", sel2egidx, sel2muidx);
+      fillhistinevent("sel2", basicselegidx, sel2muidx);
       fillhistinevent("sel3", sel3egidx, sel3muidx);
       fillhistinevent("sel10", sel10egidx, sel10muidx);
       fillhistinevent("sel13", sel13egidx, sel13muidx);
       fillhistinevent("sel14", sel14egidx, sel14muidx);
       fillhistinevent("sel15", sel15egidx, sel15muidx);
+      fillhistinevent("sel15muonly", basicselegidx, sel15muidx);
       fillhistinevent("sel80", sel80egidx, sel80muidx);
       if(isMC && sel10egusidx.size()>0) fillhistcomparegenrecounseeded("sel10us", sel10egusidx);
       fillhistineventunseeded("sel10us", sel10egusidx);
