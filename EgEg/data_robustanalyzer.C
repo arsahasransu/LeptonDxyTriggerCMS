@@ -187,6 +187,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   //addhist("basicsel");
   addhistunseeded("basicselus");
   if(isMC)addhistgenmchunseeded("genptgt10Abasicselus");
+  if(isMC)addhistgenmchunseeded("genptgt10Aforeisous");
   /*
   if(isMC)addhistgenmchunseeded("genbasicselptgt15Abasicselus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAbasicselus");
@@ -261,6 +262,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     vector<int> noselegusidx;
     vector<int> basicselegidx;
     vector<int> basicselegusidx;
+    vector<int> foreisoegusidx;
     vector<int> ptgt25ngt2noidegidx;
     vector<int> ptgt25ngt2noidegusidx;
     vector<int> ptgt25ngt2zwindnoidegusidx;
@@ -477,6 +479,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 
       bool basicseleg = false;
       bool basicselegus = false;
+      bool foreisoegus = false;
       bool ptgt25ngt2noideg = false;
       bool ptgt25ngt2noidegus = false;
       bool selelevetoideg = false;
@@ -591,6 +594,13 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	basicselegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
 	basicselegus *= (egusRecoPt[idx]>=10);
 	if(basicselegus) basicselegusidx.push_back(idx);
+
+	foreisoegus = true;
+	foreisoegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
+	foreisoegus *= (egusRecoPt[idx]>=10);
+	foreisoegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.012:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.03);
+	foreisoegus *= egushltEgammaHoverE[idx]<0.1*egushltEgammaSuperClusterEnergy[idx];
+	if(foreisoegus) foreisoegusidx.push_back(idx);
 
         ptgt25ngt2noidegus = true;
 	ptgt25ngt2noidegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
@@ -833,6 +843,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     if(isMC && noselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10etabin14_16_24d0lt1cmAnoselus", genptgt10etabin14_16_24d0lt1cmegidx, noselegusidx);
     */
     if(isMC && basicselegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10Abasicselus", genptgt10egidx, basicselegusidx);
+    if(isMC && foreisoegusidx.size()>=1) fillhistineventgenmchunseeded("genptgt10Aforeisous", genptgt10egidx, foreisoegusidx);
     if(isMC && cut1usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcut1us", genbasicptgt10selbaregidx, cut1usidx);
     if(isMC && cut1usidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcut1us", genbasicptgt10selecegidx, cut1usidx);
     if(isMC && genptgt10egidx.size()>=1 && cut1idx.size()>=1 && cut1usidx.size()>=2 ) fillhistineventgenmchunseeded("genptgt10Acut1us", genptgt10egidx, cut1usidx);
@@ -875,6 +886,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     noselegusidx.clear();
     basicselegidx.clear();
     basicselegusidx.clear();
+    foreisoegusidx.clear();
     ptgt25ngt2noidegidx.clear();
     ptgt25ngt2noidegusidx.clear();
     ptgt25ngt2zwindnoidegusidx.clear();

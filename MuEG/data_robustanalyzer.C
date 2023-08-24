@@ -135,12 +135,15 @@ void data_robustanalyzer::analyzersinglefile() {
   addhist("nosel");
   addhist("basicsel");
   addhist("sel2"); // Selection to cross-check the trigger filter selection
+  addhist("sel2WNoEG"); // Selection to cross-check the trigger filter selection
   addhist("sel3"); // Selection to cross-check the parent triggers
   addhist("sel10"); // e/gamma objects, pT and eta requirements only
   addhist("sel13"); // sel12+mudxy>0.01
   addhist("sel14"); // sel13+ecal iso.
   addhist("sel15"); // sel13mu+mupt>20+sel14eg+egpt>20
-  addhist("sel15muonly"); // sel13mu+mupt>20+sel14eg+egpt>20
+  addhist("sel16"); // sel15mu+mupt>20+sel15eg+sieie
+  addhist("sel17"); // sel15mu+mupt>20+sel15eg+sieie+hoe
+  addhist("sel18"); // sel15mu+mupt>20+sel15eg+sieie+hoe
   addhist("sel80"); // new mu cuts + loose egamma cuts
   if(isMC) addhistcomparegenrecounseeded("sel10us");
   addhistunseeded("sel10us"); // Unseeded e/gamma objects, pT and eta requirements only
@@ -182,6 +185,9 @@ void data_robustanalyzer::analyzersinglefile() {
   vector<int> sel14egusidx;
   vector<int> sel15egidx;
   vector<int> sel15egusidx;
+  vector<int> sel16egidx;
+  vector<int> sel17egidx;
+  vector<int> sel18egidx;
   vector<int> sel20egidx; 
   vector<int> sel70egidx;
   vector<int> sel80egidx;
@@ -288,6 +294,9 @@ void data_robustanalyzer::analyzersinglefile() {
       bool sel14egus = false;
       bool sel15eg = false;
       bool sel15egus = false;
+      bool sel16eg = false;
+      bool sel17eg = false;
+      bool sel18eg = false;
       bool sel20eg = false;
       bool sel70eg = false;
       bool sel80eg = false;
@@ -309,8 +318,6 @@ void data_robustanalyzer::analyzersinglefile() {
 	sel2eg *= (egRecoPt[idx]>=20);
 	sel2eg *= (TMath::Abs(egRecoEta[idx])<2.65);
 	sel2eg *= isL1EgSeeded(idx);
-	sel2eg *= abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5[idx]<0.014:eghltEgammaClusterShape_sigmaIEtaIEta5x5[idx]<0.035;
-	sel2eg *= abs(egRecoEta[idx])<1.479?eghltEgammaHoverE[idx]<0.15*eghltEgammaSuperClusterEnergy[idx]:eghltEgammaHoverE[idx]<0.1*eghltEgammaSuperClusterEnergy[idx];
 	if(sel2eg) sel2egidx.push_back(idx);
 
 	sel3eg = true;
@@ -353,10 +360,34 @@ void data_robustanalyzer::analyzersinglefile() {
 	sel15eg *= (egRecoPt[idx]>=20);
 	sel15eg *= (TMath::Abs(egRecoEta[idx])<2.5);
 	sel15eg *= isL1EgSeeded(idx);
-	sel15eg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.012:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.03);
-	sel15eg *= eghltEgammaHoverE[idx]/eghltEgammaSuperClusterEnergy[idx]<0.1;
-	sel15eg *= (TMath::Abs(egRecoEta[idx])<1.479?eghltEgammaEcalPFClusterIso[idx]/eghltEgammaSuperClusterEnergy[idx]<0.15:eghltEgammaEcalPFClusterIso[idx]/eghltEgammaSuperClusterEnergy[idx]<0.1);
 	if(sel15eg) sel15egidx.push_back(idx);
+
+	sel16eg = true;
+	sel16eg *= (sel15muidx.size()>0);
+	sel16eg *= (egRecoPt[idx]>=20);
+	sel16eg *= (TMath::Abs(egRecoEta[idx])<2.5);
+	sel16eg *= isL1EgSeeded(idx);
+	sel16eg *= abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.012:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.03;
+	if(sel16eg) sel16egidx.push_back(idx);
+
+	sel17eg = true;
+	sel17eg *= (sel15muidx.size()>0);
+	sel17eg *= (egRecoPt[idx]>=20);
+	sel17eg *= (TMath::Abs(egRecoEta[idx])<2.5);
+	sel17eg *= isL1EgSeeded(idx);
+	sel17eg *= abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.012:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.03;
+	sel17eg *= eghltEgammaHoverE[idx]<0.1*eghltEgammaSuperClusterEnergy[idx];
+	if(sel17eg) sel17egidx.push_back(idx);
+
+	sel18eg = true;
+	sel18eg *= (sel15muidx.size()>0);
+	sel18eg *= (egRecoPt[idx]>=20);
+	sel18eg *= (TMath::Abs(egRecoEta[idx])<2.5);
+	sel18eg *= isL1EgSeeded(idx);
+	sel18eg *= abs(egRecoEta[idx])<1.479?eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.012:eghltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.03;
+	sel18eg *= eghltEgammaHoverE[idx]<0.1*eghltEgammaSuperClusterEnergy[idx];
+	sel18eg *= abs(egRecoEta[idx])<1.479?eghltEgammaEcalPFClusterIso[idx]<0.15*eghltEgammaSuperClusterEnergy[idx]:eghltEgammaEcalPFClusterIso[idx]<0.1*eghltEgammaSuperClusterEnergy[idx];
+	if(sel18eg) sel18egidx.push_back(idx);
 
 	sel80eg = true;
 	sel80eg *= (sel80muidx.size()>0);
@@ -450,13 +481,15 @@ void data_robustanalyzer::analyzersinglefile() {
       if(isMC) fillgenhistinevent();
       fillhistinevent("nosel", noselegidx, noselmuidx);
       fillhistinevent("basicsel", basicselegidx, basicselmuidx);
-      fillhistinevent("sel2", basicselegidx, sel2muidx);
+      fillhistinevent("sel2", sel2egidx, sel2muidx);
       fillhistinevent("sel3", sel3egidx, sel3muidx);
       fillhistinevent("sel10", sel10egidx, sel10muidx);
       fillhistinevent("sel13", sel13egidx, sel13muidx);
       fillhistinevent("sel14", sel14egidx, sel14muidx);
       fillhistinevent("sel15", sel15egidx, sel15muidx);
-      fillhistinevent("sel15muonly", basicselegidx, sel15muidx);
+      fillhistinevent("sel16", sel16egidx, sel15muidx);
+      fillhistinevent("sel17", sel17egidx, sel15muidx);
+      fillhistinevent("sel18", sel18egidx, sel15muidx);
       fillhistinevent("sel80", sel80egidx, sel80muidx);
       if(isMC && sel10egusidx.size()>0) fillhistcomparegenrecounseeded("sel10us", sel10egusidx);
       fillhistineventunseeded("sel10us", sel10egusidx);
@@ -523,6 +556,9 @@ void data_robustanalyzer::analyzersinglefile() {
     sel14egusidx.clear();
     sel15egidx.clear();
     sel15egusidx.clear();
+    sel16egidx.clear();
+    sel17egidx.clear();
+    sel18egidx.clear();
     sel20egidx.clear();
     sel70egidx.clear();
     sel80egidx.clear();

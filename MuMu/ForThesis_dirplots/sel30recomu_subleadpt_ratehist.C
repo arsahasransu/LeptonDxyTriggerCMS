@@ -627,7 +627,7 @@ void sel30recomu_subleadpt_ratehist()
    tex->SetTextSize(0.045);
    tex->SetLineWidth(2);
    tex->Draw();
-      tex = new TLatex(30,0.6,"d_{0} > 0.01 cm, d_{0} sig. > 1.4");
+      tex = new TLatex(30,0.6,"d_{0} > 0.01 cm, d_{0} sig. > 25");
    tex->SetTextFont(42);
    tex->SetTextSize(0.045);
    tex->SetLineWidth(2);

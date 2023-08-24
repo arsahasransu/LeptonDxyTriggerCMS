@@ -431,21 +431,22 @@ int newplotter() {
   scale.push_back(1);
  
   legendEntries = leg;  
-  comparesamevariable(file, name, "subleadpt", subleadmupt_nbinsptgt33, &subleadmupt_binsptgt33[0], true, false, false, (float []){5e-2,5}, (float []){0.575,0.6,0.825,0.99}, (float []){33,2}, true, "#mu_{2} p_{T} [GeV]", "normalized events / 3 GeV", false, "sel3recomu_subleadpt");
+  //comparesamevariable(file, name, "subleadpt", subleadmupt_nbinsptgt33, &subleadmupt_binsptgt33[0], true, false, false, (float []){5e-2,5}, (float []){0.575,0.6,0.825,0.99}, (float []){33,2}, true, "#mu_{2} p_{T} [GeV]", "normalized events / 3 GeV", false, "sel3recomu_subleadpt");
+  //comparesamevariable(file, name, "subleadpt", subleadmupt_nbinsptgt33, &subleadmupt_binsptgt33[0], false, false, false, (float []){0.5,34}, (float []){0.575,0.6,0.825,0.99}, (float []){47,12}, false, "#mu_{2} p_{T} [GeV]", "events / 3 GeV", false, "sel3recomu_subleadpt_notnorm");
 
   seltext[0] = "N#mu#geq2, p_{T}#geq33 GeV";
   seltext[1] = "#mu |#eta|<2.5, d_{0}>0.01 cm";
-  makeratehist({"sel3recomu","sel3recomu","sel3recomu","sel3recomu","sel3recomu"}, "subleadpt", subleadmupt_nbinsptgt33, &subleadmupt_binsptgt33[0], false, false, (float []){0.5,0.65,0.7,0.975}, (float []){31,0.7}, (float []){0,0.85}, 0.875, "#mu_{2} p_{T} [GeV]");
+  //makeratehist({"sel3recomu","sel3recomu","sel3recomu","sel3recomu","sel3recomu"}, "subleadpt", subleadmupt_nbinsptgt33, &subleadmupt_binsptgt33[0], false, false, (float []){0.5,0.65,0.7,0.975}, (float []){31,0.7}, (float []){0,0.85}, 0.875, "#mu_{2} p_{T} [GeV]");
 
   vector<double> subleadmupt_binspt{14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,33,36,39,42,45,48,51,54,57,60};
   int subleadmupt_nbinspt = subleadmupt_binspt.size()-1;
   seltext[0] = "N#mu#geq2, p_{T}#geq16 GeV";
   seltext[1] = "#mu |#eta|<2.5, d_{0}>0.01 cm";
-  makeratehist({"sel31recomu","sel31recomu","sel31recomu","sel31recomu","sel31recomu"}, "subleadpt", subleadmupt_nbinspt, &subleadmupt_binspt[0], false, false, (float []){0.5,0.65,0.7,0.975}, (float []){35,1.5}, (float []){0,5}, 0.875, "#mu_{2} p_{T} [GeV]");
+  //makeratehist({"sel31recomu","sel31recomu","sel31recomu","sel31recomu","sel31recomu"}, "subleadpt", subleadmupt_nbinspt, &subleadmupt_binspt[0], false, false, (float []){0.5,0.65,0.7,0.975}, (float []){35,1.5}, (float []){0,5}, 0.875, "#mu_{2} p_{T} [GeV]");
 
   seltext[0] = "N#mu#geq2, p_{T}#geq16 GeV";
   seltext[1] = "#mu |#eta|<2.5";
-  makeratehist({"sel2recomu","sel2recomu","sel2recomu","sel2recomu","sel2recomu"}, "subleadpt", subleadmupt_nbinspt, &subleadmupt_binspt[0], false, false, (float []){0.5,0.625,0.7,0.95}, (float []){40,12}, (float []){0,33}, 0.875, "#mu_{2} p_{T} [GeV]");
+  //makeratehist({"sel2recomu","sel2recomu","sel2recomu","sel2recomu","sel2recomu"}, "subleadpt", subleadmupt_nbinspt, &subleadmupt_binspt[0], false, false, (float []){0.5,0.625,0.7,0.95}, (float []){40,12}, (float []){0,33}, 0.875, "#mu_{2} p_{T} [GeV]");
 
   file.clear();
   name.clear();
@@ -471,7 +472,7 @@ int newplotter() {
   name.push_back("sel2recomumu");
   leg.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 cm");
   coloropt.push_back(kRed+3);
-  histtype.push_back("hist  same");
+  histtype.push_back("hist e1 same");
   markerstyle.push_back(1);
   markersize.push_back(0);
   legendmarkerstyle.push_back("l");
@@ -481,7 +482,7 @@ int newplotter() {
   name.push_back("sel2recomumu");
   leg.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 30 cm");
   coloropt.push_back(kRed);
-  histtype.push_back("hist  same");
+  histtype.push_back("hist e1 same");
   markerstyle.push_back(1);
   markersize.push_back(0);
   legendmarkerstyle.push_back("l");
@@ -491,7 +492,7 @@ int newplotter() {
   name.push_back("sel2recomumu");
   leg.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 1 m");
   coloropt.push_back(kOrange+2);
-  histtype.push_back("hist  same");
+  histtype.push_back("hist e1 same");
   markerstyle.push_back(1);
   markersize.push_back(0);
   legendmarkerstyle.push_back("l");
@@ -501,7 +502,7 @@ int newplotter() {
   name.push_back("sel2recomumu");
   leg.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 m");
   coloropt.push_back(kOrange);
-  histtype.push_back("hist  same");
+  histtype.push_back("hist e1 same");
   markerstyle.push_back(1);
   markersize.push_back(0);
   legendmarkerstyle.push_back("l");
@@ -510,15 +511,15 @@ int newplotter() {
   legendEntries = leg;  
   vector<double> leadsubleadmumu_binsM{0, 4, 8, 16, 28, 34, 42, 48, 56, 64, 72, 80, 84, 88, 90, 91, 92, 94, 96, 100, 108, 116, 125};
   int leadsubleadmumu_nbinsM = leadsubleadmumu_binsM.size()-1;
-  comparesamevariable(file, name, "leadsubleadM", leadsubleadmumu_nbinsM, &leadsubleadmumu_binsM[0], true, false, false, (float []){7e-3,5}, (float []){0.575,0.65,0.825,0.99}, (float []){4,0.7}, true, "M(#mu_{1},#mu_{2}) [GeV]", "normalized events / GeV", true, "sel2recomumu_leadsublead_M");
+  comparesamevariable(file, name, "leadsubleadM", leadsubleadmumu_nbinsM, &leadsubleadmumu_binsM[0], true, false, false, (float []){7e-3,5}, (float []){0.575,0.65,0.825,0.99}, (float []){4,0.7}, true, "M(#mu_{1},#mu_{2}) [GeV]", "normalized events / GeV", true, "sel2recomumu_leadsublead_M_wE");
 
   vector<double> leadsubleadmumu_binsdR{0.0, 0.2, 0.4, 0.8, 1.2, 1.6, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 4};
   int leadsubleadmumu_nbinsdR = leadsubleadmumu_binsdR.size()-1;
-  comparesamevariable(file, name, "leadsubleaddR", leadsubleadmumu_nbinsdR, &leadsubleadmumu_binsdR[0], true, false, false, (float []){2e-3,5}, (float []){0.125,0.65,0.375,0.99}, (float []){2.5,0.7}, true, "#DeltaR(#mu_{1},#mu_{2})", "normalized events / unit", true, "sel2recomumu_leadsublead_dR");
+  comparesamevariable(file, name, "leadsubleaddR", leadsubleadmumu_nbinsdR, &leadsubleadmumu_binsdR[0], true, false, false, (float []){2e-3,5}, (float []){0.125,0.65,0.375,0.99}, (float []){2.5,0.7}, true, "#DeltaR(#mu_{1},#mu_{2})", "normalized events / unit", true, "sel2recomumu_leadsublead_dR_wE");
 
   seltext[0] = "N#mu#geq2, p_{T}#geq16 GeV, |#eta|<2.5";
   seltext[1] = "M<80 OR M>100, dR>1";
-  makeratehist({"sel100recomu","sel100recomu","sel100recomu","sel100recomu","sel100recomu"}, "subleadpt", subleadmupt_nbinspt, &subleadmupt_binspt[0], false, false, (float []){0.5,0.66,0.7,0.99}, (float []){37,0.4}, (float []){0,0.99}, 0.875, "#mu_{2} p_{T} [GeV]");
+  //makeratehist({"sel100recomu","sel100recomu","sel100recomu","sel100recomu","sel100recomu"}, "subleadpt", subleadmupt_nbinspt, &subleadmupt_binspt[0], false, false, (float []){0.5,0.66,0.7,0.99}, (float []){37,0.4}, (float []){0,0.99}, 0.875, "#mu_{2} p_{T} [GeV]");
 
   seltext[0] = "N#mu#geq2, p_{T}#geq16 GeV";
   seltext[1] = "#mu |#eta|<2.5";
@@ -587,13 +588,13 @@ int newplotter() {
 
   vector<double> mu_binslog10dxy{-4.0, -3.6, -3.2, -2.8, -2.4, -2.0, -1.6, -1.2, -0.8, -0.4, 0.0, 0.4, 0.8, 1.2, 1.6, 2.0};
   int mu_nbinslog10dxy = mu_binslog10dxy.size()-1;
-  comparesamevariable(file, name, "subleadlog10dxy", mu_nbinslog10dxy, &mu_binslog10dxy[0], false, false, false, (float []){0,0.52}, (float []){0.55,0.68,0.825,0.99}, (float []){-3.6, 0.35}, true, "#mu_{2} log_{10}d_{0} [log_{10} cm]", "normalized events / 0.4 log_{10} cm", false, "sel2recomu_subleadmu_log10dxy");
+  //comparesamevariable(file, name, "subleadlog10dxy", mu_nbinslog10dxy, &mu_binslog10dxy[0], false, false, false, (float []){0,0.52}, (float []){0.55,0.68,0.825,0.99}, (float []){-3.6, 0.35}, true, "#mu_{2} log_{10}d_{0} [log_{10} cm]", "normalized events / 0.4 log_{10} cm", false, "sel2recomu_subleadmu_log10dxy");
   vector<double> subleadmupt_binslog10dxy{-3.6, -3.5, -3.4, -3.3, -3.2, -3.1, -3.0, -2.9, -2.8, -2.7, -2.6, -2.5, -2.4, -2.3, -2.2, -2.1, -2.0, -1.9, -1.8, -1.7, -1.6, -1.5, -1.4, -1.3, -1.2, -1.1, -1.0, -0.9, -0.8, -0.7, -0.6, -0.4, -0.2, 0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0};
   int subleadmupt_nbinslog10dxy = subleadmupt_binslog10dxy.size()-1;
-  comparesamevariable(file, name, "alllog10dxy", subleadmupt_nbinslog10dxy, &subleadmupt_binslog10dxy[0], false, false, false, (float []){0,0.19}, (float []){0.15,0.65,0.4,0.95}, (float []){0,0.15}, true, "#mu_{2} log_{10}d_{0} [log_{10} cm]", "normalized events / log_{10} cm", true, "sel2_alllog10dxy");
+  //comparesamevariable(file, name, "alllog10dxy", subleadmupt_nbinslog10dxy, &subleadmupt_binslog10dxy[0], false, false, false, (float []){0,0.19}, (float []){0.15,0.65,0.4,0.95}, (float []){0,0.15}, true, "#mu_{2} log_{10}d_{0} [log_{10} cm]", "normalized events / log_{10} cm", true, "sel2_alllog10dxy");
   vector<double> subleadmupt_binslog10dxysig{-1.2, -1.1, -1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0};
   int subleadmupt_nbinslog10dxysig = subleadmupt_binslog10dxysig.size()-1;
-  comparesamevariable(file, name, "alllog10dxysig", subleadmupt_nbinslog10dxysig, &subleadmupt_binslog10dxysig[0], false, false, false, (float []){0,0.17}, (float []){0.15,0.65,0.4,0.95}, (float []){0,0.4}, true, "#mu_{2} log_{10}(d_{0} sig.) [log_{10} unit]", "normalized events / log_{10} unit", true, "sel2_alllog10dxysig");
+  //comparesamevariable(file, name, "alllog10dxysig", subleadmupt_nbinslog10dxysig, &subleadmupt_binslog10dxysig[0], false, false, false, (float []){0,0.17}, (float []){0.15,0.65,0.4,0.95}, (float []){0,0.4}, true, "#mu_{2} log_{10}(d_{0} sig.) [log_{10} unit]", "normalized events / log_{10} unit", true, "sel2_alllog10dxysig");
 
 
   seltext[0] = "N#mu#geq2, p_{T}#geq16 GeV";
@@ -663,14 +664,14 @@ int newplotter() {
 
   vector<double> mu_binslog10dxysig{-0.6,-0.2,0.2,0.6,1,1.4,1.8,2.2,2.6,3,3.4,3.8,4.2};
   int mu_nbinslog10dxysig = mu_binslog10dxysig.size()-1;
-  comparesamevariable(file, name, "subleadlog10dxysig", mu_nbinslog10dxysig, &mu_binslog10dxysig[0], false, false, false, (float []){0,0.52}, (float []){0.125,0.65,0.375,0.99}, (float []){2.2,0.425}, true, "#mu_{2} log_{10}d_{0} sig. [TODO]", "normalized events / 0.4 units", false, "sel31recomu_subleadmu_log10dxysig");
-  comparesamevariable(file, name, "alllog10dxy", subleadmupt_nbinslog10dxy, &subleadmupt_binslog10dxy[0], true, false, false, (float []){5e-3,0.9}, (float []){0.11,0.7,0.36,0.99}, (float []){33,2}, true, "#mu_{2} log_{10}d_{0} / log_{10}cm", "normalized events / 0.2 log_{10}cm", false, "sel31_alllog10dxy");
+  //comparesamevariable(file, name, "subleadlog10dxysig", mu_nbinslog10dxysig, &mu_binslog10dxysig[0], false, false, false, (float []){0,0.52}, (float []){0.125,0.65,0.375,0.99}, (float []){2.2,0.425}, true, "#mu_{2} log_{10}d_{0} sig. [TODO]", "normalized events / 0.4 units", false, "sel31recomu_subleadmu_log10dxysig");
+  //comparesamevariable(file, name, "alllog10dxy", subleadmupt_nbinslog10dxy, &subleadmupt_binslog10dxy[0], true, false, false, (float []){5e-3,0.9}, (float []){0.11,0.7,0.36,0.99}, (float []){33,2}, true, "#mu_{2} log_{10}d_{0} / log_{10}cm", "normalized events / 0.2 log_{10}cm", false, "sel31_alllog10dxy");
 
   seltext[0] = "N#mu#geq2, p_{T}#geq16 GeV, |#eta|<2.5";
   seltext[1] = "d_{0}>0.01 cm, d_{0} sig.>1.4";
-  makeratehist({"sel30recomu","sel30recomu","sel30recomu","sel30recomu","sel30recomu"}, "subleadpt", subleadmupt_nbinspt, &subleadmupt_binspt[0], false, false, (float []){0.5,0.66,0.7,0.99}, (float []){37,0.4}, (float []){0,1.39}, 0.875, "#mu_{2} p_{T} [GeV]");
+  //makeratehist({"sel30recomu","sel30recomu","sel30recomu","sel30recomu","sel30recomu"}, "subleadpt", subleadmupt_nbinspt, &subleadmupt_binspt[0], false, false, (float []){0.5,0.66,0.7,0.99}, (float []){37,0.4}, (float []){0,1.39}, 0.875, "#mu_{2} p_{T} [GeV]");
 
-  standalone_plots();
+  //standalone_plots();
   
   return -1;
 }

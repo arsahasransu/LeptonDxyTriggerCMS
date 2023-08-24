@@ -405,10 +405,94 @@ int newplotter() {
   vector<double> mupt_binspt{14,16,18,20,22,24,26,28,30,34,38,42,46,50,55,60,65,70,75};
   int mupt_nbinspt = mupt_binspt.size()-1;
   seltext[0] = "N#mu#geq1, p_{T}>16 GeV, |#eta|<2.5";
-  seltext[1] = "Ne/#gamma#geq1, p_{T}>20 GeV, |#eta|<2.65, loose Run2 CaloID"; 
-  makeratehist({"sel2recomu","sel2recomu","sel2recomu","sel2recomu","sel2recomu"}, "mupt", mupt_nbinspt, &mupt_binspt[0], false, true, (float []){0.5,0.65,0.7,0.975}, (float []){40,20}, (float []){0,79}, 0.875, "#mu_{1} p_{T} [GeV]");
-  makeratehist({"sel2recoeg","sel2recoeg","sel2recoeg","sel2recoeg","sel2recoeg"}, "egpt", mupt_nbinspt, &mupt_binspt[0], false, true, (float []){0.5,0.65,0.7,0.975}, (float []){40,20}, (float []){0,79}, 0.875, "e/#gamma_{1} p_{T} [GeV]");
+  seltext[1] = "Ne/#gamma#geq1, p_{T}>20 GeV, |#eta|<2.65"; 
+  makeratehist({"sel2recomu","sel2recomu","sel2recomu","sel2recomu","sel2recomu"}, "mupt", mupt_nbinspt, &mupt_binspt[0], false, true, (float []){0.5,0.65,0.7,0.975}, (float []){40,20}, (float []){0,149}, 0.875, "#mu_{1} p_{T} [GeV]");
+  makeratehist({"sel2recoeg","sel2recoeg","sel2recoeg","sel2recoeg","sel2recoeg"}, "egpt", mupt_nbinspt, &mupt_binspt[0], false, true, (float []){0.5,0.65,0.7,0.975}, (float []){40,20}, (float []){0,149}, 0.875, "e/#gamma_{1} p_{T} [GeV]");
 
+  seltext[0] = "N#mu#geq1, p_{T}>20 GeV, |#eta|<2.5, d_{0}>0.01 cm";
+  seltext[1] = "Ne/#gamma#geq1, p_{T}>20 GeV, |#eta|<2.5"; 
+
+  file.clear();
+  name.clear();
+  leg.clear();
+  coloropt.clear();
+  histtype.clear();
+  markerstyle.clear();
+  markersize.clear();
+  legendmarkerstyle.clear();
+  scale.clear();
+
+  file.push_back(datafile);
+  name.push_back("sel15recomu");
+  leg.push_back("2018 data");
+  coloropt.push_back(kBlack);
+  histtype.push_back("p e1");
+  markerstyle.push_back(20);
+  markersize.push_back(2);
+  legendmarkerstyle.push_back("lep");
+  scale.push_back(1);
+  
+  file.push_back(sig3cmfile);
+  name.push_back("sel15recomu");
+  leg.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 cm");
+  coloropt.push_back(kRed+3);
+  histtype.push_back("hist same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  file.push_back(sig30cmfile);
+  name.push_back("sel15recomu");
+  leg.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 30 cm");
+  coloropt.push_back(kRed);
+  histtype.push_back("hist same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig1mfile);
+  name.push_back("sel15recomu");
+  leg.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 1 m");
+  coloropt.push_back(kOrange+2);
+  histtype.push_back("hist same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig3mfile);
+  name.push_back("sel15recomu");
+  leg.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 m");
+  coloropt.push_back(kOrange);
+  histtype.push_back("hist same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+ 
+  legendEntries = leg;  
+
+  comparesamevariable(file, name, "mupt", mupt_nbinspt, &mupt_binspt[0], true, false, false, (float []){2e-2,0.8}, (float []){0.575,0.7,0.825,0.99}, (float []){35,0.051}, true, "#mu_{1} p_{T} [GeV]", "normalized events / GeV", false, "sel15recomu_mupt");
+
+  makeratehist({"sel15recomu","sel15recomu","sel15recomu","sel15recomu","sel15recomu"}, "mupt", mupt_nbinspt, &mupt_binspt[0], false, true, (float []){0.5,0.65,0.7,0.975}, (float []){40,5}, (float []){0,59}, 0.875, "#mu_{1} p_{T} [GeV]");
+  makeratehist({"sel15recoeg","sel15recoeg","sel15recoeg","sel15recoeg","sel15recoeg"}, "egpt", mupt_nbinspt, &mupt_binspt[0], false, true, (float []){0.5,0.65,0.7,0.975}, (float []){40,20}, (float []){0,59}, 0.875, "e/#gamma_{1} p_{T} [GeV]");
+
+  seltext[0] = "N#mu#geq1, p_{T}>20 GeV, |#eta|<2.5, d_{0}>0.01 cm";
+  seltext[1] = "Ne/#gamma#geq1, p_{T}>20 GeV, |#eta|<2.5, #sigmai#etai#eta<0.012(0.03)"; 
+  makeratehist({"sel16recomu","sel16recomu","sel16recomu","sel16recomu","sel16recomu"}, "mupt", mupt_nbinspt, &mupt_binspt[0], false, true, (float []){0.5,0.65,0.7,0.975}, (float []){40,5}, (float []){0,34}, 0.875, "#mu_{1} p_{T} [GeV]");
+
+  seltext[0] = "N#mu#geq1, p_{T}>20 GeV, |#eta|<2.5, d_{0}>0.01 cm";
+  seltext[1] = "Ne/#gamma#geq1, p_{T}>20 GeV, |#eta|<2.5, #sigmai#etai#eta<0.012(0.03), H/E<0.1"; 
+  makeratehist({"sel17recomu","sel17recomu","sel17recomu","sel17recomu","sel17recomu"}, "mupt", mupt_nbinspt, &mupt_binspt[0], false, true, (float []){0.5,0.65,0.7,0.975}, (float []){40,5}, (float []){0,26}, 0.875, "#mu_{1} p_{T} [GeV]");
+
+  seltext[0] = "N#mu#geq1, p_{T}>20 GeV, |#eta|<2.5, d_{0}>0.01 cm";
+  seltext[1] = "Ne/#gamma#geq1, p_{T}>20 GeV, |#eta|<2.5, #sigmai#etai#eta<0.012(0.03), H/E<0.1, ecal iso./E<0.15(0.1)"; 
+  makeratehist({"sel18recomu","sel18recomu","sel18recomu","sel18recomu","sel18recomu"}, "mupt", mupt_nbinspt, &mupt_binspt[0], false, true, (float []){0.5,0.65,0.7,0.975}, (float []){40,5}, (float []){0,11}, 0.875, "#mu_{1} p_{T} [GeV]");
+
+  /////////////////////// EVERYTHING BELOW THIS IS OLD STUFF /////////////////////////////////////
+  
   seltext[0] = "N#mu#geq1, p_{T}#geq16 GeV, |#eta|<2.5";
   seltext[1] = "Ne/#gamma#geq1, p_{T}>15 GeV, |#eta|<2.65";
   //makeratehist("sel10recoeg", "egpt", 56, 150, 1, false, false, (float []){0.55,0.775,0.75,0.975}, (float []){45,5}, (float []){0,220}, 0.875);

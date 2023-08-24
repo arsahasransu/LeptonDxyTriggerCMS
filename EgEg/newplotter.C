@@ -938,7 +938,7 @@ int newplotter() {
   legend.push_back(" c#tau = 1 m, t > 1 ns");
   coloropt.push_back(kRed);
   legendEntries = legend;
-  comparesamevariable(file, name, "log10d0", 350, -1, 20, true, true, true, (float []){8e-1,5e2}, (float []){0.6,0.6,0.75,0.95}, false, "electron log_{10}d_{0} / log_{10}cm");
+  //comparesamevariable(file, name, "log10d0", 350, -1, 20, true, true, true, (float []){8e-1,5e2}, (float []){0.6,0.6,0.75,0.95}, false, "electron log_{10}d_{0} / log_{10}cm");
 
   file.clear();
   name.clear();
@@ -957,7 +957,7 @@ int newplotter() {
   legend.push_back(" c#tau = 3 cm, t > 1 ns");
   coloropt.push_back(kRed);
   legendEntries = legend;
-  comparesamevariable(file, name, "log10d0", 150, -1, 20, true, true, true, (float []){8e-1,5e2}, (float []){0.6,0.6,0.75,0.95}, false, "electron log_{10}d_{0} / log_{10}cm");
+  //comparesamevariable(file, name, "log10d0", 150, -1, 20, true, true, true, (float []){8e-1,5e2}, (float []){0.6,0.6,0.75,0.95}, false, "electron log_{10}d_{0} / log_{10}cm");
 
   return -1;
 }
