@@ -157,8 +157,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   // Define the histograms
   if(isMC) addgenhist("gennosel");
   //if(isMC) addgenhist("genbasicselbar");
-  //if(isMC) addgenhist("genbasicptgt10selbar");
-  //if(isMC) addgenhist("genbasicptgt10selec");
+  if(isMC) addgenhist("genbasicptgt10selbar");
+  if(isMC) addgenhist("genbasicptgt10selec");
   /*
   if(isMC) addgenhist("genetabin14_16_24");
   if(isMC) addgenhist("genptgt10");
@@ -235,9 +235,9 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcuttimedelaysminus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selecAcuttimedelaysminus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcuttimegt1nsonlyus");
+  */
   addhistunseeded("cutsminlt0p16onlyus");
   if(isMC)addhistgenmchunseeded("genbasicptgt10selbarAcutsminlt0p16onlyus");
-  */
   // Loop beginning on events
   for(unsigned int event=beginevent; event<endevent; event++) {
 
@@ -292,8 +292,9 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     vector<int> cut3usidx;
     vector<int> cuttimedelayonlyusidx;
     vector<int> cuttimedelaysminusidx;
-    vector<int> cutsminlt0p16onlyusidx;
     */
+    vector<int> cutsminlt0p16onlyidx;
+    vector<int> cutsminlt0p16onlyusidx;
   
     inputChain->GetEntry(event);
     //if(event>10000) break;
@@ -444,8 +445,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 
       fillgenhistinevent("gennosel",gennoselegidx); // Verified that this is always 2 electrons
       //fillgenhistinevent("genbasicselbar",genbasicselbaregidx); 
-      //fillgenhistinevent("genbasicptgt10selbar",genbasicptgt10selbaregidx); 
-      //fillgenhistinevent("genbasicptgt10selec",genbasicptgt10selecegidx);
+      fillgenhistinevent("genbasicptgt10selbar",genbasicptgt10selbaregidx); 
+      fillgenhistinevent("genbasicptgt10selec",genbasicptgt10selecegidx);
       /*
       fillgenhistinevent("genetabin14_16_24",genetabin14_16_24egidx);
       fillgenhistinevent("genptgt10",genptgt10egidx);
@@ -503,8 +504,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       bool cut3egus = false;
       bool cuttimedelayonlyegus = false;
       bool cuttimedelaysminegus = false;
-      bool cutsminlt0p16onlyegus = false;
       */
+      bool cutsminlt0p16onlyegus = false;
       
       // Loop beginning on egamma reco objects
       for(unsigned int egidx=0; egidx<egRecoN; egidx++) {
@@ -694,6 +695,7 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	cuttimedelaysminegus *= (egushltEgammaClusterShape_smin[idx]<0.12);
 	if(cuttimedelaysminegus) cuttimedelaysminusidx.push_back(idx);
 
+	*/
       	cutsminlt0p16onlyegus = true;
 	cutsminlt0p16onlyegus *= (TMath::Abs(egusRecoEta[idx])<2.5);
 	cutsminlt0p16onlyegus *= (egusRecoPt[idx]>=10);
@@ -701,7 +703,6 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
 	cutsminlt0p16onlyegus *= (TMath::Abs(egusRecoEta[idx])<1.479?egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.016:egushltEgammaClusterShape_sigmaIEtaIEta5x5NoiseCleaned[idx]<0.04);
         cutsminlt0p16onlyegus *= (egushltEgammaClusterShape_smin[idx]<0.16);
 	if(cutsminlt0p16onlyegus) cutsminlt0p16onlyusidx.push_back(idx);
-	*/
       } // End of loop on unseeded egamma objects
 
       selelevetozwindidegusidx = selelevetoidegusidx;
@@ -781,8 +782,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
       if(cut3usidx.size()>=2) fillhistineventunseeded("cut3us", cut3usidx);
       if(cuttimedelayonlyusidx.size()>=2) fillhistineventunseeded("cuttimedelayonlyus", cuttimedelayonlyusidx);
       if(cuttimedelaysminusidx.size()>=2) fillhistineventunseeded("cuttimedelaysminus", cuttimedelaysminusidx);
-      if(cutsminlt0p16onlyusidx.size()>=2) fillhistineventunseeded("cutsminlt0p16onlyus", cutsminlt0p16onlyusidx);
       */
+      if(cutsminlt0p16onlyusidx.size()>=2) fillhistineventunseeded("cutsminlt0p16onlyus", cutsminlt0p16onlyusidx);
     } // End of condition requiring atleast one egReco object
 
     // Cross-check with known triggers
@@ -862,8 +863,8 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     if(isMC && cuttimedelayonlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcuttimedelayonlyus", genbasicptgt10selecegidx, cuttimedelayonlyusidx);
     if(isMC && cuttimedelaysminusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcuttimedelaysminus", genbasicptgt10selbaregidx, cuttimedelaysminusidx);
     if(isMC && cuttimedelaysminusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selecAcuttimedelaysminus", genbasicptgt10selecegidx, cuttimedelaysminusidx);
-    if(isMC && cutsminlt0p16onlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcutsminlt0p16onlyus", genbasicptgt10selbaregidx, cutsminlt0p16onlyusidx);
     */
+    if(isMC && cutsminlt0p16onlyusidx.size()>=1) fillhistineventgenmchunseeded("genbasicptgt10selbarAcutsminlt0p16onlyus", genbasicptgt10selbaregidx, cutsminlt0p16onlyusidx);
 
     // Clear all the vectors  
     genelpos.clear();
@@ -916,8 +917,9 @@ void data_robustanalyzer::analyzersinglefile(int splitCnt) { // Assume splitCnt 
     cut3usidx.clear();
     cuttimedelayonlyusidx.clear();
     cuttimedelaysminusidx.clear();
-    cutsminlt0p16onlyusidx.clear();
     */
+    cutsminlt0p16onlyidx.clear();
+    cutsminlt0p16onlyusidx.clear();
   } // End of loop on events
 
   cout<<totEntries<<"\t"<<nosel<<"\t"<<noselus<<"\t"<<basicsel<<"\t"<<basicselus<<"\t"<<selelevetoid<<"\t"<<selelevetoidus<<"\t"<<selelevetozwindidus<<"\t"<<selelevetozoppoidus/*<<"\t"<<dieg70idus*/<<"\t"<<dieg33caloidl<<endl;

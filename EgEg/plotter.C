@@ -118,7 +118,7 @@ int comparesamevariable(std::vector<TFile*> file, std::vector<TString> cutname, 
   return -1;
 }
 
-int makeratehist(std::vector<TString> cutname, TString var, int nbins=0, double *rebin=0, bool logY=false, bool overflow=false, float legPos[]=(float []){0.7,0.75,0.95,1}, float seltextpos[]=(float []){0.1,1}, float yrange[]=(float []){0.1,1}, float drawsignalline=-1.0, TString xaxistitle="p_{T} [GeV]", TString yaxistitle="rate [Hz]") {
+int makeratehist(std::vector<TString> cutname, TString var, int nbins=0, double *rebin=0, bool logY=false, bool overflow=false, float legPos[]=(float []){0.7,0.75,0.95,1}, float seltextpos[]=(float []){0.1,1}, float yrange[]=(float []){0.1,1}, float drawsignalline=-1.0, TString xaxistitle="p_{T} [GeV]", TString yaxistitle="rate [Hz]", bool reverse=false) {
 
   std::vector<TString> legNam;
   legNam.push_back("2018 data");
@@ -164,11 +164,19 @@ int makeratehist(std::vector<TString> cutname, TString var, int nbins=0, double 
   for(unsigned int histctr=0; histctr<allhists.size(); histctr++) {
 
     allratehists.push_back((TH1F*) allhists[histctr]->Clone());
+
     for(unsigned int bincnt=0; bincnt<allhists[histctr]->GetNbinsX(); bincnt++) {
       double err = 0;
-      allratehists[histctr]->SetBinContent(bincnt, allhists[histctr]->IntegralAndError(bincnt,allhists[histctr]->GetNbinsX()+1,err));
-      allratehists[histctr]->SetBinError(bincnt, err);
+      if(reverse) {
+	allratehists[histctr]->SetBinContent(bincnt+1, allhists[histctr]->IntegralAndError(0,bincnt+1,err));
+	allratehists[histctr]->SetBinError(bincnt+1, err);
+      }
+      else {
+	allratehists[histctr]->SetBinContent(bincnt, allhists[histctr]->IntegralAndError(bincnt,allhists[histctr]->GetNbinsX()+1,err));
+	allratehists[histctr]->SetBinError(bincnt, err);
+      }
     }
+    
     allratehists[histctr]->GetXaxis()->SetTitle(xaxistitle);
     allratehists[histctr]->GetYaxis()->SetTitle(yaxistitle);
 
@@ -184,14 +192,26 @@ int makeratehist(std::vector<TString> cutname, TString var, int nbins=0, double 
       allratehists[histctr]->Scale(axisscale);
       }*/
   }
-  axisscale = allratehists[0]->GetBinContent(0)*0.8/allratehists[1]->GetBinContent(0);
-  axisscale2 = allratehists[0]->GetBinContent(0)*0.8/allratehists[2]->GetBinContent(0);
-  axisscale = axisscale2<axisscale?axisscale2:axisscale;
-  axisscale3 = allratehists[0]->GetBinContent(0)*0.8/allratehists[3]->GetBinContent(0);
-  axisscale = axisscale3<axisscale?axisscale3:axisscale;
-  axisscale4 = allratehists[0]->GetBinContent(0)*0.8/allratehists[4]->GetBinContent(0);
-  axisscale = axisscale4<axisscale?axisscale4:axisscale;
+  if(reverse) {
+    axisscale = allratehists[0]->GetBinContent(allhists[0]->GetNbinsX())*0.8/allratehists[1]->GetBinContent(allhists[1]->GetNbinsX());
+    axisscale2 = allratehists[0]->GetBinContent(allhists[0]->GetNbinsX())*0.8/allratehists[2]->GetBinContent(allhists[2]->GetNbinsX());
+    axisscale = axisscale2<axisscale?axisscale2:axisscale;
+    axisscale3 = allratehists[0]->GetBinContent(allhists[0]->GetNbinsX())*0.8/allratehists[3]->GetBinContent(allhists[3]->GetNbinsX());
+    axisscale = axisscale3<axisscale?axisscale3:axisscale;
+    axisscale4 = allratehists[0]->GetBinContent(allhists[0]->GetNbinsX())*0.8/allratehists[4]->GetBinContent(allhists[4]->GetNbinsX());
+    axisscale = axisscale4<axisscale?axisscale4:axisscale;
+  }
+  else {
+    axisscale = allratehists[0]->GetBinContent(0)*0.8/allratehists[1]->GetBinContent(0);
+    axisscale2 = allratehists[0]->GetBinContent(0)*0.8/allratehists[2]->GetBinContent(0);
+    axisscale = axisscale2<axisscale?axisscale2:axisscale;
+    axisscale3 = allratehists[0]->GetBinContent(0)*0.8/allratehists[3]->GetBinContent(0);
+    axisscale = axisscale3<axisscale?axisscale3:axisscale;
+    axisscale4 = allratehists[0]->GetBinContent(0)*0.8/allratehists[4]->GetBinContent(0);
+    axisscale = axisscale4<axisscale?axisscale4:axisscale;
+  }
   cout<<axisscale<<"\t"<<axisscale2<<"\t"<<axisscale3<<"\t"<<axisscale4<<endl;
+
   allratehists[1]->Scale(axisscale);
   allratehists[2]->Scale(axisscale);
   allratehists[3]->Scale(axisscale);
@@ -420,6 +440,118 @@ int plotter() {
   //comparesamevariable(file, name, "subleadegpt", cut1usrecoegus_subleadegpt_nbinspt, &cut1usrecoegus_subleadegpt_binspt[0], true, false, false, (float []){3e-4,3}, (float []){0.525,0.62,0.775,0.97}, (float []){64,0.15}, true, "e/#gamma_{2} p_{T} [GeV]", "normalized events / GeV", true, "dieg10caloidlidusrecoegus_subleadegpt");
   
   //makeratehist({"cut1usrecoegus","cut1usrecoegus","cut1usrecoegus","cut1usrecoegus","cut1usrecoegus"}, "subleadegpt", cut1usrecoegus_subleadegpt_nbinspt, &cut1usrecoegus_subleadegpt_binspt[0], false, false, (float []){0.48,0.65,0.68,0.975}, (float []){24,60}, (float []){0,150}, 0.875, "e/#gamma_{2} p_{T} [GeV]");
+
+  vector<double> genbasicptgt10selbar_binsseedclustime{-1.4,-1.0,-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.4,1.8,2.4,3.2,4.0,5.0,6.0,7.0};
+  int genbasicptgt10selbar_nbinsseedclustime = genbasicptgt10selbar_binsseedclustime.size()-1;
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  histtype.clear();
+  markerstyle.clear();
+  markersize.clear();
+  legendmarkerstyle.clear();
+  scale.clear();
+
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicptgt10selbargeneg");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 cm");
+  coloropt.push_back(kRed+3);
+  histtype.push_back("hist e1");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  file.push_back(sig30cmfile);
+  name.push_back("genbasicptgt10selbargeneg");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 30 cm");
+  coloropt.push_back(kRed);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig1mfile);
+  name.push_back("genbasicptgt10selbargeneg");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 1 m");
+  coloropt.push_back(kOrange+2);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig3mfile);
+  name.push_back("genbasicptgt10selbargeneg");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 m");
+  coloropt.push_back(kOrange);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  legendEntries = legend;    
+  //comparesamevariable(file, name, "t1mt0", genbasicptgt10selbar_nbinsseedclustime, &genbasicptgt10selbar_binsseedclustime[0], true, false, false, (float []){3e-4,3}, (float []){0.525,0.62,0.775,0.97}, (float []){64,0.15}, true, "gen electron time delay in EB [ns]", "normalized events / ns", true, "genbasicptgt10selbargeneg_t1mt0");
+
+  vector<double> genbasicptgt10selec_binsseedclustime{-1.8,-1.4,-1.0,-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.4,1.8,2.4,3.2,4.0};
+  int genbasicptgt10selec_nbinsseedclustime = genbasicptgt10selec_binsseedclustime.size()-1;
+
+  file.clear();
+  name.clear();
+  legend.clear();
+  coloropt.clear();
+  histtype.clear();
+  markerstyle.clear();
+  markersize.clear();
+  legendmarkerstyle.clear();
+  scale.clear();
+
+  file.push_back(sig3cmfile);
+  name.push_back("genbasicptgt10selecgeneg");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 cm");
+  coloropt.push_back(kRed+3);
+  histtype.push_back("hist e1");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  file.push_back(sig30cmfile);
+  name.push_back("genbasicptgt10selecgeneg");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 30 cm");
+  coloropt.push_back(kRed);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig1mfile);
+  name.push_back("genbasicptgt10selecgeneg");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 1 m");
+  coloropt.push_back(kOrange+2);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+
+  file.push_back(sig3mfile);
+  name.push_back("genbasicptgt10selecgeneg");
+  legend.push_back("#chi^{#pm} #rightarrow #chi^{0}l#nu, c#tau = 3 m");
+  coloropt.push_back(kOrange);
+  histtype.push_back("hist e1 same");
+  markerstyle.push_back(1);
+  markersize.push_back(0);
+  legendmarkerstyle.push_back("l");
+  scale.push_back(1);
+  
+  legendEntries = legend;    
+  //comparesamevariable(file, name, "t1mt0", genbasicptgt10selec_nbinsseedclustime, &genbasicptgt10selec_binsseedclustime[0], true, false, false, (float []){3e-4,3}, (float []){0.525,0.62,0.775,0.97}, (float []){64,0.15}, true, "gen electron time delay in EE [ns]", "normalized events / ns", true, "genbasicptgt10selecgeneg_t1mt0");
 
   vector<double> genbasicptgt10selbarAnoselus_binsseedclustime{-1.4,-1.0,-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.4,1.8,2.4,3.2,4.0};
   int genbasicptgt10selbarAnoselus_nbinsseedclustime = genbasicptgt10selbarAnoselus_binsseedclustime.size()-1;
@@ -687,10 +819,10 @@ int plotter() {
   //comparesamevariable(file, name, "egsmin", genbasicptgt10selbarAnoselus_nbinsmin, &genbasicptgt10selbarAnoselus_binsmin[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma smin","normalized events / bin", true, "genbasicptgt10selAnoselus_EB_smin");
   vector<double> genbasicptgt10selbarAnoselus_bineisooe{0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0};
   int genbasicptgt10selbarAnoselus_nbineisooe = genbasicptgt10selbarAnoselus_bineisooe.size()-1;
-  comparesamevariable(file, name, "leadegecalpfclustisoovere", genbasicptgt10selbarAnoselus_nbineisooe, &genbasicptgt10selbarAnoselus_bineisooe[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso./E","normalized events / bin width", true, "genbasicptgt10selAnoselus_EB_ecalisoOE");
+  //comparesamevariable(file, name, "leadegecalpfclustisoovere", genbasicptgt10selbarAnoselus_nbineisooe, &genbasicptgt10selbarAnoselus_bineisooe[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso./E","normalized events / bin width", true, "genbasicptgt10selAnoselus_EB_ecalisoOE");
   vector<double> genbasicptgt10selbarAnoselus_bineiso{0,1,2,3,4,5,6,7,8,9,10};
   int genbasicptgt10selbarAnoselus_nbineiso = genbasicptgt10selbarAnoselus_bineiso.size()-1;
-  comparesamevariable(file, name, "leadegecalpfclustiso", genbasicptgt10selbarAnoselus_nbineiso, &genbasicptgt10selbarAnoselus_bineiso[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso.","normalized events / 1 GeV", true, "genbasicptgt10selAnoselus_EB_ecaliso");
+  //comparesamevariable(file, name, "leadegecalpfclustiso", genbasicptgt10selbarAnoselus_nbineiso, &genbasicptgt10selbarAnoselus_bineiso[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso.","normalized events / 1 GeV", true, "genbasicptgt10selAnoselus_EB_ecaliso");
     
   seltext[0] = "gen. p_{T} > 10 GeV, 1.48<|#eta|<2.5";
   seltext[1] = "#geq1 unseeded e/#gamma, no ID";  
@@ -778,8 +910,8 @@ int plotter() {
   legendEntries = legend;    
   //comparesamevariable(file, name, "egseedclustime", genbasicptgt10selbarAnoselus_nbinsseedclustime, &genbasicptgt10selbarAnoselus_binsseedclustime[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){-1.1,0.4}, true, "e/#gamma ecal seed cluster time [ns]","normalized events / ns", true, "genbasicptgt10selAnoselus_EE_egseedclustime");
   //comparesamevariable(file, name, "egsmin", genbasicptgt10selbarAnoselus_nbinsmin, &genbasicptgt10selbarAnoselus_binsmin[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma smin","normalized events / 0.01 units", true, "genbasicptgt10selAnoselus_EE_smin");
-  comparesamevariable(file, name, "leadegecalpfclustisoovere", genbasicptgt10selbarAnoselus_nbineisooe, &genbasicptgt10selbarAnoselus_bineisooe[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso./E","normalized events / bin width", true, "genbasicptgt10selAnoselus_EE_ecalisoOE");
-  comparesamevariable(file, name, "leadegecalpfclustiso", genbasicptgt10selbarAnoselus_nbineiso, &genbasicptgt10selbarAnoselus_bineiso[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso.","normalized events / 1 GeV", true, "genbasicptgt10selAnoselus_EE_ecaliso");
+  //comparesamevariable(file, name, "leadegecalpfclustisoovere", genbasicptgt10selbarAnoselus_nbineisooe, &genbasicptgt10selbarAnoselus_bineisooe[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso./E","normalized events / bin width", true, "genbasicptgt10selAnoselus_EE_ecalisoOE");
+  //comparesamevariable(file, name, "leadegecalpfclustiso", genbasicptgt10selbarAnoselus_nbineiso, &genbasicptgt10selbarAnoselus_bineiso[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso.","normalized events / 1 GeV", true, "genbasicptgt10selAnoselus_EE_ecaliso");
 
   seltext[0] = "gen. p_{T} > 10 GeV, |#eta|<1.48";
   seltext[1] = "#geq1 unseeded e/#gamma, #sigmai#etai#eta<0.012(0.03), H/E<0.1";  
@@ -865,8 +997,8 @@ int plotter() {
   scale.push_back(1);
   
   legendEntries = legend;    
-  comparesamevariable(file, name, "leadegecalpfclustisoovere", genbasicptgt10selbarAnoselus_nbineisooe, &genbasicptgt10selbarAnoselus_bineisooe[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso./E","normalized events / bin width", true, "genbasicptgt10selAforeisous_EB_ecalisoOE");
-  comparesamevariable(file, name, "leadegecalpfclustiso", genbasicptgt10selbarAnoselus_nbineiso, &genbasicptgt10selbarAnoselus_bineiso[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso.","normalized events / 1 GeV", true, "genbasicptgt10selAforeisous_EB_ecaliso");
+  //comparesamevariable(file, name, "leadegecalpfclustisoovere", genbasicptgt10selbarAnoselus_nbineisooe, &genbasicptgt10selbarAnoselus_bineisooe[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso./E","normalized events / bin width", true, "genbasicptgt10selAforeisous_EB_ecalisoOE");
+  //comparesamevariable(file, name, "leadegecalpfclustiso", genbasicptgt10selbarAnoselus_nbineiso, &genbasicptgt10selbarAnoselus_bineiso[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso.","normalized events / 1 GeV", true, "genbasicptgt10selAforeisous_EB_ecaliso");
     
   seltext[0] = "gen. p_{T} > 10 GeV, 1.48<|#eta|<2.5";
   seltext[1] = "#geq1 unseeded e/#gamma, #sigmai#etai#eta<0.012(0.03), H/E<0.1";  
@@ -952,8 +1084,8 @@ int plotter() {
   scale.push_back(1);
   
   legendEntries = legend;    
-  comparesamevariable(file, name, "leadegecalpfclustisoovere", genbasicptgt10selbarAnoselus_nbineisooe, &genbasicptgt10selbarAnoselus_bineisooe[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso./E","normalized events / bin width", true, "genbasicptgt10selAforeisous_EE_ecalisoOE");
-  comparesamevariable(file, name, "leadegecalpfclustiso", genbasicptgt10selbarAnoselus_nbineiso, &genbasicptgt10selbarAnoselus_bineiso[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso.","normalized events / 1 GeV", true, "genbasicptgt10selAforeisous_EE_ecaliso");
+  //comparesamevariable(file, name, "leadegecalpfclustisoovere", genbasicptgt10selbarAnoselus_nbineisooe, &genbasicptgt10selbarAnoselus_bineisooe[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso./E","normalized events / bin width", true, "genbasicptgt10selAforeisous_EE_ecalisoOE");
+  //comparesamevariable(file, name, "leadegecalpfclustiso", genbasicptgt10selbarAnoselus_nbineiso, &genbasicptgt10selbarAnoselus_bineiso[0], true, false, false, (float []){3e-4,1.3}, (float []){0.575,0.6,0.825,0.99}, (float []){0.02,0.4}, true, "e/#gamma ecal iso.","normalized events / 1 GeV", true, "genbasicptgt10selAforeisous_EE_ecaliso");
 
   seltext[0] = "#geq1 seeded e/#gamma, #geq2 unseeded e/#gamma";
   seltext[1] = "p_{T} > 10 GeV, |#eta|<2.5, loose ECAL ID";  
@@ -977,6 +1109,15 @@ int plotter() {
 
   //makeratehist({"cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus"}, "leadegpt", cut1usrecoegus_subleadegpt_nbinspt, &cut1usrecoegus_subleadegpt_binspt[0], false, false, (float []){0.48,0.65,0.68,0.975}, (float []){24,60}, (float []){0,250}, 0.875, "e/#gamma_{1} p_{T} [GeV]");
   //makeratehist({"cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus","cuttimegt1nsusrecoegus"}, "subleadegpt", cut1usrecoegus_subleadegpt_nbinspt, &cut1usrecoegus_subleadegpt_binspt[0], false, false, (float []){0.48,0.65,0.68,0.975}, (float []){18,1}, (float []){0,2.8}, 0.875, "e/#gamma_{2} p_{T} [GeV]");
+
+  vector<double> cut2usrecoegus_binssmin{0.0,0.01,0.06,0.1,0.14,0.18,0.2,0.22,0.23,0.24,0.25,0.26,0.28,0.32,0.36,0.4,0.5,0.6,0.65};
+  int cut2usrecoegus_nbinssmin = cut2usrecoegus_binssmin.size()-1;
+  //makeratehist({"cut2usrecoegus","cut2usrecoegus","cut2usrecoegus","cut2usrecoegus","cut2usrecoegus"}, "min2egsmin", cut2usrecoegus_nbinssmin, &cut2usrecoegus_binssmin[0], false, false, (float []){0.48,0.65,0.68,0.975}, (float []){24,60}, (float []){0,100}, 0.875, "e/#gamma s_{min} [ns]", "rate [Hz]", true);
+
+  seltext[0] = "#geq1 seeded e/#gamma, #geq2 unseeded e/#gamma";
+  seltext[1] = "p_{T} > 10 GeV, |#eta|<2.5, loose ECAL ID, s_{min}<0.16";  
+  
+  //makeratehist({"cutsminlt0p16onlyusrecoegus","cutsminlt0p16onlyusrecoegus","cutsminlt0p16onlyusrecoegus","cutsminlt0p16onlyusrecoegus","cutsminlt0p16onlyusrecoegus"}, "subleadegpt", cut1usrecoegus_subleadegpt_nbinspt, &cut1usrecoegus_subleadegpt_binspt[0], false, false, (float []){0.48,0.65,0.68,0.975}, (float []){18,1}, (float []){0,2.8}, 0.875, "e/#gamma_{2} p_{T} [GeV]");
 
   return -1;
 }
