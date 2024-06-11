@@ -4,3 +4,7 @@
 */a.out
 newTriggerConfigFiles/
 *.out
+*Cert_Collisions*.json
+*__pycache__*
+*JetMET*_crabRunNtuplizer*
+*crab.log

@@ -1,5 +1,6 @@
 // system include files
 #include <memory>
+#include <string>
 #include <float.h>
 
 // user include files
@@ -47,7 +48,7 @@ private:
   void clearVars();
 
   edm::EDGetTokenT< edm::TriggerResults > trgResultsToken_;
-  edm::EDGetTokenT< pat::TriggerObjectStandAlone > trgObjectsToken_;
+  edm::EDGetTokenT< pat::TriggerObjectStandAloneCollection > trgObjectsToken_;
   edm::EDGetTokenT< edm::SortedCollection< EcalRecHit, edm::StrictWeakOrdering< EcalRecHit >>> rechiteb_token;
   edm::EDGetTokenT< edm::SortedCollection< EcalRecHit, edm::StrictWeakOrdering< EcalRecHit >>> rechitee_token;
   //edm::EDGetTokenT< std::vector< pat::Electron >> electron_token;
@@ -64,8 +65,10 @@ private:
   int run;
   int lumSec;
 
-  bool HLT_DiPhoton10sminlt0p12, HLT_DiPhoton10Time1p4ns, HLT_DiPhoton10Time1ns, HLT_DiPhoton10_CaloIdL;
+  bool HLT_DiPhoton10Time1p4ns, HLT_DiPhoton10Time1ns, HLT_DiPhoton10_CaloIdL;
   bool HLTOR_METTrig;
+  bool HLTOR_METTrigFull;
+  bool HLTOR_JetTrigFull;
 
   double bs_x;
   double bs_y;
@@ -86,10 +89,6 @@ private:
   vector<double> pho_neutralhadroniso;
   vector<double> pho_photoniso;
 
-  int dieg10sminlt0p12_usfinfilt_n;
-  vector<double> dieg10sminlt0p12_usfinfilt_pt;
-  vector<double> dieg10sminlt0p12_usfinfilt_eta;
-  vector<double> dieg10sminlt0p12_usfinfilt_phi;
   int dieg10time1ns_usfinfilt_n;
   vector<double> dieg10time1ns_usfinfilt_pt;
   vector<double> dieg10time1ns_usfinfilt_eta;
@@ -106,8 +105,8 @@ private:
 };
 
 TriggerAnalyzerMiniAOD2024::TriggerAnalyzerMiniAOD2024(const edm::ParameterSet& iConfig) {
-  trgResultsToken_= consumes< edm::TriggerResults >( edm::InputTag("TriggerResults::PAT") );
-  trgObjectsToken_ = consumes< pat::TriggerObjectStandAlone >( edm::InputTag("slimmedPatTrigger::PAT") );
+  trgResultsToken_= consumes< edm::TriggerResults >( edm::InputTag("TriggerResults::HLT") );
+  trgObjectsToken_ = consumes< pat::TriggerObjectStandAloneCollection >( edm::InputTag("slimmedPatTrigger") );
   rechiteb_token = consumes< edm::SortedCollection< EcalRecHit, edm::StrictWeakOrdering< EcalRecHit >>>( edm::InputTag("reducedEgamma:reducedEBRecHits") );
   rechitee_token = consumes< edm::SortedCollection< EcalRecHit, edm::StrictWeakOrdering< EcalRecHit >>>( edm::InputTag("reducedEgamma:reducedEERecHits") );
   //electron_token = consumes< std::vector< pat::Electron >>( edm::InputTag("slimmedElectrons") );
@@ -126,11 +125,12 @@ TriggerAnalyzerMiniAOD2024::TriggerAnalyzerMiniAOD2024(const edm::ParameterSet& 
   tree->Branch("run", &run, "run/I");
   tree->Branch("lumSec", &lumSec, "lumSec/I");
 
-  tree->Branch("HLT_DiPhoton10sminlt0p12", &HLT_DiPhoton10sminlt0p12, "HLT_DiPhoton10sminlt0p12/O");
   tree->Branch("HLT_DiPhoton10Time1p4ns", &HLT_DiPhoton10Time1p4ns, "HLT_DiPhoton10Time1p4ns/O");
   tree->Branch("HLT_DiPhoton10Time1ns", &HLT_DiPhoton10Time1ns, "HLT_DiPhoton10Time1ns/O");
   tree->Branch("HLT_DiPhoton10_CaloIdL", &HLT_DiPhoton10_CaloIdL, "HLT_DiPhoton10_CaloIdL/O");
   tree->Branch("HLTOR_METTrig", &HLTOR_METTrig, "HLTOR_METTrig/O");
+  tree->Branch("HLTOR_METTrigFull", &HLTOR_METTrigFull, "HLTOR_METTrigFull/O");
+  tree->Branch("HLTOR_JetTrigFull", &HLTOR_JetTrigFull, "HLTOR_JetTrigFull/O");
 
   tree->Branch("bs_x", &bs_x, "bs_x/D");
   tree->Branch("bs_y", &bs_y, "bs_y/D");
@@ -151,10 +151,6 @@ TriggerAnalyzerMiniAOD2024::TriggerAnalyzerMiniAOD2024(const edm::ParameterSet& 
   tree->Branch("pho_neutralhadroniso", &pho_neutralhadroniso);
   tree->Branch("pho_photoniso", &pho_photoniso);
 
-  tree->Branch("dieg10sminlt0p12_usfinfilt_n", &dieg10sminlt0p12_usfinfilt_n, "dieg10sminlt0p12_usfinfilt_n/i");
-  tree->Branch("dieg10sminlt0p12_usfinfilt_pt", &dieg10sminlt0p12_usfinfilt_pt);
-  tree->Branch("dieg10sminlt0p12_usfinfilt_eta", &dieg10sminlt0p12_usfinfilt_eta);
-  tree->Branch("dieg10sminlt0p12_usfinfilt_phi", &dieg10sminlt0p12_usfinfilt_phi);
   tree->Branch("dieg10time1ns_usfinfilt_n", &dieg10time1ns_usfinfilt_n, "dieg10time1ns_usfinfilt_n/i");
   tree->Branch("dieg10time1ns_usfinfilt_pt", &dieg10time1ns_usfinfilt_pt);
   tree->Branch("dieg10time1ns_usfinfilt_eta", &dieg10time1ns_usfinfilt_eta);
@@ -223,11 +219,96 @@ void TriggerAnalyzerMiniAOD2024::analyze(const edm::Event& iEvent, const edm::Ev
     }
   }
 
-  HLT_DiPhoton10sminlt0p12 = false;
   HLT_DiPhoton10Time1p4ns = false;
   HLT_DiPhoton10Time1ns = false;
   HLT_DiPhoton10_CaloIdL = false;
   HLTOR_METTrig = false;
+  HLTOR_METTrigFull = false;
+  HLTOR_JetTrigFull = false;
+
+  std::string all_HLT_Jet_paths[] = {"HLT_AK8DiPFJet250_250_MassSD30_v", "HLT_AK8DiPFJet250_250_MassSD50_v",
+                                   "HLT_AK8DiPFJet260_260_MassSD30_v", "HLT_AK8DiPFJet260_260_MassSD50_v", 
+                                   "HLT_AK8DiPFJet270_270_MassSD30_v", "HLT_AK8DiPFJet280_280_MassSD30_v", 
+                                   "HLT_AK8DiPFJet290_290_MassSD30_v", "HLT_AK8PFJet140_v", "HLT_AK8PFJet200_v", 
+                                   "HLT_AK8PFJet220_SoftDropMass40_PNetBB0p06_DoubleAK4PFJet60_30_PNet2BTagMean0p50_v", 
+                                   "HLT_AK8PFJet220_SoftDropMass40_PNetBB0p06_DoubleAK4PFJet60_30_PNet2BTagMean0p53_v", 
+                                   "HLT_AK8PFJet220_SoftDropMass40_PNetBB0p06_DoubleAK4PFJet60_30_PNet2BTagMean0p55_v", 
+                                   "HLT_AK8PFJet220_SoftDropMass40_PNetBB0p06_DoubleAK4PFJet60_30_PNet2BTagMean0p60_v", 
+                                   "HLT_AK8PFJet220_SoftDropMass40_v", "HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06_v", 
+                                   "HLT_AK8PFJet230_SoftDropMass40_PNetBB0p10_v", 
+                                   "HLT_AK8PFJet230_SoftDropMass40_PNetTauTau0p03_v", 
+                                   "HLT_AK8PFJet230_SoftDropMass40_PNetTauTau0p05_v", 
+                                   "HLT_AK8PFJet230_SoftDropMass40_v", 
+                                   "HLT_AK8PFJet250_SoftDropMass40_PNetBB0p06_v", 
+                                   "HLT_AK8PFJet250_SoftDropMass40_PNetBB0p10_v", 
+                                   "HLT_AK8PFJet250_SoftDropMass40_PNetTauTau0p03_v", 
+                                   "HLT_AK8PFJet250_SoftDropMass40_PNetTauTau0p05_v", "HLT_AK8PFJet260_v", 
+                                   "HLT_AK8PFJet275_SoftDropMass40_PNetBB0p06_v", 
+                                   "HLT_AK8PFJet275_SoftDropMass40_PNetBB0p10_v", 
+                                   "HLT_AK8PFJet275_SoftDropMass40_PNetTauTau0p03_v", 
+                                   "HLT_AK8PFJet275_SoftDropMass40_PNetTauTau0p05_v", 
+                                   "HLT_AK8PFJet320_v", "HLT_AK8PFJet400_MassSD30_v", "HLT_AK8PFJet400_v", 
+                                   "HLT_AK8PFJet40_v", "HLT_AK8PFJet420_MassSD30_v", 
+                                   "HLT_AK8PFJet425_SoftDropMass40_v", "HLT_AK8PFJet450_MassSD30_v", 
+                                   "HLT_AK8PFJet450_SoftDropMass40_v", "HLT_AK8PFJet450_v", 
+                                   "HLT_AK8PFJet470_MassSD30_v", "HLT_AK8PFJet500_MassSD30_v", 
+                                   "HLT_AK8PFJet500_v", "HLT_AK8PFJet550_v", "HLT_AK8PFJet60_v", 
+                                   "HLT_AK8PFJet80_v", "HLT_AK8PFJetFwd140_v", "HLT_AK8PFJetFwd15_v", 
+                                   "HLT_AK8PFJetFwd200_v", "HLT_AK8PFJetFwd25_v", "HLT_AK8PFJetFwd260_v", 
+                                   "HLT_AK8PFJetFwd320_v", "HLT_AK8PFJetFwd400_v", "HLT_AK8PFJetFwd40_v", 
+                                   "HLT_AK8PFJetFwd450_v", "HLT_AK8PFJetFwd500_v", "HLT_AK8PFJetFwd60_v", 
+                                   "HLT_AK8PFJetFwd80_v", "HLT_CaloJet500_NoJetID_v", "HLT_CaloJet550_NoJetID_v", 
+                                   "HLT_CaloMET350_NotCleaned_v", "HLT_CaloMET90_NotCleaned_v", "HLT_CaloMHT90_v", 
+                                   "HLT_DiPFJetAve100_HFJEC_v", "HLT_DiPFJetAve140_v", "HLT_DiPFJetAve160_HFJEC_v", 
+                                   "HLT_DiPFJetAve200_v", "HLT_DiPFJetAve220_HFJEC_v", "HLT_DiPFJetAve260_HFJEC_v", 
+                                   "HLT_DiPFJetAve260_v", "HLT_DiPFJetAve300_HFJEC_v", "HLT_DiPFJetAve320_v", 
+                                   "HLT_DiPFJetAve400_v", "HLT_DiPFJetAve40_v", "HLT_DiPFJetAve500_v", 
+                                   "HLT_DiPFJetAve60_HFJEC_v", "HLT_DiPFJetAve60_v", "HLT_DiPFJetAve80_HFJEC_v", 
+                                   "HLT_DiPFJetAve80_v", "HLT_DoublePFJets100_PFBTagDeepJet_p71_v", 
+                                   "HLT_DoublePFJets116MaxDeta1p6_DoublePFBTagDeepJet_p71_v", 
+                                   "HLT_DoublePFJets128MaxDeta1p6_DoublePFBTagDeepJet_p71_v", 
+                                   "HLT_DoublePFJets200_PFBTagDeepJet_p71_v", 
+                                   "HLT_DoublePFJets350_PFBTagDeepJet_p71_v", "HLT_DoublePFJets40_PFBTagDeepJet_p71_v", 
+                                   "HLT_Mu12_DoublePFJets100_PFBTagDeepJet_p71_v", 
+                                   "HLT_Mu12_DoublePFJets200_PFBTagDeepJet_p71_v", 
+                                   "HLT_Mu12_DoublePFJets350_PFBTagDeepJet_p71_v", 
+                                   "HLT_Mu12_DoublePFJets40MaxDeta1p6_DoublePFBTagDeepJet_p71_v", 
+                                   "HLT_Mu12_DoublePFJets40_PFBTagDeepJet_p71_v", 
+                                   "HLT_Mu12_DoublePFJets54MaxDeta1p6_DoublePFBTagDeepJet_p71_v", 
+                                   "HLT_Mu12eta2p3_PFJet40_v", 
+                                   "HLT_PFJet110_v", "HLT_PFJet140_v", "HLT_PFJet200_v", "HLT_PFJet260_v", 
+                                   "HLT_PFJet320_v", "HLT_PFJet400_v", "HLT_PFJet40_v", "HLT_PFJet450_v", 
+                                   "HLT_PFJet500_v", "HLT_PFJet550_v15", "HLT_PFJet60_v", "HLT_PFJet80_v", 
+                                   "HLT_PFJetFwd140_v", "HLT_PFJetFwd200_v", "HLT_PFJetFwd260_v", 
+                                   "HLT_PFJetFwd320_v", "HLT_PFJetFwd400_v", "HLT_PFJetFwd40_v", 
+                                   "HLT_PFJetFwd450_v", "HLT_PFJetFwd500_v", "HLT_PFJetFwd60_v", 
+                                   "HLT_PFJetFwd80_v", "HLT_QuadPFJet100_88_70_30_v", 
+                                   "HLT_QuadPFJet103_88_75_15_v", "HLT_QuadPFJet105_88_75_30_v", 
+                                   "HLT_QuadPFJet105_88_76_15_v", "HLT_QuadPFJet111_90_80_15_v", 
+                                   "HLT_QuadPFJet111_90_80_30_v"
+                                  };
+
+  std::string all_MET_paths[] = {"HLT_MET105_IsoTrk50_v", "HLT_MET120_IsoTrk50_v",
+                               "HLT_PFHT500_PFMET100_PFMHT100_IDTight_v", 
+                               "HLT_PFHT500_PFMET110_PFMHT110_IDTight_v",
+                               "HLT_PFHT700_PFMET85_PFMHT85_IDTight_v",
+                               "HLT_PFHT800_PFMET75_PFMHT75_IDTight_v",
+                               "HLT_PFMET105_IsoTrk50_v", "HLT_PFMET120_PFMHT120_IDTight_PFHT60_v",
+                               "HLT_PFMET120_PFMHT120_IDTight_v", "HLT_PFMET130_PFMHT130_IDTight_v",
+                               "HLT_PFMET140_PFMHT140_IDTight_v", "HLT_PFMET200_BeamHaloCleaned_v",
+                               "HLT_PFMET200_NotCleaned_v", "HLT_PFMET250_NotCleaned_v",
+                               "HLT_PFMET300_NotCleaned_v",
+                               "HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF_v",
+                               "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_FilterHF_v",
+                               "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60_v",
+                               "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v", 
+                               "HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_FilterHF_v", 
+                               "HLT_PFMETNoMu130_PFMHTNoMu130_IDTight_v", 
+                               "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_FilterHF_v", 
+                               "HLT_PFMETNoMu140_PFMHTNoMu140_IDTight_v", 
+                               "HLT_PFMETTypeOne140_PFMHT140_IDTight_v", 
+                               "HLT_PFMETTypeOne200_BeamHaloCleaned_v",
+                              };
 
   // MET Trigger bits
   bool HLT_PFMET120_PFMHT120_IDTight=false, HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF=false, HLT_PFMETNoMu120_PFMHTNoMu120_IDTight=false, HLT_CaloMET80_NotCleaned=false, HLT_PFMET200_NotCleaned=false, HLT_PFMET200_BeamHaloCleaned=false, HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight=false;
@@ -243,19 +324,32 @@ void TriggerAnalyzerMiniAOD2024::analyze(const edm::Event& iEvent, const edm::Ev
     const edm::TriggerNames & trigName = iEvent.triggerNames(*trgResultsH);
     for( int i_Trig = 0; i_Trig < N_Triggers; ++i_Trig ) {
       if (trgResultsH.product()->accept(i_Trig)) {
-	//cout << "Path: " <<trigName.triggerName(i_Trig)<<"Results: "<<trgResultsH.product()->accept(i_Trig)<<endl;
-	TString TrigPath =trigName.triggerName(i_Trig);
-	if(TrigPath.Index("HLT_DiPhoton10sminlt0p12_v") >=0) HLT_DiPhoton10sminlt0p12 = true; 
-	if(TrigPath.Index("HLT_DiPhoton10Time1p4ns_v") >=0) HLT_DiPhoton10Time1p4ns = true; 
-	if(TrigPath.Index("HLT_DiPhoton10Time1ns_v") >=0) HLT_DiPhoton10Time1ns = true; 
-	if(TrigPath.Index("HLT_DiPhoton10_CaloIdL_v") >=0) HLT_DiPhoton10_CaloIdL = true; 
-	if(TrigPath.Index("HLT_PFMET120_PFMHT120_IDTight_v") >=0) HLT_PFMET120_PFMHT120_IDTight=true;
-	if(TrigPath.Index("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF_v") >=0) HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF=true;
-	if(TrigPath.Index("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v") >=0) HLT_PFMETNoMu120_PFMHTNoMu120_IDTight=true;
-	if(TrigPath.Index("HLT_CaloMET80_NotCleaned_v") >=0) HLT_CaloMET80_NotCleaned=true;
-	if(TrigPath.Index("HLT_PFMET200_NotCleaned_v") >=0) HLT_PFMET200_NotCleaned=true;
-	if(TrigPath.Index("HLT_PFMET200_BeamHaloCleaned_v") >=0) HLT_PFMET200_BeamHaloCleaned=true;
-	if(TrigPath.Index("HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight_v") >=0) HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight=true;
+  	    //cout << "Path: " <<trigName.triggerName(i_Trig)<<"Results: "<<trgResultsH.product()->accept(i_Trig)<<endl;
+	      TString TrigPath =trigName.triggerName(i_Trig);
+	      if(TrigPath.Index("HLT_DiPhoton10Time1p4ns_v") >=0) HLT_DiPhoton10Time1p4ns = true; 
+	      if(TrigPath.Index("HLT_DiPhoton10Time1ns_v") >=0) HLT_DiPhoton10Time1ns = true; 
+	      if(TrigPath.Index("HLT_DiPhoton10_CaloIdL_v") >=0) HLT_DiPhoton10_CaloIdL = true; 
+	      if(TrigPath.Index("HLT_PFMET120_PFMHT120_IDTight_v") >=0) HLT_PFMET120_PFMHT120_IDTight=true;
+	      if(TrigPath.Index("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF_v") >=0) HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_FilterHF=true;
+	      if(TrigPath.Index("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v") >=0) HLT_PFMETNoMu120_PFMHTNoMu120_IDTight=true;
+	      if(TrigPath.Index("HLT_CaloMET80_NotCleaned_v") >=0) HLT_CaloMET80_NotCleaned=true;
+	      if(TrigPath.Index("HLT_PFMET200_NotCleaned_v") >=0) HLT_PFMET200_NotCleaned=true;
+	      if(TrigPath.Index("HLT_PFMET200_BeamHaloCleaned_v") >=0) HLT_PFMET200_BeamHaloCleaned=true;
+	      if(TrigPath.Index("HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight_v") >=0) HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight=true;
+
+        // Loop over the string of HLT paths and obtain the OR of all decision bits
+        for (auto const& path : all_HLT_Jet_paths) {
+          if( TrigPath.Index(path.c_str()) >=0 ) {
+            HLTOR_JetTrigFull = true;
+            break;
+          }
+        }
+        for (auto const& path : all_MET_paths) {
+          if( TrigPath.Index(path.c_str()) >=0 ) {
+            HLTOR_METTrigFull = true;
+            break;
+          }
+        }
       }
     }
     //if(HLT_DiPhoton10sminlt0p12 || HLT_DiPhoton10Time1p4ns || HLT_DiPhoton10_CaloIdL) cout<<"Passing one of the desired triggers!"<<endl;
@@ -269,19 +363,34 @@ void TriggerAnalyzerMiniAOD2024::analyze(const edm::Event& iEvent, const edm::Ev
 		   HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight);
 
 
-  // Trigger Objects
+  // Trigger Filter Objects
   edm::Handle<pat::TriggerObjectStandAloneCollection> trgObjectsH;
   iEvent.getByToken(trgObjectsToken_, trgObjectsH);
-  dieg10sminlt0p12_usfinfilt_n = 0;
   dieg10time1ns_usfinfilt_n = 0;
-  std::string filterName_ = "hltEG10EtFilter";
-  if( !trgObjectsH.failedToGet() ) {
+  std::string filterName_ = "hltDiEG10CaloIdLTime1nsUnseededFilter";
+  if( trgObjectsH.isValid() && trgResultsH.isValid() ) {
+    if( trgObjectsH->empty() ) {
+      edm::LogWarning("TriggerAnalyzerMiniAOD2024") << "Trigger objects collection is empty";
+    }
+    if( trgResultsH->size() == 0 ) {
+      edm::LogWarning("TriggerAnalyzerMiniAOD2024") << "Trigger results collection is empty";
+    }
+    const edm::TriggerNames &names = iEvent.triggerNames(*trgResultsH);
     for (pat::TriggerObjectStandAlone obj : *trgObjectsH) {
-      obj.unpackPathNames(iEvent.triggerNames(*trgResultsH));
+      obj.unpackFilterLabels(iEvent, *trgResultsH);
+      obj.unpackPathNames(names);
+      if( obj.filterLabels().empty() ) {
+        std::cout<<"No filter labels found for this trigger object"<<std::endl;
+        continue;
+      }
+      
       for (auto& filterLabel : obj.filterLabels()) {
-	if (filterLabel == filterName_) {
-	  std::cout << "Trigger object: pt = " << obj.pt() << ", eta = " << obj.eta() << ", phi = " << obj.phi() << std::endl;
-	}
+	      if (filterLabel == filterName_) {
+          dieg10time1ns_usfinfilt_pt.push_back( obj.pt() );
+          dieg10time1ns_usfinfilt_eta.push_back( obj.eta() );
+          dieg10time1ns_usfinfilt_phi.push_back( obj.phi() );
+          dieg10time1ns_usfinfilt_n++;
+	      }
       }
     }
   }
@@ -387,6 +496,10 @@ void TriggerAnalyzerMiniAOD2024::clearVars() {
   pho_neutralhadroniso.clear();
   pho_photoniso.clear();
   
+  dieg10time1ns_usfinfilt_pt.clear();
+  dieg10time1ns_usfinfilt_eta.clear();
+  dieg10time1ns_usfinfilt_phi.clear();
+
   pv_x.clear();
   pv_xerr.clear();
   pv_y.clear();
