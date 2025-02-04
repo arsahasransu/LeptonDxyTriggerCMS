@@ -13,12 +13,12 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
-        'file:/eos/user/a/asahasra/TestData/JetMET0_2023C_19Dec2023_v1_ReReco_MINIAOD.root'
+        'root://cms-xrd-global.cern.ch///store/data/Run2023C/EGamma0/MINIAOD/22Sep2023_v4-v1/410000/c607dcf9-2c85-4d9c-92fa-994427f93c35.root'
     )
 )
 
 process.TFileService = cms.Service("TFileService", 
-                                   fileName = cms.string("DiPhoton10_trigNtuples.root")
+                                   fileName = cms.string("EGamma0_EXOLLPTRG_Nano.root")
                                )
 
 process.demo = cms.EDAnalyzer('TriggerAnalyzerMiniAOD2024'
