@@ -80,6 +80,7 @@ private:
   vector<double> ele_pt;
   vector<double> ele_eta;
   vector<double> ele_phi;
+  vector<double> ele_charge;
   vector<double> ele_IDveto;
   vector<double> ele_IDloose;
   vector<double> ele_IDmedium;
@@ -153,6 +154,7 @@ TriggerAnalyzerMiniAOD2024::TriggerAnalyzerMiniAOD2024(const edm::ParameterSet& 
   tree->Branch("ele_pt", &ele_pt);
   tree->Branch("ele_eta", &ele_eta);
   tree->Branch("ele_phi", &ele_phi);
+  tree->Branch("ele_charge", &ele_charge);
   tree->Branch("ele_IDveto", &ele_IDveto);
   tree->Branch("ele_IDloose", &ele_IDloose);
   tree->Branch("ele_IDmedium", &ele_IDmedium);
@@ -438,6 +440,7 @@ void TriggerAnalyzerMiniAOD2024::analyze(const edm::Event& iEvent, const edm::Ev
       ele_pt.push_back(ele_iter->pt());
       ele_eta.push_back(ele_iter->eta());
       ele_phi.push_back(ele_iter->phi());
+      ele_charge.push_back(ele_iter->);
       ele_IDveto.push_back(ele_iter->electronID("cutBasedElectronID-RunIIIWinter22-V1-veto"));
       ele_IDloose.push_back(ele_iter->electronID("cutBasedElectronID-RunIIIWinter22-V1-loose"));
       ele_IDmedium.push_back(ele_iter->electronID("cutBasedElectronID-RunIIIWinter22-V1-medium"));
@@ -545,6 +548,7 @@ void TriggerAnalyzerMiniAOD2024::clearVars() {
   ele_pt.clear();
   ele_eta.clear();
   ele_phi.clear();
+  ele_charge.clear();
   ele_IDveto.clear();
   ele_IDloose.clear();
   ele_IDmedium.clear();
