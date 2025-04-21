@@ -1,7 +1,7 @@
 import ROOT
 
 
-df = ROOT.RDataFrame('demo/tree', './data/EGamma0_EXOLLPTRG_Nano.root')
+df = ROOT.RDataFrame('demo/tree', './data/EGamma0_EXOLLPTRG_Nano_*.root')
 print('Entries in the tree to process:', df.Count().GetValue())
 
 
@@ -40,6 +40,7 @@ def add_plots(df, prevSelId, selId, selStr):
                       'pt': (100, 0, 100),
                       'eta': (54, -2.7, 2.7),
                       'phi': (66, -3.3, 3.3),
+                      'IDtight': (4, -1, 3),
                       'seedtime': (300, -10, 20)}
     
     new_variables = {'invmass':(150, 0, 150)}
@@ -49,6 +50,7 @@ def add_plots(df, prevSelId, selId, selStr):
 
     df = df.Define(f'ele{selId}_n', f'ele{selId}_e.size()')
     histograms.append(df.Histo1D((f'ele{selId}_n', 'multiplicity', 10, 0, 10), f'ele{selId}_n'))
+    df = add_new_variables(df, selId)
 
     dfn2 = df.Filter(f'ele{selId}_n >= 2')
     for var, (xbins, xlow, xup) in base_variables.items():
@@ -58,7 +60,7 @@ def add_plots(df, prevSelId, selId, selStr):
         dfn2 = dfn2.Define(f'ele{selId}_el1_{var}', f'ele{selId}_{var}[1]')
         histograms.append(dfn2.Histo1D((f'ele{selId}_el1_{var}', f'{var}', xbins, xlow, xup), f'ele{selId}_el1_{var}'))
 
-    dfn2 = add_new_variables(dfn2, selId)
+    # dfn2 = add_new_variables(dfn2, selId)
 
     dfn2_invmass_filtered = dfn2.Filter(f'ele{selId}_invmass > 0')
     histograms.append(dfn2_invmass_filtered.Histo1D((f'ele{selId}_invmass', 'invM', new_variables['invmass'][0],
@@ -72,6 +74,9 @@ def analyser(df):
 
     (df, hist_list) = add_plots(df, '', 'EB', 'abs(ele_eta)<1.479 && ele_IDtight == 1')
     histograms.extend(hist_list)
+    df = df.Filter('eleEB_invmass > 80 and eleEB_invmass < 100')
+    (df, hist_list) = add_plots(df, 'EB', 'EBZ', 'abs(eleEB_eta)<1.479 && eleEB_IDtight == 1')
+    histograms.extend(hist_list)
 
     outfile = ROOT.TFile('out_histos.root', 'RECREATE')
     for hist in histograms:
@@ -81,4 +86,5 @@ def analyser(df):
 
 
 if __name__ == "__main__":
+    print('Starting analysis...')
     analyser(df)

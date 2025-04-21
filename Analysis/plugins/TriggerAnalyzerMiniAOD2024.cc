@@ -54,11 +54,12 @@ private:
   edm::EDGetTokenT< std::vector< pat::Electron >> electron_token;
   edm::EDGetTokenT< std::vector< reco::SuperCluster >> suprclus_token;
   //edm::EDGetTokenT< std::vector< pat::Electron >> lowptelectron_token;
-  // edm::EDGetTokenT< std::vector< pat::Photon >> photon_token;
+  edm::EDGetTokenT< std::vector< pat::Photon >> photon_token;
   //edm::EDGetTokenT< std::vector< pat::Photon >> ootphoton_token;
   // edm::EDGetTokenT< reco::BeamSpot > BS_token;
   edm::EDGetTokenT< double > rho_token;
   // edm::EDGetTokenT< std::vector< reco::Vertex >> PV_token;
+  edm::EDGetTokenT<std::vector<reco::GenParticle> > gens_token;
 
   edm::Service< TFileService > fs;
   TTree* tree;
@@ -75,6 +76,21 @@ private:
   // double bs_z;
   double rho;
 
+  int n_gen;
+  vector<int> genpart_pdg;
+  vector<double> genpart_pt;
+  vector<double> genpart_eta;
+  vector<double> genpart_phi;
+  vector<double> genpart_m;
+  vector<double> genpart_vx;
+  vector<double> genpart_vy;
+  vector<double> genpart_vz;
+  vector<int> genpart_nmoms;
+  vector<int> genpart_mompdg;
+  vector<int> genpart_isPromptFS;
+  vector<int> genpart_isPromptDec;
+  vector<int> genpart_isDirectPromptTauDecayProdFS;
+
   int ele_n;
   vector<double> ele_e;
   vector<double> ele_pt;
@@ -87,19 +103,19 @@ private:
   vector<double> ele_IDtight;
   vector<double> ele_seedtime;
 
-  // int pho_n;
-  // vector<double> pho_e;
-  // vector<double> pho_pt;
-  // vector<double> pho_eta;
-  // vector<double> pho_phi;
-  // vector<double> pho_seedtime;
-  // vector<double> pho_smin;
-  // vector<double> pho_smaj;
-  // vector<double> pho_sinin_noiseclnd;
-  // vector<double> pho_hoe;
-  // vector<double> pho_chargedhadroniso;
-  // vector<double> pho_neutralhadroniso;
-  // vector<double> pho_photoniso;
+  int pho_n;
+  vector<double> pho_e;
+  vector<double> pho_pt;
+  vector<double> pho_eta;
+  vector<double> pho_phi;
+  vector<double> pho_seedtime;
+  vector<double> pho_smin;
+  vector<double> pho_smaj;
+  vector<double> pho_sinin_noiseclnd;
+  vector<double> pho_hoe;
+  vector<double> pho_chargedhadroniso;
+  vector<double> pho_neutralhadroniso;
+  vector<double> pho_photoniso;
 
   // int dieg10time1ns_usfinfilt_n;
   // vector<double> dieg10time1ns_usfinfilt_pt;
@@ -119,17 +135,18 @@ private:
 TriggerAnalyzerMiniAOD2024::TriggerAnalyzerMiniAOD2024(const edm::ParameterSet& iConfig) {
   // trgResultsToken_= consumes< edm::TriggerResults >( edm::InputTag("TriggerResults::HLT") );
   // trgObjectsToken_ = consumes< pat::TriggerObjectStandAloneCollection >( edm::InputTag("slimmedPatTrigger") );
-  rechiteb_token = consumes< edm::SortedCollection< EcalRecHit, edm::StrictWeakOrdering< EcalRecHit >>>( edm::InputTag("reducedEgamma:reducedEBRecHits") );
-  rechitee_token = consumes< edm::SortedCollection< EcalRecHit, edm::StrictWeakOrdering< EcalRecHit >>>( edm::InputTag("reducedEgamma:reducedEERecHits") );
+  // rechiteb_token = consumes< edm::SortedCollection< EcalRecHit, edm::StrictWeakOrdering< EcalRecHit >>>( edm::InputTag("reducedEgamma:reducedEBRecHits") );
+  // rechitee_token = consumes< edm::SortedCollection< EcalRecHit, edm::StrictWeakOrdering< EcalRecHit >>>( edm::InputTag("reducedEgamma:reducedEERecHits") );
   electron_token = consumes< std::vector< pat::Electron >>( edm::InputTag("slimmedElectrons") );
-  suprclus_token = consumes< std::vector< reco::SuperCluster >>( edm::InputTag("reducedEgamma:reducedSuperClusters") );
+  // suprclus_token = consumes< std::vector< reco::SuperCluster >>( edm::InputTag("reducedEgamma:reducedSuperClusters") );
   //lowptelectron_token = consumes< std::vector< pat::Electron >>( edm::InputTag("slimmedLowPtElectrons") );
   // photon_token = consumes< std::vector< pat::Photon >>( edm::InputTag("slimmedPhotons") );
   //ootphoton_token = consumes< std::vector< pat::Photon >>( edm::InputTag("slimmedOOTPhotons") );
   // BS_token = consumes< reco::BeamSpot > ( edm::InputTag("offlineBeamSpot"));
-  rho_token = consumes< double > ( edm::InputTag("fixedGridRhoAll"));
+  // rho_token = consumes< double > ( edm::InputTag("fixedGridRhoAll"));
   // PV_token = consumes< std::vector< reco::Vertex >> ( edm::InputTag("offlineSlimmedPrimaryVertices"));
-  
+  // gens_token = consumes< std::vector< reco::GenParticle >>( edm::InputTag("prunedGenParticles") ),
+ 
   usesResource("TFileService");
 
   tree = fs->make<TTree>("tree", "tree");
@@ -149,6 +166,21 @@ TriggerAnalyzerMiniAOD2024::TriggerAnalyzerMiniAOD2024(const edm::ParameterSet& 
   // tree->Branch("bs_z", &bs_z, "bs_z/D");
   tree->Branch("rho", &rho, "rho/D");
 
+  tree->Branch("n_genpart", &n_gen, "n_genpart/i");
+  tree->Branch("genpart_pdg", &genpart_pdg);
+  tree->Branch("genpart_pt", &genpart_pt);
+  tree->Branch("genpart_eta", &genpart_eta);
+  tree->Branch("genpart_phi", &genpart_phi);
+  tree->Branch("genpart_m", &genpart_m);
+  tree->Branch("genpart_vx", &genpart_vx);
+  tree->Branch("genpart_vy", &genpart_vy);
+  tree->Branch("genpart_vz", &genpart_vz);
+  tree->Branch("genpart_nmoms", &genpart_nmoms);
+  tree->Branch("genpart_mompdg", &genpart_mompdg);
+  tree->Branch("genpart_isPromptFS", &genpart_isPromptFS);
+  tree->Branch("genpart_isPromptDec", &genpart_isPromptDec);
+  tree->Branch("genpart_isDirectPromptTauDecayProdFS", &genpart_isDirectPromptTauDecayProdFS);
+
   tree->Branch("ele_n", &ele_n, "ele_n/I");
   tree->Branch("ele_e", &ele_e);
   tree->Branch("ele_pt", &ele_pt);
@@ -161,19 +193,19 @@ TriggerAnalyzerMiniAOD2024::TriggerAnalyzerMiniAOD2024(const edm::ParameterSet& 
   tree->Branch("ele_IDtight", &ele_IDtight);
   tree->Branch("ele_seedtime", &ele_seedtime);
 
-  // tree->Branch("pho_n", &pho_n, "pho_n/I");
-  // tree->Branch("pho_e", &pho_e);
-  // tree->Branch("pho_pt", &pho_pt);
-  // tree->Branch("pho_eta", &pho_eta);
-  // tree->Branch("pho_phi", &pho_phi);
-  // tree->Branch("pho_seedtime", &pho_seedtime);
-  // tree->Branch("pho_smin", &pho_smin);
-  // tree->Branch("pho_smaj", &pho_smaj);
-  // tree->Branch("pho_sinin_noiseclnd", &pho_sinin_noiseclnd);
-  // tree->Branch("pho_hoe", &pho_hoe);
-  // tree->Branch("pho_chargedhadroniso", &pho_chargedhadroniso);
-  // tree->Branch("pho_neutralhadroniso", &pho_neutralhadroniso);
-  // tree->Branch("pho_photoniso", &pho_photoniso);
+  tree->Branch("pho_n", &pho_n, "pho_n/I");
+  tree->Branch("pho_e", &pho_e);
+  tree->Branch("pho_pt", &pho_pt);
+  tree->Branch("pho_eta", &pho_eta);
+  tree->Branch("pho_phi", &pho_phi);
+  tree->Branch("pho_seedtime", &pho_seedtime);
+  tree->Branch("pho_smin", &pho_smin);
+  tree->Branch("pho_smaj", &pho_smaj);
+  tree->Branch("pho_sinin_noiseclnd", &pho_sinin_noiseclnd);
+  tree->Branch("pho_hoe", &pho_hoe);
+  tree->Branch("pho_chargedhadroniso", &pho_chargedhadroniso);
+  tree->Branch("pho_neutralhadroniso", &pho_neutralhadroniso);
+  tree->Branch("pho_photoniso", &pho_photoniso);
 
   // tree->Branch("dieg10time1ns_usfinfilt_n", &dieg10time1ns_usfinfilt_n, "dieg10time1ns_usfinfilt_n/i");
   // tree->Branch("dieg10time1ns_usfinfilt_pt", &dieg10time1ns_usfinfilt_pt);
@@ -220,11 +252,30 @@ void TriggerAnalyzerMiniAOD2024::analyze(const edm::Event& iEvent, const edm::Ev
   // }
 
   // Rho token
-  edm::Handle<double> rhH;
-  iEvent.getByToken(rho_token, rhH);
-  if(rhH.isValid()) {
-    rho = (*rhH);
-  }
+  // edm::Handle<double> rhH;
+  // iEvent.getByToken(rho_token, rhH);
+  // if(rhH.isValid()) {
+  //   rho = (*rhH);
+  // }
+
+  // Handle< vector< reco::GenParticle >>gensH;
+  // iEvent.getByToken(gens_token, gensH);
+  // n_gen = 0;
+  // if(gensH.isValid()) {
+  //   for(auto gen_iter=gensH->begin(); gen_iter!=gensH->end(); ++gen_iter) {
+  //     genpart_pdg.push_back(gen_iter->pdgId());
+  //     genpart_pt.push_back(gen_iter->pt());
+  //     genpart_eta.push_back(gen_iter->eta());
+  //     genpart_phi.push_back(gen_iter->phi());
+  //     genpart_m.push_back(gen_iter->mass());
+  //     genpart_vx.push_back(gen_iter->vx());
+  //     genpart_vy.push_back(gen_iter->vy());
+  //     genpart_vz.push_back(gen_iter->vz());
+  //     genpart_nmoms.push_back(gen_iter->numberOfMothers());
+  //     genpart_mompdg.push_back(gen_iter->mother(0)->pdgId());
+  //     n_gen++;
+  //   }
+  // }
 
   // // Primary Vertex
   // edm::Handle<std::vector<reco::Vertex>> pvH;
@@ -420,50 +471,50 @@ void TriggerAnalyzerMiniAOD2024::analyze(const edm::Event& iEvent, const edm::Ev
   // }
 
   // ECAL rechits  
-  edm::Handle< edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit>> > rechitebH;
-  iEvent.getByToken(rechiteb_token, rechitebH);
-  edm::Handle< edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit>> > rechiteeH;
-  iEvent.getByToken(rechitee_token, rechiteeH);
+  // edm::Handle< edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit>> > rechitebH;
+  // iEvent.getByToken(rechiteb_token, rechitebH);
+  // edm::Handle< edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit>> > rechiteeH;
+  // iEvent.getByToken(rechitee_token, rechiteeH);
 
-  // Super Cluster collection
-  edm::Handle< std::vector<reco::SuperCluster> > sclusterH;
-  iEvent.getByToken(suprclus_token, sclusterH);
+  // // Super Cluster collection
+  // edm::Handle< std::vector<reco::SuperCluster> > sclusterH;
+  // iEvent.getByToken(suprclus_token, sclusterH);
 
-  // Electron
-  edm::Handle<std::vector<pat::Electron> > electronH;
-  iEvent.getByToken(electron_token, electronH);
-  ele_n = 0;
-  if(electronH.isValid()) {
-    double seedtime = def_max;
-    for(auto ele_iter=electronH->begin(); ele_iter!=electronH->end(); ele_iter++) {
-      ele_e.push_back(ele_iter->energy());
-      ele_pt.push_back(ele_iter->pt());
-      ele_eta.push_back(ele_iter->eta());
-      ele_phi.push_back(ele_iter->phi());
-      ele_charge.push_back(ele_iter->);
-      ele_IDveto.push_back(ele_iter->electronID("cutBasedElectronID-RunIIIWinter22-V1-veto"));
-      ele_IDloose.push_back(ele_iter->electronID("cutBasedElectronID-RunIIIWinter22-V1-loose"));
-      ele_IDmedium.push_back(ele_iter->electronID("cutBasedElectronID-RunIIIWinter22-V1-medium"));
-      ele_IDtight.push_back(ele_iter->electronID("cutBasedElectronID-RunIIIWinter22-V1-tight"));
+  // // Electron
+  // edm::Handle<std::vector<pat::Electron> > electronH;
+  // iEvent.getByToken(electron_token, electronH);
+  // ele_n = 0;
+  // if(electronH.isValid()) {
+  //   double seedtime = def_max;
+  //   for(auto ele_iter=electronH->begin(); ele_iter!=electronH->end(); ele_iter++) {
+  //     ele_e.push_back(ele_iter->energy());
+  //     ele_pt.push_back(ele_iter->pt());
+  //     ele_eta.push_back(ele_iter->eta());
+  //     ele_phi.push_back(ele_iter->phi());
+  //     ele_charge.push_back(ele_iter->charge());
+  //     ele_IDveto.push_back(ele_iter->electronID("cutBasedElectronID-RunIIIWinter22-V1-veto"));
+  //     ele_IDloose.push_back(ele_iter->electronID("cutBasedElectronID-RunIIIWinter22-V1-loose"));
+  //     ele_IDmedium.push_back(ele_iter->electronID("cutBasedElectronID-RunIIIWinter22-V1-medium"));
+  //     ele_IDtight.push_back(ele_iter->electronID("cutBasedElectronID-RunIIIWinter22-V1-tight"));
       
-      seedtime = def_max;
-      DetId SCseedID = ele_iter->superCluster()->seed()->seed();
-      if(rechitebH.isValid() && seedtime==def_max) {
-        auto rechitseed = rechitebH->find(SCseedID);
-        if(rechitseed!=rechitebH->end()) {
-          seedtime = rechitseed->time();
-        }
-      }
-      if(rechiteeH.isValid() && seedtime==def_max) {
-        auto rechitseed = rechiteeH->find(SCseedID);
-        if(rechitseed!=rechiteeH->end()) {
-          seedtime = rechitseed->time();
-        }
-      }
-      ele_seedtime.push_back(seedtime);
-    }
-    ele_n = ele_e.size();
-  } // End of electron header
+  //     seedtime = def_max;
+  //     DetId SCseedID = ele_iter->superCluster()->seed()->seed();
+  //     if(rechitebH.isValid() && seedtime==def_max) {
+  //       auto rechitseed = rechitebH->find(SCseedID);
+  //       if(rechitseed!=rechitebH->end()) {
+  //         seedtime = rechitseed->time();
+  //       }
+  //     }
+  //     if(rechiteeH.isValid() && seedtime==def_max) {
+  //       auto rechitseed = rechiteeH->find(SCseedID);
+  //       if(rechitseed!=rechiteeH->end()) {
+  //         seedtime = rechitseed->time();
+  //       }
+  //     }
+  //     ele_seedtime.push_back(seedtime);
+  //   }
+  //   ele_n = ele_e.size();
+  // } // End of electron header
 
 
   // // Photon
@@ -509,8 +560,8 @@ void TriggerAnalyzerMiniAOD2024::analyze(const edm::Event& iEvent, const edm::Ev
   //     }
   //     else {
 
-	// pho_smin.push_back(def_max);
-	// pho_smaj.push_back(def_max);
+  //     pho_smin.push_back(def_max);
+  //     pho_smaj.push_back(def_max);
 
   //     }
       
@@ -544,6 +595,21 @@ void TriggerAnalyzerMiniAOD2024::fillDescriptions(edm::ConfigurationDescriptions
 }
 
 void TriggerAnalyzerMiniAOD2024::clearVars() {
+
+  genpart_pdg.clear();
+  genpart_pt.clear();
+  genpart_eta.clear();
+  genpart_phi.clear();
+  genpart_m.clear();
+  genpart_vx.clear();
+  genpart_vy.clear();
+  genpart_vz.clear();
+  genpart_nmoms.clear();
+  genpart_mompdg.clear();
+  genpart_isPromptFS.clear();
+  genpart_isPromptDec.clear();
+  genpart_isDirectPromptTauDecayProdFS.clear();
+
   ele_e.clear();
   ele_pt.clear();
   ele_eta.clear();
@@ -555,18 +621,18 @@ void TriggerAnalyzerMiniAOD2024::clearVars() {
   ele_IDtight.clear();
   ele_seedtime.clear();
 
-  // pho_e.clear();
-  // pho_pt.clear();
-  // pho_eta.clear();
-  // pho_phi.clear();
-  // pho_seedtime.clear();
-  // pho_smin.clear();
-  // pho_smaj.clear();
-  // pho_sinin_noiseclnd.clear();
-  // pho_hoe.clear();
-  // pho_chargedhadroniso.clear();
-  // pho_neutralhadroniso.clear();
-  // pho_photoniso.clear();
+  pho_e.clear();
+  pho_pt.clear();
+  pho_eta.clear();
+  pho_phi.clear();
+  pho_seedtime.clear();
+  pho_smin.clear();
+  pho_smaj.clear();
+  pho_sinin_noiseclnd.clear();
+  pho_hoe.clear();
+  pho_chargedhadroniso.clear();
+  pho_neutralhadroniso.clear();
+  pho_photoniso.clear();
   
   // dieg10time1ns_usfinfilt_pt.clear();
   // dieg10time1ns_usfinfilt_eta.clear();
