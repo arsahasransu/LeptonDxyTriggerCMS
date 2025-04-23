@@ -1,22 +1,38 @@
 import FWCore.ParameterSet.Config as cms
+from FWCore.ParameterSet.VarParsing import VarParsing
+
+options = VarParsing('analysis')
+options.register('inpfilelist',
+                    'input.txt',
+                    VarParsing.multiplicity.singleton,
+                    VarParsing.varType.string,
+                    'Input file list')
+options.register('outfile',
+                    'output.root',
+                    VarParsing.multiplicity.singleton,
+                    VarParsing.varType.string,
+                    'Output file name')
+options.parseArguments()
 
 process = cms.Process("DEMO")
 
 # Message Logger settings
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+
+# Read input file names from a text file
+with open(options.inpfilelist, "r") as f:
+    file_names = [line.strip() for line in f if line.strip()]
 
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
-    fileNames = cms.untracked.vstring(
-        'file:/pnfs/pp.rl.ac.uk/data/cms/store/user/asahasra/SingletTripletHDMToDisplacedL_M200deltaM20ctau1m_TuneCP5_14TeV-madgraph-pythia8/STHDM_M200deltaM20ctau1m_Run3Winter24MiniAOD_250418/250417_165811/0000/STHDM_Run3Winter24Miniaod_1.root'
-    )
+    fileNames = cms.untracked.vstring( *file_names )
 )
 
 process.TFileService = cms.Service("TFileService", 
-                                   fileName = cms.string("NTuples.root")
+                                   fileName = cms.string(options.outfile),
                                )
 
 process.demo = cms.EDAnalyzer('TriggerAnalyzerMiniAOD2024'
