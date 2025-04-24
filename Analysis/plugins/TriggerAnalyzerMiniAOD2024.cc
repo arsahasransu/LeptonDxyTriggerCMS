@@ -46,6 +46,7 @@ private:
   virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
   virtual void endJob() override;
   void clearVars();
+  std::pair<double, double> displacedGenAnglesToPromptEquivalent(const reco::GenParticle&);
 
   // edm::EDGetTokenT< edm::TriggerResults > trgResultsToken_;
   // edm::EDGetTokenT< pat::TriggerObjectStandAloneCollection > trgObjectsToken_;
@@ -81,6 +82,9 @@ private:
   vector<double> genpart_pt;
   vector<double> genpart_eta;
   vector<double> genpart_phi;
+  vector<double> genpart_ecalpt;
+  vector<double> genpart_ecaleta;
+  vector<double> genpart_ecalphi;
   vector<double> genpart_m;
   vector<double> genpart_vx;
   vector<double> genpart_vy;
@@ -171,6 +175,9 @@ TriggerAnalyzerMiniAOD2024::TriggerAnalyzerMiniAOD2024(const edm::ParameterSet& 
   tree->Branch("genpart_pt", &genpart_pt);
   tree->Branch("genpart_eta", &genpart_eta);
   tree->Branch("genpart_phi", &genpart_phi);
+  tree->Branch("genpart_ecalpt", &genpart_ecalpt);
+  tree->Branch("genpart_ecaleta", &genpart_ecaleta);
+  tree->Branch("genpart_ecalphi", &genpart_ecalphi);
   tree->Branch("genpart_m", &genpart_m);
   tree->Branch("genpart_vx", &genpart_vx);
   tree->Branch("genpart_vy", &genpart_vy);
@@ -275,6 +282,27 @@ void TriggerAnalyzerMiniAOD2024::analyze(const edm::Event& iEvent, const edm::Ev
       genpart_nmoms.push_back(nmom);
       if(nmom > 0) genpart_mompdg.push_back(gen_iter->mother(0)->pdgId());
       else genpart_mompdg.push_back(0);
+
+      if( std::abs(gen_iter->pdgId())==11 && std::abs(gen_iter->mother(0)->pdgId())==9000007 ) {
+        const std::pair<double, double> ecalAngs = displacedGenAnglesToPromptEquivalent( *gen_iter );
+        if(ecalAngs.first != -100.0 && ecalAngs.second != -100.0) {
+          genpart_ecaleta.push_back(ecalAngs.first);
+          genpart_ecalphi.push_back(ecalAngs.second);
+          const double etatotheta = 2*std::atan(std::exp(-ecalAngs.first));
+          genpart_ecalpt.push_back(gen_iter->energy()*std::sin(etatotheta));
+        }
+        else {
+          genpart_ecalpt.push_back(-5.0);
+          genpart_ecaleta.push_back(-5.0);
+          genpart_ecalphi.push_back(-5.0);
+        }
+      }
+      else {
+        genpart_ecalpt.push_back(-5.0);
+        genpart_ecaleta.push_back(-5.0);
+        genpart_ecalphi.push_back(-5.0);
+      }
+
       n_gen++;
     }
   }
@@ -536,13 +564,13 @@ void TriggerAnalyzerMiniAOD2024::analyze(const edm::Event& iEvent, const edm::Ev
       if(rechitebH.isValid() && seedtime==-30) {
 	      auto rechitseed = rechitebH->find(SCseedID);
 	      if(rechitseed!=rechitebH->end()) {
-	        seedtime = rechitseed->time();
+	        seedtime = rechitseed->time()+0.9;
 	      }
       }
       if(rechiteeH.isValid() && seedtime==-30) {
         auto rechitseed = rechiteeH->find(SCseedID);
         if(rechitseed!=rechiteeH->end()) {
-          seedtime = rechitseed->time();
+          seedtime = rechitseed->time()+2.15;
         }
       }
       pho_seedtime.push_back(seedtime);
@@ -602,6 +630,9 @@ void TriggerAnalyzerMiniAOD2024::clearVars() {
   genpart_pt.clear();
   genpart_eta.clear();
   genpart_phi.clear();
+  genpart_ecalpt.clear();
+  genpart_ecaleta.clear();
+  genpart_ecalphi.clear();
   genpart_m.clear();
   genpart_vx.clear();
   genpart_vy.clear();
@@ -649,6 +680,49 @@ void TriggerAnalyzerMiniAOD2024::clearVars() {
   // pv_isvalid.clear();
 };
 
+
+std::pair<double, double> TriggerAnalyzerMiniAOD2024::displacedGenAnglesToPromptEquivalent(const reco::GenParticle& child){
+
+  const double ecalR = 129, EEz = 310, c = 29979245800;
+
+  // auto& childPos = child.vertex();
+  // auto& parentPos = parent.vertex();
+
+  // const double parentBeta = parent.p()/parent.energy();
+  // const double parentTime = std::sqrt((childPos-parentPos).Mag2())/(c*parentBeta);
+
+  const double kA = (child.px()*child.px()+child.py()*child.py())*c*c/(child.energy()*child.energy());
+  const double kB = 2*(child.vx()*child.px()+child.vy()*child.py())*c/child.energy();
+  const double kC = (child.vx()*child.vx()+child.vy()*child.vy())-(ecalR*ecalR);
+
+  // return default if electron vertex is outside the ECAl fiducial region
+  if (kC>0 || std::abs(child.vz())>EEz) return std::make_pair(-100.0, -100.0);
+
+  // solution assuming an EB electron
+  const double sqrtDisc = std::sqrt(kB*kB - 4*kA*kC);
+  const double tEB = (-kB+sqrtDisc)/(2*kA);
+
+  // solution assuming an EE electron
+  double testTimeEE = 9e9;
+  if(child.pz() > 0) testTimeEE = (EEz-child.vz())*child.energy()/(child.pz()*c);
+  else if(child.pz() < 0) testTimeEE = -(EEz+child.vz())*child.energy()/(child.pz()*c);
+  else testTimeEE = 9e9;
+  const double tEE = testTimeEE;
+
+  double timeOfFlight = 9e9;
+  if(tEB < tEE) timeOfFlight = tEB;
+  else if(tEB > tEE) timeOfFlight = tEE;
+  else timeOfFlight = 9e9;
+
+  if(timeOfFlight == 9e9) return std::make_pair(-100.0, -100.0);
+
+  const double xpos = timeOfFlight*(child.px()/child.energy())*c + child.vx();
+  const double ypos = timeOfFlight*(child.py()/child.energy())*c + child.vy();
+  const double zpos = timeOfFlight*(child.pz()/child.energy())*c + child.vz();
+
+  ROOT::Math::XYZVector ecalPos(xpos, ypos, zpos);
+  return std::make_pair(ecalPos.eta(), ecalPos.phi());
+}
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(TriggerAnalyzerMiniAOD2024);
