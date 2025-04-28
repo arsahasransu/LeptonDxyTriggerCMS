@@ -24,7 +24,7 @@ def filter_gen_electrons(df, histograms):
     df = df.Define('n_e_genms', 'pt_e_genms.size()')
     df = df.Filter('n_e_genms > 0')
 
-    h_vt = df.Histo1D(('vt_e', 'vt', 10000, 0, 100), 'vt_e_genms')
+    h_vt = df.Histo1D(('vt_e', 'vt', 20000, 0, 200), 'vt_e_genms')
     histograms.append(h_vt)
     h_pt = df.Histo1D(('pt_e', 'pt', 100, 0, 100), 'pt_e_genms')
     histograms.append(h_pt)
@@ -75,6 +75,31 @@ def do_gen_matching(df, histograms):
     df = df.Define('genmatched_ph_seedtime_ee', 'pho_seedtime[genmatched_ph_idx != -1 and abs(pho_eta) > 1.479]')
     histograms.append(df.Histo1D(('genmatched_ph_seedtime_eb', 'genmatched_ph_seedtime_eb', 1000, -25, 25), 'genmatched_ph_seedtime_eb'))
     histograms.append(df.Histo1D(('genmatched_ph_seedtime_ee', 'genmatched_ph_seedtime_ee', 1000, -25, 25), 'genmatched_ph_seedtime_ee'))
+
+    df = df.Define('recomatched_gene_idx', f'std::get<0>({STR_getmatchedidxs_ph})')
+    df = df.Define('recomatched_gene_vt', 'vt_e_genms[recomatched_gene_idx != -1]')
+    df = df.Define('recomatched_gene_pt', 'pt_e_genms[recomatched_gene_idx != -1]')
+    df = df.Define('recomatched_gene_eta', 'eta_e_genms[recomatched_gene_idx != -1]')
+    df = df.Define('recomatched_gene_phi', 'phi_e_genms[recomatched_gene_idx != -1]')
+    histograms.append(df.Histo1D(('recomatched_gene_vt', 'recomatched_gene_vt', 20000, 0, 200), 'recomatched_gene_vt'))
+    histograms.append(df.Histo1D(('recomatched_gene_pt', 'recomatched_gene_pt', 100, 0, 100), 'recomatched_gene_pt'))
+    histograms.append(df.Histo1D(('recomatched_gene_eta', 'recomatched_gene_eta', 54, -2.7, 2.7), 'recomatched_gene_eta'))
+    histograms.append(df.Histo1D(('recomatched_gene_phi', 'recomatched_gene_phi', 66, -3.3, 3.3), 'recomatched_gene_phi'))
+
+    df = df.Define('recomatched_gene_n', 'recomatched_gene_vt.size()')
+    histograms.append(df.Histo1D(('recomatched_gene_n', 'multiplicity', 10, 0, 10), 'recomatched_gene_n'))
+
+    df = df.Filter('recomatched_gene_n >= 2')
+    histograms.append(df.Histo1D(('recoed_gene_vt', 'recoed_gene_vt', 20000, 0, 200), 'recomatched_gene_vt'))
+    histograms.append(df.Histo1D(('recoed_gene_pt', 'recoed_gene_pt', 100, 0, 100), 'recomatched_gene_pt'))
+    histograms.append(df.Histo1D(('recoed_gene_eta', 'recoed_gene_eta', 54, -2.7, 2.7), 'recomatched_gene_eta'))
+    histograms.append(df.Histo1D(('recoed_gene_phi', 'recoed_gene_phi', 66, -3.3, 3.3), 'recomatched_gene_phi'))
+
+    df = df.Filter('HLT_DiPhoton10_CaloIdL == 1')
+    histograms.append(df.Histo1D(('hlt_gene_vt', 'hlt_gene_vt', 20000, 0, 200), 'recomatched_gene_vt'))
+    histograms.append(df.Histo1D(('hlt_gene_pt', 'hlt_gene_pt', 100, 0, 100), 'recomatched_gene_pt'))
+    histograms.append(df.Histo1D(('hlt_gene_eta', 'hlt_gene_eta', 54, -2.7, 2.7), 'recomatched_gene_eta'))
+    histograms.append(df.Histo1D(('hlt_gene_phi', 'hlt_gene_phi', 66, -3.3, 3.3), 'recomatched_gene_phi'))
 
     return df
 

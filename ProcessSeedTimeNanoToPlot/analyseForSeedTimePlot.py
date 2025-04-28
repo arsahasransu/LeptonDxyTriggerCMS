@@ -1,10 +1,6 @@
 import ROOT
 
 
-df = ROOT.RDataFrame('demo/tree', './data/EGamma0_EXOLLPTRG_Nano_*.root')
-print('Entries in the tree to process:', df.Count().GetValue())
-
-
 calculate_inv_mass_str = '''
     #include "Math/Vector4D.h"
 
@@ -72,13 +68,23 @@ def analyser(df):
 
     histograms = []
 
-    (df, hist_list) = add_plots(df, '', 'EB', 'abs(ele_eta)<1.479 && ele_IDtight == 1')
+    (df_eb, hist_list) = add_plots(df, '', 'EB', 'abs(ele_eta)<1.2')
     histograms.extend(hist_list)
-    df = df.Filter('eleEB_invmass > 80 and eleEB_invmass < 100')
-    (df, hist_list) = add_plots(df, 'EB', 'EBZ', 'abs(eleEB_eta)<1.479 && eleEB_IDtight == 1')
+    (df_eb, hist_list) = add_plots(df_eb, 'EB', 'EBID', 'abs(eleEB_eta)<1.2 && eleEB_IDtight == 1')
+    histograms.extend(hist_list)
+    df_eb = df_eb.Filter('eleEBID_invmass > 87 and eleEBID_invmass < 93')
+    (df_eb, hist_list) = add_plots(df_eb, 'EBID', 'EBZ', 'abs(eleEBID_eta)<1.2 && eleEBID_IDtight == 1')
     histograms.extend(hist_list)
 
-    outfile = ROOT.TFile('out_histos.root', 'RECREATE')
+    (df_ee, hist_list) = add_plots(df, '', 'EE', 'abs(ele_eta)>1.6 && abs(ele_eta)<2.1 ')
+    histograms.extend(hist_list)
+    (df_ee, hist_list) = add_plots(df_ee, 'EE', 'EEID', 'abs(eleEE_eta)>1.6 && abs(eleEE_eta)<2.1 && eleEE_IDtight == 1')
+    histograms.extend(hist_list)
+    df_ee = df_ee.Filter('eleEEID_invmass > 87 and eleEEID_invmass < 93')
+    (df_ee, hist_list) = add_plots(df_ee, 'EEID', 'EEZ', 'abs(eleEEID_eta)>1.6 && abs(eleEEID_eta)<2.1 && eleEEID_IDtight == 1')
+    histograms.extend(hist_list)
+
+    outfile = ROOT.TFile('data_histos.root', 'RECREATE')
     for hist in histograms:
         hist.Write()
     outfile.Close()
@@ -87,4 +93,6 @@ def analyser(df):
 
 if __name__ == "__main__":
     print('Starting analysis...')
+    df = ROOT.RDataFrame('demo/tree', './data/EGamma0_EXOLLPTRG_Nano.root')
+    print('Entries in the tree to process:', df.Count().GetValue())
     analyser(df)
