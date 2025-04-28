@@ -12,6 +12,11 @@ options.register('outfile',
                     VarParsing.multiplicity.singleton,
                     VarParsing.varType.string,
                     'Output file name')
+options.register('isMC', 
+                    False,
+                    VarParsing.multiplicity.singleton,
+                    VarParsing.varType.bool,
+                    'Is simulation file?')
 options.parseArguments()
 
 process = cms.Process("DEMO")
@@ -35,8 +40,9 @@ process.TFileService = cms.Service("TFileService",
                                    fileName = cms.string(options.outfile),
                                )
 
-process.demo = cms.EDAnalyzer('TriggerAnalyzerMiniAOD2024'
-)
+process.demo = cms.EDAnalyzer('TriggerAnalyzerMiniAOD2024',
+                                isMC = cms.bool(options.isMC)
+                            )
 
 
 process.p = cms.Path(process.demo)
