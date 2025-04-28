@@ -139,7 +139,7 @@ private:
 
 TriggerAnalyzerMiniAOD2024::TriggerAnalyzerMiniAOD2024(const edm::ParameterSet& iConfig)
   : isMC_(iConfig.getParameter<bool>("isMC")) {
-  trgResultsToken_= consumes< edm::TriggerResults >( edm::InputTag("TriggerResults::RECO") );
+  trgResultsToken_= consumes< edm::TriggerResults >( edm::InputTag("TriggerResults::HLT") );
   // trgObjectsToken_ = consumes< pat::TriggerObjectStandAloneCollection >( edm::InputTag("slimmedPatTrigger") );
   rechiteb_token = consumes< edm::SortedCollection< EcalRecHit, edm::StrictWeakOrdering< EcalRecHit >>>( edm::InputTag("reducedEgamma:reducedEBRecHits") );
   rechitee_token = consumes< edm::SortedCollection< EcalRecHit, edm::StrictWeakOrdering< EcalRecHit >>>( edm::InputTag("reducedEgamma:reducedEERecHits") );
@@ -441,7 +441,7 @@ void TriggerAnalyzerMiniAOD2024::analyze(const edm::Event& iEvent, const edm::Ev
     const edm::TriggerNames & trigName = iEvent.triggerNames(*trgResultsH);
     for( int i_Trig = 0; i_Trig < N_Triggers; ++i_Trig ) {
       if (trgResultsH.product()->accept(i_Trig)) {
-  	    //cout << "Path: " <<trigName.triggerName(i_Trig)<<"Results: "<<trgResultsH.product()->accept(i_Trig)<<endl;
+  	    // cout << "Path: " <<trigName.triggerName(i_Trig)<<"Results: "<<trgResultsH.product()->accept(i_Trig)<<endl;
 	      TString TrigPath =trigName.triggerName(i_Trig);
 	      if(TrigPath.Index("HLT_DiPhoton10Time1p4ns_v") >=0) HLT_DiPhoton10Time1p4ns = true; 
 	      if(TrigPath.Index("HLT_DiPhoton10Time1ns_v") >=0) HLT_DiPhoton10Time1ns = true; 

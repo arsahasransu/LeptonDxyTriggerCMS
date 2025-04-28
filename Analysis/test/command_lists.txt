@@ -4,4 +4,5 @@ for i in 1m 3m 3cm 30cm; do  ls /pnfs/pp.rl.ac.uk/data/cms/store/user/asahasra/S
 for i in 1m 3m 3cm 30cm; do  ls /pnfs/pp.rl.ac.uk/data/cms/store/user/asahasra/SingletTripletHDMToDisplacedL_M200deltaM20ctau${i}_TuneCP5_14TeV-madgraph-pythia8/STHDM_M200deltaM20ctau${i}_Run3Winter24MiniAOD_250419/*/*/STHDM_Run3Winter24Miniaod_*.root > input_250419_${i}.txt; done
 
 
-for i in 1m 3m 3cm 30cm; do  cmsRun NTupliser.py inpfilelist=input_250418_${i}.txt outfile=NTuples_250418_${i}.root; done
+for i in 1m 3m 3cm 30cm; do  cmsRun NTupliser.py inpfilelist=input_250418_${i}.txt outfile=NTuples_250418_${i}.root isMC=True; done
+for i in 1m 3m 3cm 30cm; do  cmsRun NTupliser.py inpfilelist=input_250419_${i}.txt outfile=NTuples_250419_${i}.root isMC=True; done
