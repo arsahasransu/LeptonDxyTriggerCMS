@@ -72,7 +72,7 @@ def analyser(df):
     histograms.extend(hist_list)
     (df_eb, hist_list) = add_plots(df_eb, 'EB', 'EBID', 'abs(eleEB_eta)<1.2 && eleEB_IDtight == 1')
     histograms.extend(hist_list)
-    df_eb = df_eb.Filter('eleEBID_invmass > 87 and eleEBID_invmass < 93')
+    df_eb = df_eb.Filter('eleEBID_invmass > 84 and eleEBID_invmass < 96')
     (df_eb, hist_list) = add_plots(df_eb, 'EBID', 'EBZ', 'abs(eleEBID_eta)<1.2 && eleEBID_IDtight == 1')
     histograms.extend(hist_list)
 
@@ -80,11 +80,11 @@ def analyser(df):
     histograms.extend(hist_list)
     (df_ee, hist_list) = add_plots(df_ee, 'EE', 'EEID', 'abs(eleEE_eta)>1.6 && abs(eleEE_eta)<2.1 && eleEE_IDtight == 1')
     histograms.extend(hist_list)
-    df_ee = df_ee.Filter('eleEEID_invmass > 87 and eleEEID_invmass < 93')
+    df_ee = df_ee.Filter('eleEEID_invmass > 84 and eleEEID_invmass < 96')
     (df_ee, hist_list) = add_plots(df_ee, 'EEID', 'EEZ', 'abs(eleEEID_eta)>1.6 && abs(eleEEID_eta)<2.1 && eleEEID_IDtight == 1')
     histograms.extend(hist_list)
 
-    outfile = ROOT.TFile('data_histos.root', 'RECREATE')
+    outfile = ROOT.TFile('data_histos_newseedtimeplot.root', 'RECREATE')
     for hist in histograms:
         hist.Write()
     outfile.Close()
