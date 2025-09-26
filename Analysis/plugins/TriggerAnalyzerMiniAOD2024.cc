@@ -576,13 +576,15 @@ void TriggerAnalyzerMiniAOD2024::analyze(const edm::Event& iEvent, const edm::Ev
       if(rechitebH.isValid() && seedtime==-30) {
 	      auto rechitseed = rechitebH->find(SCseedID);
 	      if(rechitseed!=rechitebH->end()) {
-	        seedtime = 2.4*(rechitseed->time()+0.9);
+	        // seedtime = 2.4*(rechitseed->time()+0.9);
+	        seedtime = rechitseed->time();
 	      }
       }
       if(rechiteeH.isValid() && seedtime==-30) {
         auto rechitseed = rechiteeH->find(SCseedID);
         if(rechitseed!=rechiteeH->end()) {
-          seedtime = 1.5*(rechitseed->time()+2.2);
+          // seedtime = 1.5*(rechitseed->time()+2.2);
+          seedtime = rechitseed->time();
         }
       }
       pho_seedtime.push_back(seedtime);
