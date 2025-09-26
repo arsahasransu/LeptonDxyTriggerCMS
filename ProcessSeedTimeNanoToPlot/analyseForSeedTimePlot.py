@@ -93,6 +93,7 @@ def analyser(df):
 
 if __name__ == "__main__":
     print('Starting analysis...')
-    df = ROOT.RDataFrame('demo/tree', './data/EGamma0_EXOLLPTRG_Nano.root')
+    # df = ROOT.RDataFrame('demo/tree', './data/EGamma0_EXOLLPTRG_Nano.root')
+    df = ROOT.RDataFrame('demo/tree', './data/DYTo2L_Run3Winter25_EXOLLPTRG_250923Nano.root')
     print('Entries in the tree to process:', df.Count().GetValue())
     analyser(df)

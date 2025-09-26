@@ -124,12 +124,10 @@ if __name__=='__main__':
     ROOT.gInterpreter.Declare(mycpputils.STRCPPFUNC_getminangs)
     ROOT.gInterpreter.Declare(mycpputils.STRCPPFUNC_getmatchedidxs)
 
-    # analyse_mcfiles('./data/NTuples_250418_3cm.root', './hists/hist_3cm.root')
-    # analyse_mcfiles('./data/NTuples_250418_30cm.root', './hists/hist_30cm.root')
-    # analyse_mcfiles('./data/NTuples_250418_1m.root', './hists/hist_1m.root')
-    # analyse_mcfiles('./data/NTuples_250418_3m.root', './hists/hist_3m.root')
+    # analyse_mcfiles('./data/NTuples_250419_3cm.root', './hists/hist_3cm.root')
+    # analyse_mcfiles('./data/NTuples_250419_30cm.root', './hists/hist_30cm.root')
+    # analyse_mcfiles('./data/NTuples_250419_1m.root', './hists/hist_1m.root')
+    # analyse_mcfiles('./data/NTuples_250419_3m.root', './hists/hist_3m.root')
 
-    analyse_mcfiles('./data/NTuples_250419_3cm.root', './hists/hist_3cm.root')
-    analyse_mcfiles('./data/NTuples_250419_30cm.root', './hists/hist_30cm.root')
-    analyse_mcfiles('./data/NTuples_250419_1m.root', './hists/hist_1m.root')
-    analyse_mcfiles('./data/NTuples_250419_3m.root', './hists/hist_3m.root')
+    analyse_mcfiles('./data/NTuples_250926_3cm.root', './hists/hist_3cm.root')
+    analyse_mcfiles('./data/NTuples_250926_3m.root', './hists/hist_3m.root')
