@@ -73,8 +73,12 @@ def do_gen_matching(df, histograms):
     df = df.Define('genmatched_ph_idx', f'std::get<1>({STR_getmatchedidxs_ph})')
     df = df.Define('genmatched_ph_seedtime_eb', 'pho_seedtime[genmatched_ph_idx != -1 and abs(pho_eta) < 1.479]')
     df = df.Define('genmatched_ph_seedtime_ee', 'pho_seedtime[genmatched_ph_idx != -1 and abs(pho_eta) > 1.479]')
+    df = df.Define('genmatched_ph_pt_eb', 'pho_pt[genmatched_ph_idx != -1 and abs(pho_eta) < 1.479]')
+    df = df.Define('genmatched_ph_pt_ee', 'pho_pt[genmatched_ph_idx != -1 and abs(pho_eta) > 1.479]')
     histograms.append(df.Histo1D(('genmatched_ph_seedtime_eb', 'genmatched_ph_seedtime_eb', 1000, -25, 25), 'genmatched_ph_seedtime_eb'))
     histograms.append(df.Histo1D(('genmatched_ph_seedtime_ee', 'genmatched_ph_seedtime_ee', 1000, -25, 25), 'genmatched_ph_seedtime_ee'))
+    histograms.append(df.Histo1D(('genmatched_ph_pt_eb', 'genmatched_ph_pt_eb', 100, 0, 100), 'genmatched_ph_pt_eb'))
+    histograms.append(df.Histo1D(('genmatched_ph_pt_ee', 'genmatched_ph_pt_ee', 100, 0, 100), 'genmatched_ph_pt_ee'))
 
     df = df.Define('recomatched_gene_idx', f'std::get<0>({STR_getmatchedidxs_ph})')
     df = df.Define('recomatched_gene_vt', 'vt_e_genms[recomatched_gene_idx != -1]')

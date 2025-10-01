@@ -1,3 +1,5 @@
+import pickle
+
 import ROOT
 
 
@@ -21,6 +23,46 @@ calculate_inv_mass_str = '''
 '''
 ROOT.gInterpreter.Declare(calculate_inv_mass_str)
 
+with open("EB_event_weights_by_pt.pkl", "rb") as f:
+    eb_data = pickle.load(f)
+eb_bes = eb_data[0]
+eb_wts = eb_data[1]
+ebbes_rvec = ROOT.VecOps.RVec("double")(eb_bes.tolist())
+ebwts_rvec = ROOT.VecOps.RVec("double")(eb_wts.tolist())
+
+with open("EE_event_weights_by_pt.pkl", "rb") as f:
+    ee_data = pickle.load(f)
+ee_bes = ee_data[0]
+ee_wts = ee_data[1]
+eebes_rvec = ROOT.VecOps.RVec("double")(ee_bes.tolist())
+eewts_rvec = ROOT.VecOps.RVec("double")(ee_wts.tolist())
+
+calculate_weight_by_particle_pt_str = '''
+    double calculate_weight_by_particle_pt(double pt,
+                                           double eta,
+                                           ROOT::VecOps::RVec<double> EBbes,
+                                           ROOT::VecOps::RVec<double> EBwts,
+                                           ROOT::VecOps::RVec<double> EEbes,
+                                           ROOT::VecOps::RVec<double> EEwts) {
+        if(std::abs(eta) < 1.479) {
+            for(unsigned int cnt=0; cnt<EBbes.size()-1; cnt++) {
+                if(pt>EBbes[cnt] && pt<EBbes[cnt+1]) {
+                    return EBwts[cnt];
+                }
+            }
+        }
+        else {
+            for(unsigned int cnt=0; cnt<EEbes.size()-1; cnt++) {
+                if(pt>EEbes[cnt] && pt<EEbes[cnt+1]) {
+                    return EEwts[cnt];
+                }
+            }
+        }
+
+        return 0.0;
+    }
+'''
+ROOT.gInterpreter.Declare(calculate_weight_by_particle_pt_str)
 
 def add_new_variables(df, selId):
 
@@ -56,6 +98,17 @@ def add_plots(df, prevSelId, selId, selStr):
         dfn2 = dfn2.Define(f'ele{selId}_el1_{var}', f'ele{selId}_{var}[1]')
         histograms.append(dfn2.Histo1D((f'ele{selId}_el1_{var}', f'{var}', xbins, xlow, xup), f'ele{selId}_el1_{var}'))
 
+    # Weight each electron by its pT
+    dfn2 = dfn2.Define(f'ele{selId}_el0_weight', f'calculate_weight_by_particle_pt(ele{selId}_el0_pt,\
+                                                   ele{selId}_el0_eta, {ebbes_rvec}, {ebwts_rvec}, {eebes_rvec}, {eewts_rvec})')
+    dfn2 = dfn2.Define(f'ele{selId}_el1_weight', f'calculate_weight_by_particle_pt(ele{selId}_el1_pt,\
+                                                   ele{selId}_el1_eta, {ebbes_rvec}, {ebwts_rvec}, {eebes_rvec}, {eewts_rvec})')
+    
+    histograms.append(dfn2.Histo1D((f'ele{selId}_el0_weighted_pt', 'pt', 100, 0, 100), f'ele{selId}_el0_pt', f'ele{selId}_el0_weight'))
+    histograms.append(dfn2.Histo1D((f'ele{selId}_el0_weighted_seedtime', 'seedtime', 300, -10, 20), f'ele{selId}_el0_seedtime', f'ele{selId}_el0_weight'))
+    histograms.append(dfn2.Histo1D((f'ele{selId}_el1_weighted_pt', 'pt', 100, 0, 100), f'ele{selId}_el1_pt', f'ele{selId}_el1_weight'))
+    histograms.append(dfn2.Histo1D((f'ele{selId}_el1_weighted_seedtime', 'seedtime', 300, -10, 20), f'ele{selId}_el1_seedtime', f'ele{selId}_el1_weight'))
+
     # dfn2 = add_new_variables(dfn2, selId)
 
     dfn2_invmass_filtered = dfn2.Filter(f'ele{selId}_invmass > 0')
@@ -84,7 +137,7 @@ def analyser(df):
     (df_ee, hist_list) = add_plots(df_ee, 'EEID', 'EEZ', 'abs(eleEEID_eta)>1.6 && abs(eleEEID_eta)<2.1 && eleEEID_IDtight == 1')
     histograms.extend(hist_list)
 
-    outfile = ROOT.TFile('data_histos_newseedtimeplot.root', 'RECREATE')
+    outfile = ROOT.TFile('data_histos.root', 'RECREATE')
     for hist in histograms:
         hist.Write()
     outfile.Close()
@@ -93,7 +146,6 @@ def analyser(df):
 
 if __name__ == "__main__":
     print('Starting analysis...')
-    # df = ROOT.RDataFrame('demo/tree', './data/EGamma0_EXOLLPTRG_Nano.root')
     df = ROOT.RDataFrame('demo/tree', './data/DYTo2L_Run3Winter25_EXOLLPTRG_250923Nano.root')
     print('Entries in the tree to process:', df.Count().GetValue())
     analyser(df)
